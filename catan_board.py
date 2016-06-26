@@ -10,15 +10,18 @@ import pprint
 class CatanBoard:
 	
 	# different types of hexes
-	HEX_FIELDS = 0
-	HEX_FOREST = 1
-	HEX_PASTURE = 2
-	HEX_MOUNTAINS = 3
-	HEX_HILLS = 4
+	HEX_FOREST = 0
+	HEX_HILLS = 1
+	HEX_MOUNTAINS = 2
+	HEX_PASTURE = 3
+	HEX_FIELDS = 4
 	HEX_DESERT = 5
 	
-	def __init__(self):
+	def __init__(self, game):
 	
+		# the game the board is in
+		self.game = game
+		
 		# the hexes on the board
 		self.hexes = []
 		
@@ -174,6 +177,16 @@ class CatanBoard:
 							hex_indexes.append([r - 1, math.floor((i - 1) / 2)])
 							
 					print(hex_indexes)
+					
+					# checks if any hexes have the right number
+					for num in hex_indexes:
+						if self.hex_nums[num[0]][num[1]] == roll:
+							
+							# adds the card to the player's inventory
+							owner = self.points[r][i].owner
+							
+							(self.game).players[owner].add_card(self.hexes[num[0]][num[1]])
+							
 		
 	# adds a CatanBuilding object to the board
 	def add_building(self, building, r, i):

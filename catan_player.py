@@ -66,4 +66,5 @@ class CatanPlayer:
 		return 1
 		
 	def add_card(self, card):
+		print("Got card %s" % card)
 		self.cards.append(card)

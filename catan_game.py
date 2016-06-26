@@ -11,7 +11,7 @@ class CatanGame:
 	def __init__(self, num_of_players):
 		
 		# creates a board
-		self.board = CatanBoard();
+		self.board = CatanBoard(self);
 		
 		self.players = []
 		
@@ -49,7 +49,7 @@ if __name__ == "__main__":
 	(c.players[0]).add_card(4)
 	
 	# gets the first player to build a settlement
-	c.add_settlement(player_num=0, settle_i=6, settle_r=5)
+	c.add_settlement(player_num=0, settle_i=2, settle_r=2)
 	
 	c.add_yield_for_roll(5)
 	
