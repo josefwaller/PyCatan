@@ -128,7 +128,6 @@ class CatanBoard:
 				
 				if self.points[r][i] != None:
 					
-					print("Row %s, Index %s" % (r, i))
 					# the indexes of he hexes to check
 					hex_indexes = []
 					
@@ -175,8 +174,6 @@ class CatanBoard:
 						# gets the hex to the left
 						if i > 1 and i % 2 == 0:
 							hex_indexes.append([r - 1, math.floor((i - 1) / 2)])
-							
-					print(hex_indexes)
 					
 					# checks if any hexes have the right number
 					for num in hex_indexes:

@@ -1,4 +1,5 @@
 from catan_building import CatanBuilding
+for catan_statuses import CatanStatuses
 
 import math
 
@@ -45,7 +46,7 @@ class CatanPlayer:
 			
 			# checks if the card exists
 			if self.cards.count(cards_needed[i]) < 1:
-				return -1
+				return CatanStatuses.ERR_CARDS
 				
 			else:
 				# adds the index 
@@ -65,7 +66,7 @@ class CatanPlayer:
 		# adds the house
 		((self.game).board).add_building(CatanBuilding(owner=self.num, type=CatanBuilding.BUILDING_SETTLEMENT), r=settle_r, i=settle_i)
 		
-		return 1
+		return CatanStatuses.ALL_GOOD
 		
 	# builds a road
 	def build_road(self, start, end):
@@ -74,7 +75,7 @@ class CatanPlayer:
 		# if they are in the same row, just checks if they are adjacent
 		if start[0] == end[0]:
 			if math.fabs(start[1] - end[1]) != 1:
-				return -1
+				return CatanStatuses.ERR_NOT_CON
 		
 		# if they are in different rows
 		else:
@@ -85,14 +86,14 @@ class CatanPlayer:
 				
 				if (start[0] < end[0] and end[1] != start[1] + 1) or (start[0] > end[0] and start[1] != end[1] + 1):
 					
-					return -1
+					return CatanStatuses.ERR_NOT_CON
 					
 			# if they are both in the bottom half, the top one needs its index to be + 1
 			elif start[0] > board_height / 2 and end[0] > board_height / 2:
 				
 				if not (start[0] < end[0] and start[1] == end[1] + 1) and not (start[0] > end[0] and end[1] == start[1] + 1):
 				
-					return -1
+					return CatanStatuses.ERR_NOT_CON
 					
 			# if one is in the top and the other is in the bottom
 			else:
@@ -103,11 +104,11 @@ class CatanPlayer:
 				# checks if one is top and the other is bot
 				if not (start[0] == top and end[0] == bot) or not (start[0] == top and end[0] == bot):
 				
-					return -1
+					return CatanStatuses.ERR_NOT_CON
 					
 				# if they are, the indexes must be the same and the number must be even
 				if start[1] != end[1] or start[1] % 2 == 1:
-					return -1
+					return CatanStatuses.ERR_NOT_CON
 		
 		connected_by_road = False
 		for road in (self.game).board.roads:
@@ -116,7 +117,7 @@ class CatanPlayer:
 			if road.point_one == start or road.point_two == start:
 				
 				if road.point_one == end or road.point_two == end:
-					return -1
+					return CatanStatuses.ERR_BLOCKED
 			
 		# check this player has a settlement on one of these points or a connecting road
 		is_connected = False
@@ -152,7 +153,7 @@ class CatanPlayer:
 						is_connected = True
 		
 		if not is_connected:
-			return -1
+			return CatanStatuses.ERR_NOT_CON
 			
 		# checks that it has the proper cards
 		cards_needed = [
@@ -164,7 +165,7 @@ class CatanPlayer:
 		
 		for i in range(len(cards_needed)):
 			if self.cards.count(cards_needed[i]) < 1:
-				return -1
+				return CatanStatuses.ERR_CARDS
 				
 			else:
 				card_indexes.append(i)
@@ -177,7 +178,7 @@ class CatanPlayer:
 		# adds the road
 		(self.game).board.add_road(CatanBuilding(owner=self.num, type=CatanBuilding.BUILDING_ROAD, point_one=start, point_two=end))
 		
-		return 1
+		return CatanStatuses.ALL_GOOD
 		
 	def add_card(self, card):
 	

@@ -3,9 +3,6 @@ from catan_player import CatanPlayer
 
 import random
 
-# errors
-CATAN_ERR_CARDS = 0
-
 class CatanGame:
 	
 	def __init__(self, num_of_players):
