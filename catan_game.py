@@ -55,15 +55,15 @@ if __name__ == "__main__":
 	(c.players[0]).add_card(CatanPlayer.CARD_SHEEP)
 	
 	# gets the first player to build a settlement
-	c.add_settlement(player=0, settle_i=0, settle_r=5)
+	c.add_settlement(player=0, settle_r=2, settle_i=2)
 	
 	# gets the yield for the new settlement
 	c.add_yield_for_roll(5)
 	
 	# adds cards for a road
-	(c.players[1]).add_card(CatanPlayer.CARD_WOOD)
-	(c.players[1]).add_card(CatanPlayer.CARD_BRICK)
+	(c.players[0]).add_card(CatanPlayer.CARD_WOOD)
+	(c.players[0]).add_card(CatanPlayer.CARD_BRICK)
 	
 	# builds a road
-	c.add_road(player=1, start=[1, 2], end=[2, 3])
+	c.add_road(player=0, start=[2, 2], end=[2, 3])
 	

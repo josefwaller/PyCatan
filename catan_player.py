@@ -71,7 +71,6 @@ class CatanPlayer:
 	def build_road(self, start, end):
 	
 		# checks the two points are connected
-		
 		# if they are in the same row, just checks if they are adjacent
 		if start[0] == end[0]:
 			if math.fabs(start[1] - end[1]) != 1:
@@ -119,11 +118,42 @@ class CatanPlayer:
 				if road.point_one == end or road.point_two == end:
 					return -1
 			
-			#
 		# check this player has a settlement on one of these points or a connecting road
+		is_connected = False
 		
-		# checks that no other players own a settlement on either point
+		# first checks if there is a settlements on either point
+		point_one = (self.game).board.points[start[0]][start[1]]
+		point_two = (self.game).board.points[end[0]][end[1]]
 		
+		if point_one != None:
+			# checks if this player owns the settlement/city
+			if point_one.owner == self.num:
+				is_connected = True
+				
+		# does the same for the other point
+		elif point_two != None:
+			if point_two.owner == self.num:
+				is_connected = True
+				
+		# then checks if there is a road connecting them
+		roads = (self.game).board.roads
+		points = [start, end]
+		
+		for r in roads:
+			for p in points:
+				if r.point_one == p or r.point_two == p:
+					
+					# checks that there is not another player's settlement here, so that it's not going through it
+					if (self.game).board.points[p[0]][p[1]] == None:
+						is_connected = True
+					
+					# if theere is a settlement/city there, the road can be built if this player owns it
+					elif (self.game).board.points[p[0]][p[1]].owner == self.num:
+						is_connected = True
+		
+		if not is_connected:
+			return -1
+			
 		# checks that it has the proper cards
 		cards_needed = [
 			self.CARD_WOOD,
@@ -150,5 +180,5 @@ class CatanPlayer:
 		return 1
 		
 	def add_card(self, card):
-		print("Got card %s" % card)
+	
 		self.cards.append(card)
