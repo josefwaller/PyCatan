@@ -88,7 +88,6 @@ class CatanBoard:
 		last_index = 0
 		for i in range(5):
 		
-			print(last_index)
 			# the length of this row of hexes
 			length = round(-math.fabs(i - 2) + 5)
 			
@@ -115,11 +114,12 @@ class CatanBoard:
 				
 				self.points[i].append(None)
 				
-		print("!")
+		print("Hex Numbers:")
 		p.pprint(self.hex_nums)
+		print("Hexes: ")
 		p.pprint(self.hexes)
+		print("Points: ")
 		p.pprint(self.points)
-		print("!")
 		
 	def add_yield(self, roll):
 		
@@ -202,3 +202,49 @@ class CatanBoard:
 			
 		return False
 		
+	def get_connected_points(self, r, i):
+		
+		# the connected points
+		connected_points = []
+		
+		# whether the point has another point directly above or directly below
+		has_point_above = False
+	
+		# if it is in the top half
+		if r < (len(self.points) - 1) / 2:
+			
+			# even points have a point below, odd points have one above
+			if i % 2 == 0:
+				has_point_above = False
+			
+			else: 
+				has_point_below = True
+			
+		# if it is in the top half	
+		else:
+			
+			if i % 2 == 0:
+				has_point_above = True
+				
+			else:
+				has_point_above = False
+					
+		# gets the point above/below
+		
+		if has_point_above:
+			connected_points.append([r - 1, i])
+			
+		else:
+			connected_points.append([r + 1, i])
+			
+		# gets the adjacent points
+		if i > 0:
+			connected_points.append([r, i - 1])
+			
+		if i < len(self.points[r]) - 1:
+			connected_points.append([r, i + 1])
+			
+		return connected_points
+			
+	def get_point(self, r, i):
+		return self.points[r][i]

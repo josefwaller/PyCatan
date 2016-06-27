@@ -1,5 +1,5 @@
 from catan_building import CatanBuilding
-for catan_statuses import CatanStatuses
+from catan_statuses import CatanStatuses
 
 import math
 
@@ -53,8 +53,18 @@ class CatanPlayer:
 				card_indexes.append(self.cards.index(cards_needed[i]))
 		
 		# checks that a building does not already exist there
+		if not (self.game).board.point_is_empty(settle_r, settle_i):
+			return CatanStatuses.ERR_BLOCKED
 		
 		# checks all other settlements are at least 2 away
+		# gets the connecting point's coords
+		point_coords = (self.game).board.get_connected_points(settle_r, settle_i)
+		for coord in point_coords:
+			
+			# checks if the point is occupied
+			p = (self.game).board.get_point(coord[0], coord[1])
+			if p != None:
+				return CatanStatuses.ERR_BLOCKED
 		
 		# sorts in descending order, so that removing cards does not change the index of other cards
 		card_indexes.sort(reverse=True)
@@ -72,44 +82,16 @@ class CatanPlayer:
 	def build_road(self, start, end):
 	
 		# checks the two points are connected
-		# if they are in the same row, just checks if they are adjacent
-		if start[0] == end[0]:
-			if math.fabs(start[1] - end[1]) != 1:
-				return CatanStatuses.ERR_NOT_CON
-		
-		# if they are in different rows
-		else:
+		connected = False
+		# gets the points connected to start
+		points = (self.game).board.get_connected_points(r=start[0], i=start[1])
+		for p in points:
+			if end == p:
+				connected = True
+				break
+		if not connected:
+			return CatanStatuses.ERR_NOT_CON
 			
-			board_height = len((self.game).board.points) - 1
-			# if they are both in the top half, the bottom one needs its index to be +1
-			if start[0] < board_height / 2 and end[0] < board_height / 2:
-				
-				if (start[0] < end[0] and end[1] != start[1] + 1) or (start[0] > end[0] and start[1] != end[1] + 1):
-					
-					return CatanStatuses.ERR_NOT_CON
-					
-			# if they are both in the bottom half, the top one needs its index to be + 1
-			elif start[0] > board_height / 2 and end[0] > board_height / 2:
-				
-				if not (start[0] < end[0] and start[1] == end[1] + 1) and not (start[0] > end[0] and end[1] == start[1] + 1):
-				
-					return CatanStatuses.ERR_NOT_CON
-					
-			# if one is in the top and the other is in the bottom
-			else:
-				# the only option is for one to be the row above half and the other to be the one beneath it
-				top = math.floor(board_height / 2)
-				bot = math.ceil(board_height / 2)
-				
-				# checks if one is top and the other is bot
-				if not (start[0] == top and end[0] == bot) or not (start[0] == top and end[0] == bot):
-				
-					return CatanStatuses.ERR_NOT_CON
-					
-				# if they are, the indexes must be the same and the number must be even
-				if start[1] != end[1] or start[1] % 2 == 1:
-					return CatanStatuses.ERR_NOT_CON
-		
 		connected_by_road = False
 		for road in (self.game).board.roads:
 					
@@ -123,10 +105,11 @@ class CatanPlayer:
 		is_connected = False
 		
 		# first checks if there is a settlements on either point
-		point_one = (self.game).board.points[start[0]][start[1]]
-		point_two = (self.game).board.points[end[0]][end[1]]
+		point_one = (self.game).board.get_point(r=start[0], i=start[1])
+		point_two = (self.game).board.get_point(r=end[0], i=end[1])
 		
 		if point_one != None:
+		
 			# checks if this player owns the settlement/city
 			if point_one.owner == self.num:
 				is_connected = True
@@ -153,7 +136,7 @@ class CatanPlayer:
 						is_connected = True
 		
 		if not is_connected:
-			return CatanStatuses.ERR_NOT_CON
+			return CatanStatuses.ERR_ISOLATED
 			
 		# checks that it has the proper cards
 		cards_needed = [
