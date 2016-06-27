@@ -19,22 +19,28 @@ class CatanGame:
 		for i in range(num_of_players):
 			self.players.append(CatanPlayer(num=i, game=self))
 		
-	def add_settlement(self, player_num, settle_r, settle_i):
+	def add_settlement(self, player, settle_r, settle_i):
 		
 		# checks the point on the board is empty
 		if self.board.point_is_empty(r=settle_r, i=settle_i):
 		
 			# builds the settlement
-			success = self.players[player_num].build_settlement(settle_r=settle_r, settle_i=settle_i)
+			success = self.players[player].build_settlement(settle_r=settle_r, settle_i=settle_i)
 			print(success)
 			
+	# builds a road going from point start to point end
+	def add_road(self, player, start, end):
+		
+		print("Add Road is %s" % self.players[player].build_road(start=start, end=end))
+			
+	# gives players the proper cards for a given roll
 	def add_yield_for_roll(self, roll):
 	
 		self.board.add_yield(roll)
-		pass
 		
+	# simulates 2 dice rolling
 	def get_roll(self):
-		return round(random.random() * 6 + random.random() * 6)
+		return round(random.random() * 6) + round(random.random() * 6)
 		
 # creates a new game for debugging
 if __name__ == "__main__":
@@ -43,13 +49,21 @@ if __name__ == "__main__":
 	c = CatanGame(num_of_players=3)
 	
 	# gives the first player settlement cards
-	(c.players[0]).add_card(0)
-	(c.players[0]).add_card(1)
-	(c.players[0]).add_card(3)
-	(c.players[0]).add_card(4)
+	(c.players[0]).add_card(CatanPlayer.CARD_WOOD)
+	(c.players[0]).add_card(CatanPlayer.CARD_BRICK)
+	(c.players[0]).add_card(CatanPlayer.CARD_WHEAT)
+	(c.players[0]).add_card(CatanPlayer.CARD_SHEEP)
 	
 	# gets the first player to build a settlement
-	c.add_settlement(player_num=0, settle_i=2, settle_r=2)
+	c.add_settlement(player=0, settle_i=0, settle_r=5)
 	
+	# gets the yield for the new settlement
 	c.add_yield_for_roll(5)
+	
+	# adds cards for a road
+	(c.players[1]).add_card(CatanPlayer.CARD_WOOD)
+	(c.players[1]).add_card(CatanPlayer.CARD_BRICK)
+	
+	# builds a road
+	c.add_road(player=1, start=[1, 2], end=[2, 3])
 	

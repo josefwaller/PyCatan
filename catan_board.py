@@ -166,7 +166,7 @@ class CatanBoard:
 						if i % 2 == 1 and i > 1 and i < len(self.points[r]):
 							hex_indexes.append([r, math.floor((i - 1) / 2 - 1)])
 							
-						# gets the hexes above
+						# gets the hexes above ------------
 						
 						# gets the hex above and to the right or directly above
 						if i < len(self.points[r]) - 1:
@@ -191,6 +191,11 @@ class CatanBoard:
 	# adds a CatanBuilding object to the board
 	def add_building(self, building, r, i):
 		self.points[r][i] = building
+	
+	# adds a CatanBuilding object, which must be a road	
+	# since roads record their own position and are not in self.points
+	def add_road(self, road):
+		self.roads.append(road)
 		
 	# checks if a point on the board is empty
 	def point_is_empty(self, r, i):
