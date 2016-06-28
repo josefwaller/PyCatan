@@ -124,3 +124,29 @@ if __name__ == "__main__":
 		
 	else:
 		print("Trade Failed with error %s" % trade_result)
+		
+	@static_method
+	def print_cards(cards):
+		
+		print("[")
+		for c in cards:
+			
+			if c == CatanPlayer.CARDS_WOOD:
+				print("Wood")
+			
+			elif c == CatanPlayer.CARDS_SHEEP:
+				print("Sheep")
+				
+			elif c == CatanPlayer.CARDS_BRICK:
+				print("Brick")
+				
+			elif c == CatanPlayer.CARDS_WHEAT:
+				print("Wheat")
+				
+			elif c == CatanPlayer.CARDS_ORE:
+				print("Ore")
+				
+			if cards.index(c) < len(cards) - 1:
+				print(",")
+		
+		print("]")
