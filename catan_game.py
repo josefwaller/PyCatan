@@ -32,6 +32,27 @@ class CatanGame:
 	
 		self.board.add_yield(roll)
 		
+	def trade(self, player_one, player_two, cards_one, cards_two):
+	
+		# check if they players have the cards they are trading
+		# Needs to do this before deleting because one might have the cards while the other does not
+		if not self.players[player_one].has_cards(cards_one):
+			return CatanStatuses.ERR_CARDS
+			
+		elif not self.players[player_two].has_cards(cards_two):
+			return CatanStatuses.ERR_CARDS
+			
+		else:
+			# removes the cards
+			self.players[player_one].remove_cards(cards_one)
+			self.players[player_two].remove_cards(cards_two)
+			
+			# add the new cards	
+			self.players[player_one].add_cards(cards_two)
+			self.players[player_two].add_cards(cards_one)
+			
+			return CatanStatuses.ALL_GOOD
+	
 	# simulates 2 dice rolling
 	def get_roll(self):
 		return round(random.random() * 6) + round(random.random() * 6)
@@ -85,4 +106,21 @@ if __name__ == "__main__":
 					print("All Good")
 				
 	else:
-		print(stat)
+		print("Error with building Settlement on top of another: %s" % stat)
+		
+	# gives player 1 a sheep
+	(c.players[0]).add_card(CatanPlayer.CARD_SHEEP)
+	
+	# gives player 2 a wood
+	(c.players[1]).add_card(CatanPlayer.CARD_WOOD)
+	
+	# trades sheep for wood
+	trade_result = c.trade(player_one=0, player_two=1, cards_one=[CatanPlayer.CARD_SHEEP], cards_two=[CatanPlayer.CARD_WOOD, CatanPlayer.CARD_WOOD])
+	
+	if trade_result == CatanStatuses.ALL_GOOD:
+		print("Successfully traded")
+		print("Player One's cards: %s" % c.players[0].cards)
+		print("Player Two's cards: %s" % c.players[1].cards)
+		
+	else:
+		print("Trade Failed with error %s" % trade_result)

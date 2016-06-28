@@ -78,6 +78,40 @@ class CatanPlayer:
 		
 		return CatanStatuses.ALL_GOOD
 		
+	# checks if the player has all of the cards given in an array
+	def has_cards(self, cards):
+		
+		# needs to duplicate the cards, and then delete them once found
+		# otherwise checking if the player has multiple of the same card
+		# will return true with only one card
+		
+		cards_dup = self.cards[:]
+		for c in cards:
+			if cards_dup.count(c) == 0:
+				return False
+			else:
+				index = cards_dup.index(c)
+				del cards_dup[index]
+				
+		return True
+	
+	def add_cards(self, cards):
+		
+		for c in cards:
+			self.cards.append(c)
+			
+	def remove_cards(self, cards):
+	
+		# makes sure it has all the cards before deleting any
+		if not self.has_cards(cards):
+			return CatanStatuses.ERR_CARDS
+			
+		else:
+			# removes the cards
+			for c in cards:
+				index = self.cards.index(c)
+				del self.cards[index]
+			
 	# builds a road
 	def build_road(self, start, end):
 	
