@@ -200,3 +200,38 @@ class CatanPlayer:
 	def add_card(self, card):
 	
 		self.cards.append(card)
+		
+	# prints the cards given
+	@staticmethod
+	def print_cards(cards):
+		
+		print("[")
+		for c in cards:
+			
+			card_name = ""
+			
+			if c == CatanPlayer.CARD_WOOD:
+				card_name = "Wood"
+			
+			elif c == CatanPlayer.CARD_SHEEP:
+				card_name = "Sheep"
+				
+			elif c == CatanPlayer.CARD_BRICK:
+				card_name = "Brick"
+				
+			elif c == CatanPlayer.CARD_WHEAT:
+				card_name = "Wheat"
+				
+			elif c == CatanPlayer.CARD_ORE:
+				card_name = "Ore"
+			
+			else:
+				print("INVALID CARD %s" % c)
+				continue
+				
+			if cards.index(c) < len(cards) - 1:
+				card_name += ","
+				
+			print("    %s" % card_name)
+		
+		print("]")

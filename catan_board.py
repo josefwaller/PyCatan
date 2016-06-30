@@ -1,3 +1,5 @@
+from catan_harbor import CatanHarbor
+
 # used to shuffle the deck of hexes
 import random
 
@@ -40,6 +42,9 @@ class CatanBoard:
 		
 		# all of the circular number tokens in the game
 		self.all_hex_nums = []
+		
+		# the locations of the harbors
+		self.harbors = []
 		
 		# creates a new PrettyPrinter for debugging
 		p = pprint.PrettyPrinter()
@@ -121,6 +126,81 @@ class CatanBoard:
 		print("Points: ")
 		p.pprint(self.points)
 		
+		# adds harbors
+		# each harbor is around the edge of the board
+		# and are separated by n points, when n is a pattern of 2 3 2 repeating
+		# so this gets all the points in segments of top, right, left, bottom
+		# and then adds them together
+		
+		# adds the top and bottom layer
+		top = []
+		bottom = []
+		
+		# the index of the last row
+		last = len(self.points) - 1
+		
+		# adds the points
+		for i in range(len(self.points[0])):
+			top.append([0, i])
+			bottom.append([last, len(self.points[0]) - 1 - i])
+		
+		# adds all the points on the right and left
+		right = []
+		left = []
+		
+		for r in range(1, len(self.points) - 1):
+			length = len(self.points[r]) - 1
+			
+			# orders the points depending if they are on the top half or bottom half
+			if r < (len(self.points) - 1) / 2:
+				right.append([r, length - 1])
+				right.append([r, length])
+				
+				left.append([len(self.points) - 1 - r, 1])
+				left.append([len(self.points) - 1 - r, 0])
+			
+			else:
+				right.append([r, length])
+				right.append([r, length - 1])
+				
+				left.append([len(self.points) - 1 - r, 0])
+				left.append([len(self.points) - 1 - r, 1])
+		
+		outside_points = []
+		outside_points.extend(top)
+		outside_points.extend(right)
+		outside_points.extend(bottom)
+		outside_points.extend(left)
+		
+		# adds a harbor for each points in the pattern 2 3 2 2 3 2 etc
+		
+		# the index of the outside point to build a harbor on
+		index = 0
+		
+		# the count of harbors build
+		count = 0
+		
+		# the pattern of spaces between harbors
+		pattern = [2, 3, 2]
+		
+		# goes around the board once and adds harbors
+		while index < len(outside_points):
+		
+			# creates a new harbor
+			harbor = CatanHarbor(point_one=outside_points[index], point_two=outside_points[index + 1], type=CatanHarbor.TYPE_WOOD)
+			
+			# adds it to harbors
+			self.harbors.append(harbor)
+			
+			# increments index by the next pattern, adds one to fit with the width of each harbor being 2
+			index += pattern[count % 3] + 1
+			
+			# adds one to count
+			count += 1
+		
+		for h in self.harbors:
+			print(h)
+			
 	def add_yield(self, roll):
 		
 		for r in range(len(self.points)):

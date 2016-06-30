@@ -114,39 +114,22 @@ if __name__ == "__main__":
 	# gives player 2 a wood
 	(c.players[1]).add_card(CatanPlayer.CARD_WOOD)
 	
+	# prints the cards
+	print("Player 1 Cards:")
+	CatanPlayer.print_cards(c.players[0].cards)
+	print("Player 2 Cards")
+	CatanPlayer.print_cards(c.players[1].cards)
+	
 	# trades sheep for wood
-	trade_result = c.trade(player_one=0, player_two=1, cards_one=[CatanPlayer.CARD_SHEEP], cards_two=[CatanPlayer.CARD_WOOD, CatanPlayer.CARD_WOOD])
+	trade_result = c.trade(player_one=0, player_two=1, cards_one=[CatanPlayer.CARD_SHEEP], cards_two=[CatanPlayer.CARD_WOOD])
 	
 	if trade_result == CatanStatuses.ALL_GOOD:
 		print("Successfully traded")
-		print("Player One's cards: %s" % c.players[0].cards)
-		print("Player Two's cards: %s" % c.players[1].cards)
 		
 	else:
 		print("Trade Failed with error %s" % trade_result)
 		
-	@static_method
-	def print_cards(cards):
-		
-		print("[")
-		for c in cards:
-			
-			if c == CatanPlayer.CARDS_WOOD:
-				print("Wood")
-			
-			elif c == CatanPlayer.CARDS_SHEEP:
-				print("Sheep")
-				
-			elif c == CatanPlayer.CARDS_BRICK:
-				print("Brick")
-				
-			elif c == CatanPlayer.CARDS_WHEAT:
-				print("Wheat")
-				
-			elif c == CatanPlayer.CARDS_ORE:
-				print("Ore")
-				
-			if cards.index(c) < len(cards) - 1:
-				print(",")
-		
-		print("]")
+	print("Player 1 Cards:")
+	CatanPlayer.print_cards(c.players[0].cards)
+	print("Player 2 Cards")
+	CatanPlayer.print_cards(c.players[1].cards)
