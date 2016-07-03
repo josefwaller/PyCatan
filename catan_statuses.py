@@ -20,3 +20,6 @@ class CatanStatuses:
 	
 	# the building in not connected to any of the player's buildings
 	ERR_ISOLATED = 5
+	
+	# the player is trying to use a harbor they are not connected to
+	ERR_HARBOR = 6

@@ -85,6 +85,7 @@ class CatanPlayer:
 		# otherwise checking if the player has multiple of the same card
 		# will return true with only one card
 		
+		# cards_dup stands for cards duplicate
 		cards_dup = self.cards[:]
 		for c in cards:
 			if cards_dup.count(c) == 0:
@@ -197,10 +198,30 @@ class CatanPlayer:
 		
 		return CatanStatuses.ALL_GOOD
 		
-	def add_card(self, card):
-	
-		self.cards.append(card)
+	# returns an array of all the harbors the player has access to
+	def get_harbors(self):
 		
+		# gets the settlements/cities belonging to this player
+		harbors = []
+		all_harbors = ((self.game).board).harbors
+		building_coords = ((self.game).board).get_buildings()
+		
+		for coords in building_coords:
+			
+			building = (self.game).board.points[coords[0]][coords[1]]
+			
+			# checks the building belongs to this player
+			if building.owner == self.num:
+			
+				# checks if the building is connected to any harbors
+				for h in all_harbors:
+					if h.point_one == coords or h.point_two == coords:
+						# adds the type
+						if harbors.count(h.type) == 0:
+							harbors.append(h.type)
+							
+		return harbors
+	
 	# prints the cards given
 	@staticmethod
 	def print_cards(cards):

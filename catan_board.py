@@ -201,6 +201,7 @@ class CatanBoard:
 		for h in self.harbors:
 			print(h)
 			
+	# gives the players cards for a certain roll
 	def add_yield(self, roll):
 		
 		for r in range(len(self.points)):
@@ -262,7 +263,7 @@ class CatanBoard:
 							# adds the card to the player's inventory
 							owner = self.points[r][i].owner
 							
-							(self.game).players[owner].add_card(self.hexes[num[0]][num[1]])
+							(self.game).players[owner].add_cards([self.hexes[num[0]][num[1]]])
 							
 		
 	# adds a CatanBuilding object to the board
@@ -273,6 +274,17 @@ class CatanBoard:
 	# since roads record their own position and are not in self.points
 	def add_road(self, road):
 		self.roads.append(road)
+		
+	# gets all the buildings on the board
+	def get_buildings(self):
+		
+		buildings = []
+		for r in range(len(self.points)):
+			for i in range(len(self.points[r])):
+				if self.points[r][i] != None:
+					buildings.append([r, i])
+					
+		return buildings
 		
 	# checks if a point on the board is empty
 	def point_is_empty(self, r, i):
