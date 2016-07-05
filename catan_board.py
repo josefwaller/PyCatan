@@ -302,32 +302,75 @@ class CatanBoard:
 		# whether the point has another point directly above or directly below
 		has_point_above = False
 	
+		# half of the last index
+		# if the board has 6 rows, this will be 2.5
+		# so that ceiling/flooring will give the two middle rows
+		half_height = (len(self.points) - 1) / 2
+		
 		# if it is in the top half
-		if r < (len(self.points) - 1) / 2:
+		if r < half_height:
 			
 			# even points have a point below, odd points have one above
 			if i % 2 == 0:
-				has_point_above = False
+				
+				# adds a point below
+				
+				if r == math.floor(half_height):
+					# this connection has the same index because it is crossing over the middle
+					connected_points.append([r + 1, i])
+					
+				else:
+					connected_points.append([r + 1, i + 1])
 			
 			else: 
-				has_point_below = True
+				# adds a point above
+				if r < 0 and i < 0:
+					connected_points.append([r - 1, i - 1])
 			
-		# if it is in the top half	
+		# if it is in the bottom half	
 		else:
-			
 			if i % 2 == 0:
-				has_point_above = True
+				
+				# adds a point above
+			
+				if r == math.ceil(half_height):
+					# same index because it is crossing the middle
+					connected_points.append([r - 1, i])
+					
+				else:
+					connected_points.append([r - 1, i + 1])
 				
 			else:
-				has_point_above = False
-					
-		# gets the point above/below
-		
-		if has_point_above:
-			connected_points.append([r - 1, i])
 			
-		else:
-			connected_points.append([r + 1, i])
+				# adds a point below
+			
+				if r < len(self.points) - 1 and i > 0:
+					connected_points.append([r + 1, i - 1])
+					
+					
+		# # The different in index 
+		# #
+		# #          ABOVE   | BELOW
+		# # TOP    |   -1    |   +1
+		# # BOTTOM |   +1    |   -1
+		
+		# offset = 1
+		
+		# if (r == math.floor(half_height) or r == math.ceil(half_height)) and i % 2 == 0:
+		# 	offset = 0
+		# elif r < half_height:
+		# 	offset = -1
+			
+		# else:
+		# 	offset = 1
+		
+		# # gets the point above/below
+		
+		# if has_point_above:
+		# 	connected_points.append([r - 1, i - offset])
+			
+		# else:
+		# 	connected_points.append([r + 1, i - offset])
 			
 		# gets the adjacent points
 		if i > 0:

@@ -128,6 +128,7 @@ class CatanPlayer:
 		
 		# gets the points connected to start
 		points = (self.game).board.get_connected_points(r=start[0], i=start[1])
+		
 		for p in points:
 			if end == p:
 				connected = True
