@@ -21,12 +21,19 @@ class CatanPlayer:
 		# the player number for this player
 		self.num = num
 		
+		# the starting roads for this player
+		# used to determine the longest road
+		self.starting_roads = []
+		
 		# the number of victory points
 		self.victory_points = 0
 		
 		# the cards the player has
 		# each will be a number corresponding with the static variables CARD_<type>
 		self.cards = []
+		
+		# the longest road segment this player has
+		self.longest_road_length = 0
 		
 	def build_settlement (self, settle_r, settle_i):
 	
@@ -114,10 +121,11 @@ class CatanPlayer:
 				del self.cards[index]
 			
 	# builds a road
-	def build_road(self, start, end):
+	def build_road(self, start, end, is_starting=False):
 	
 		# checks the two points are connected
 		connected = False
+		
 		# gets the points connected to start
 		points = (self.game).board.get_connected_points(r=start[0], i=start[1])
 		for p in points:
@@ -173,28 +181,39 @@ class CatanPlayer:
 		if not is_connected:
 			return CatanStatuses.ERR_ISOLATED
 			
-		# checks that it has the proper cards
-		cards_needed = [
-			self.CARD_WOOD,
-			self.CARD_BRICK
-		]
+		# if the road is being created on the starting turn, the player does not needed
+		# to have the cards
+		if not is_starting:
 		
-		card_indexes = []
-		
-		for i in range(len(cards_needed)):
-			if self.cards.count(cards_needed[i]) < 1:
-				return CatanStatuses.ERR_CARDS
-				
-			else:
-				card_indexes.append(i)
+			# checks that it has the proper cards
+			cards_needed = [
+				self.CARD_WOOD,
+				self.CARD_BRICK
+			]
+			
+			card_indexes = []
+			
+			for i in range(len(cards_needed)):
+				if self.cards.count(cards_needed[i]) < 1:
+					return CatanStatuses.ERR_CARDS
 					
-		# removes the cards
-		card_indexes.sort(reverse=True)
-		for i in card_indexes:
-			del self.cards[i]
+				else:
+					card_indexes.append(i)
+						
+			# removes the cards
+			card_indexes.sort(reverse=True)
+			for i in card_indexes:
+				del self.cards[i]
 		
 		# adds the road
-		(self.game).board.add_road(CatanBuilding(owner=self.num, type=CatanBuilding.BUILDING_ROAD, point_one=start, point_two=end))
+		road = CatanBuilding(owner=self.num, type=CatanBuilding.BUILDING_ROAD, point_one=start, point_two=end)
+		(self.game).board.add_road(road)
+		
+		# records the road if it is a starting road
+		if is_starting:
+			self.starting_roads.append(road)
+		
+		self.get_longest_road(new_road=road)
 		
 		return CatanStatuses.ALL_GOOD
 		
@@ -221,6 +240,84 @@ class CatanPlayer:
 							harbors.append(h.type)
 							
 		return harbors
+	
+	# gets the longest road segment this player has which includes the road given
+	# should be called whenever a new road is build
+	# since this player's longest road will only change if a new road is build
+	def get_longest_road(self, new_road):
+		
+		# gets the roads that belong to this player
+		roads = self.get_roads()
+		
+		del roads[roads.index(new_road)]
+		# checks for longest road
+		self.check_connected_roads(road=new_road, all_roads=roads, length=1)
+	
+	# checks the roads for connected roads, and then checks those roads until there are no more
+	def check_connected_roads(self, road, all_roads, length):
+		
+		# do both point one and two
+		points = [
+			road.point_one,
+			road.point_two
+		]
+		
+		for p in points:
+		
+			# gets the connected roads
+			connected = self.get_connected_roads(point=p, roads=all_roads)
+			
+			# if there are no new connected roads
+			if len(connected) == 0:
+			
+				# if this is the longest road so far
+				if length > self.longest_road_length:
+					# records the length
+					self.longest_road_length = length
+					# self.begin_celebration()
+					
+			# if there are connected roads
+			else:
+				
+				# check each of them for connections if they have not been used
+				for c in connected:
+					
+					# checks it hasn't used this road before
+					if all_roads.count(c) > 0:
+					
+						# copies all usable roads	
+						c_roads = all_roads[:]
+						
+						# removes this road from them
+						del c_roads[c_roads.index(c)]
+						
+						# checks for connected roads to this road
+						self.check_connected_roads(c, c_roads, length + 1)
+					
+	# returns which roads in the roads array are connected to the point
+	def get_connected_roads(self, point, roads):	
+		
+		con_roads = []
+		
+		for r in roads:
+			if r.point_one == point or r.point_two == point:
+				con_roads.append(r)
+	
+		return con_roads
+	
+	# returns an array of all the roads belonging to this player
+	def get_roads(self):
+		
+		# gets all the roads on the board
+		all_roads = (self.game).board.roads
+		
+		# filters out roads that do not belong to this player
+		roads = []
+		for r in all_roads:
+			if r.owner == self.num:
+				roads.append(r)
+				
+		return roads
 	
 	# prints the cards given
 	@staticmethod

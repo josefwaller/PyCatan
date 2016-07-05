@@ -7,12 +7,14 @@ import random
 class CatanGame:
 	
 	# initializes the Catan game
-	def __init__(self, num_of_players):
+	def __init__(self, num_of_players, on_win):
 		
 		# creates a board
-		self.board = CatanBoard(self);
+		self.board = CatanBoard(game=self);
 		
 		self.players = []
+		
+		self.on_win = on_win
 		
 		# creates players
 		for i in range(num_of_players):
@@ -95,6 +97,22 @@ class CatanGame:
 		
 		return CatanStatuses.ALL_GOOD
 		
+	# gives the longest road to the correct player
+	def set_longest_road(self):
+		
+		longest = 0
+		owner = None
+		
+		for p in self.players:
+			
+			if p.longest_road_length > longest and p.longest_road_length > 4:
+				
+				longest = p.longest_road_length
+				
+				owner = self.players.index(p)
+				
+		return owner
+		
 	# simulates 2 dice rolling
 	def get_roll(self):
 		return round(random.random() * 6) + round(random.random() * 6)
@@ -102,8 +120,11 @@ class CatanGame:
 # creates a new game for debugging
 if __name__ == "__main__":
 
+	def win(player):
+		print("Player %s wins!" % player)
+		
 	# creates a new game with three players
-	c = CatanGame(num_of_players=3)
+	c = CatanGame(num_of_players=6, on_win=win)
 	
 	# gives the first player settlement cards
 	(c.players[0]).add_cards([
@@ -191,10 +212,10 @@ if __name__ == "__main__":
 		CatanPlayer.CARD_BRICK
 	])
 	
-	'''
-	print("Player 3's cards before:")
-	CatanPlayer.print_cards(c.players[2].cards)
-	'''
+	
+	# print("Player 3's cards before:")
+	# CatanPlayer.print_cards(c.players[2].cards)
+	
 	
 	# has player 3 exchange them into the bank
 	stat = c.trade_to_bank(player=2, cards=[
@@ -228,13 +249,42 @@ if __name__ == "__main__":
 		harbor_type
 	])
 	
-	CatanPlayer.print_cards(c.players[2].cards)
 	
 	# has player 3 trade in 2 wood for 1 brick
 	status = c.trade_to_bank(player=2, cards=[
 		harbor_type,
 		harbor_type
 	], request=CatanPlayer.CARD_BRICK)
-	print("Using harbor to trade is %s" % status)
-	print(c.players[2].get_harbors())
-	CatanPlayer.print_cards((c.players[2]).cards)
+	
+	# gives player 4 a settlement
+	(c.players[4]).add_cards([
+		CatanPlayer.CARD_WOOD,
+		CatanPlayer.CARD_BRICK,
+		CatanPlayer.CARD_WHEAT,
+		CatanPlayer.CARD_SHEEP
+	])
+	
+	status = c.add_settlement(player=4, r=4, i=0)
+	
+	if status != CatanStatuses.ALL_GOOD:
+		print("Failed to build settlement with code %s" % status)
+	
+	# gives player 4 a six long road segment
+	for i in range(6):
+		(c.players[4]).add_cards([
+			CatanPlayer.CARD_WOOD,
+			CatanPlayer.CARD_BRICK
+		])
+		
+		status = c.add_road(player=4, start=[4, i], end=[4, i + 1])
+	
+		if status != CatanStatuses.ALL_GOOD:
+			print("Exited with status %s on loop %s" % (status, i))
+	
+	# prints player 4's longest road
+	print("Printing Player 4's longest road")
+	print((c.players[4]).longest_road_length)
+	
+	# prints the longest road owner
+	print("The longest road belongs to player:")
+	print(c.set_longest_road())
