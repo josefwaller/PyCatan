@@ -46,6 +46,10 @@ class CatanBoard:
 		# the locations of the harbors
 		self.harbors = []
 		
+		# the location of the robber
+		# going r, i
+		self.robber = []
+		
 		# creates a new PrettyPrinter for debugging
 		p = pprint.PrettyPrinter()
 		
@@ -201,6 +205,14 @@ class CatanBoard:
 		for h in self.harbors:
 			print(h)
 			
+		# puts the robber on the desert hex to start
+		
+		for r in range(len(self.hexes)):
+			# checks if this row has the desert
+			if self.hexes[r].count(CatanBoard.HEX_DESERT) > 0:
+				# places the robber
+				self.robber = [r, self.hexes[r].index(CatanBoard.HEX_DESERT)]
+			
 	# gives the players cards for a certain roll
 	def add_yield(self, roll):
 		
@@ -258,6 +270,13 @@ class CatanBoard:
 					
 					# checks if any hexes have the right number
 					for num in hex_indexes:
+					
+						# makes sure the robber isn't there
+						if self.robber[0] == num[0] and self.robber[1] == num[1]:
+							
+							# skips this hex
+							continue
+					
 						if self.hex_nums[num[0]][num[1]] == roll:
 							
 							# adds the card to the player's inventory
@@ -286,6 +305,10 @@ class CatanBoard:
 					
 		return buildings
 		
+	# moves the robber to a givne coord
+	def move_robber(self, r, i):
+		self.robber = [r, i]
+	
 	# checks if a point on the board is empty
 	def point_is_empty(self, r, i):
 		

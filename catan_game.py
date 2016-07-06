@@ -60,6 +60,10 @@ class CatanGame:
 			
 			return CatanStatuses.ALL_GOOD
 	
+	# moves the robber
+	def move_robber(self, r, i):
+		self.board.move_robber(r, i)
+	
 	# trades cards from a player to the bank
 	# either by 4 for 1 or using a harbor
 	def trade_to_bank(self, player, cards, request):
@@ -327,3 +331,20 @@ if __name__ == "__main__":
 	
 	print("Longest road owner is now %s" % c.set_longest_road())
 	print("Player 5's longest road is %s" % (c.players[5]).longest_road_length)
+	
+	(c.players[1]).add_cards([
+		CatanPlayer.CARD_WOOD,
+		CatanPlayer.CARD_WHEAT,
+		CatanPlayer.CARD_BRICK,
+		CatanPlayer.CARD_SHEEP
+	])
+	
+	c.add_settlement(player=1, r=1, i=3)
+	
+	c.move_robber(r=0, i=1)
+	print("Player 1 cards before")
+	CatanPlayer.print_cards((c.players[1]).cards)
+	
+	c.add_yield_for_roll(3)
+	print("Player 1 cards after")
+	CatanPlayer.print_cards((c.players[1]).cards)
