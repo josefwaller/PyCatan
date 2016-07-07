@@ -23,3 +23,12 @@ class CatanStatuses:
 	
 	# the player is trying to use a harbor they are not connected to
 	ERR_HARBOR = 6
+	
+	# the player is trying to use a building that does not exist
+	ERR_NOT_EXIST = 7
+	
+	# the player is trying to use a building that does not belong to them
+	ERR_BAD_OWNER = 8
+	
+	# the player is trying to build a city on another city rather than a settlement
+	ERR_UPGRADE_CITY = 9

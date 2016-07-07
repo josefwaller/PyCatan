@@ -48,3 +48,5 @@ Temporary Items
 
 # Manually added stuff below this ------------------------------------------
 __pycache__/
+.vscode/
+todo.txt

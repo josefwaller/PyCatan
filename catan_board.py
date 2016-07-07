@@ -1,4 +1,7 @@
 from catan_harbor import CatanHarbor
+from catan_player import CatanPlayer
+from catan_statuses import CatanStatuses
+from catan_building import CatanBuilding
 
 # used to shuffle the deck of hexes
 import random
@@ -282,8 +285,19 @@ class CatanBoard:
 							# adds the card to the player's inventory
 							owner = self.points[r][i].owner
 							
-							(self.game).players[owner].add_cards([self.hexes[num[0]][num[1]]])
+							card_type = self.hexes[num[0]][num[1]]
+							# adds two if it is a city
+							if self.points[r][i].type == CatanBuilding.BUILDING_CITY:
+								(self.game).players[owner].add_cards([
+									card_type,
+									card_type
+								])
 							
+							else:
+								(self.game).players[owner].add_cards([
+									card_type
+								])
+								
 		
 	# adds a CatanBuilding object to the board
 	def add_building(self, building, r, i):
@@ -294,6 +308,39 @@ class CatanBoard:
 	def add_road(self, road):
 		self.roads.append(road)
 		
+	# upgrades an existing settlement to a city
+	def upgrade_settlement(self, player, r, i):
+		
+		# checks there is a settlement at r, i which is controlled by the player
+		if self.points[r][i] == None:
+			return CatanStatuses.ERR_NOT_EXIST
+			
+		elif self.points[r][i].owner != player:
+			return CatanStatuses.ERR_BAD_OWNER
+
+		# checks it is a settlement and not a city
+		elif self.points[r][i].type != CatanBuilding.BUILDING_SETTLEMENT:
+			return CatanStatuses.ERR_UPGRADE_CITY		
+
+		# checks the player has the cards
+		needed_cards = [
+			CatanPlayer.CARD_WHEAT,
+			CatanPlayer.CARD_WHEAT,
+			CatanPlayer.CARD_ORE,
+			CatanPlayer.CARD_ORE,
+			CatanPlayer.CARD_ORE
+		]
+		if not (self.game).players[player].has_cards(needed_cards):
+			return CatanStatuses.ERR_CARDS
+			
+		# removes the cards
+		(self.game).players[player].remove_cards(needed_cards)
+		
+		# changes the settlement to a city
+		self.points[r][i].type = CatanBuilding.BUILDING_CITY
+
+		return CatanStatuses.ALL_GOOD
+
 	# gets all the buildings on the board
 	def get_buildings(self):
 		

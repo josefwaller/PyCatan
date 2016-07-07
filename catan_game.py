@@ -118,6 +118,10 @@ class CatanGame:
 				
 		return owner
 		
+	def add_city(self, player, r, i):
+	
+		return self.board.upgrade_settlement(player, r, i)
+		
 	# simulates 2 dice rolling
 	def get_roll(self):
 		return round(random.random() * 6) + round(random.random() * 6)
@@ -348,3 +352,24 @@ if __name__ == "__main__":
 	c.add_yield_for_roll(3)
 	print("Player 1 cards after")
 	CatanPlayer.print_cards((c.players[1]).cards)
+	
+	# moves the robber away
+	c.move_robber(r=0, i=0)
+	
+	# gives player 1 a city
+	(c.players[1]).add_cards([
+		CatanPlayer.CARD_WHEAT,
+		CatanPlayer.CARD_WHEAT,
+		CatanPlayer.CARD_ORE,
+		CatanPlayer.CARD_ORE,
+		CatanPlayer.CARD_ORE
+	])
+	
+	status = c.add_city(player=1, r=1, i=3)
+	print("Status for upgrading a city is %s. Cards are below:" % status)
+	CatanPlayer.print_cards(c.players[1].cards)
+	
+	# checks the city gives twice the nubmer of cards
+	c.add_yield_for_roll(3)
+	
+	CatanPlayer.print_cards(c.players[1].cards)
