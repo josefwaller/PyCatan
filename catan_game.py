@@ -1,6 +1,7 @@
 from catan_board import CatanBoard
 from catan_player import CatanPlayer
 from catan_statuses import CatanStatuses
+from catan_cards import CatanCards
 
 import random
 import math
@@ -13,14 +14,28 @@ class CatanGame:
 		# creates a board
 		self.board = CatanBoard(game=self);
 		
-		self.players = []
-		
-		self.on_win = on_win
-		
 		# creates players
+		self.players = []
 		for i in range(num_of_players):
 			self.players.append(CatanPlayer(num=i, game=self))
 		
+		self.on_win = on_win
+		
+		# creates a new Developement deck
+		self.dev_deck = []
+		for i in range(14):
+			
+			if i < 2:
+				self.dev_deck.append(CatanCards.DEV_ROAD)
+				self.dev_deck.append(CatanCards.DEV_MONOPOLY)
+				self.dev_deck.append(CatanCards.DEV_YOP)
+				
+			if i < 5:
+				self.dev_deck.append(CatanCards.DEV_VP)
+				
+			self.dev_deck.append(CatanCards.DEV_KNIGHT)
+			
+		# random.shuffle(self.dev_deck)
 	
 	# creates a new settlement belong to the player at the coodinates
 	def add_settlement(self, player, r, i):
@@ -33,6 +48,31 @@ class CatanGame:
 		
 		return self.players[player].build_road(start=start, end=end)
 			
+	# builds a new developement cards for the player
+	def build_dev(self, player):
+		
+		# makes sure there is still at least one development card left
+		if len(self.dev_deck) < 1:
+			return CatanStatuses.ERR_DECK
+			
+		# makes sure the player has the right cards
+		needed_cards = [
+			CatanCards.CARD_WHEAT,
+			CatanCards.CARD_ORE,
+			CatanCards.CARD_SHEEP
+		]
+		if not self.players[player].has_cards(needed_cards):
+			return CatanStatuses.ERR_CARDS
+			
+		# removes the cards
+		self.players[player].remove_cards(needed_cards)
+		
+		# gives the player a dev card
+		self.players[player].add_dev_card(self.dev_deck[0])
+		
+		# removes that dev card from the deck
+		del self.dev_deck[0]
+	
 	# gives players the proper cards for a given roll
 	def add_yield_for_roll(self, roll):
 	
@@ -118,6 +158,7 @@ class CatanGame:
 				
 		return owner
 		
+	# changes a settlement on the board for a city
 	def add_city(self, player, r, i):
 	
 		return self.board.upgrade_settlement(player, r, i)
@@ -137,10 +178,10 @@ if __name__ == "__main__":
 	
 	# # gives the first player settlement cards
 	# (c.players[0]).add_cards([
-	# 	CatanPlayer.CARD_WOOD,
-	# 	CatanPlayer.CARD_BRICK,
-	# 	CatanPlayer.CARD_WHEAT,
-	# 	CatanPlayer.CARD_SHEEP
+	# 	CatanCards.CARD_WOOD,
+	# 	CatanCards.CARD_BRICK,
+	# 	CatanCards.CARD_WHEAT,
+	# 	CatanCards.CARD_SHEEP
 	# ])
 	
 	# # gets the first player to build a settlement
@@ -151,8 +192,8 @@ if __name__ == "__main__":
 	
 	# # adds cards for a road
 	# (c.players[0]).add_cards([
-	# 	CatanPlayer.CARD_WOOD,
-	# 	CatanPlayer.CARD_BRICK
+	# 	CatanCards.CARD_WOOD,
+	# 	CatanCards.CARD_BRICK
 	# ])
 	
 	# # builds a road
@@ -160,10 +201,10 @@ if __name__ == "__main__":
 	
 	# # gives the second player cards to build a settlement
 	# (c.players[1]).add_cards([
-	# 	CatanPlayer.CARD_WOOD,
-	# 	CatanPlayer.CARD_BRICK,
-	# 	CatanPlayer.CARD_WHEAT,
-	# 	CatanPlayer.CARD_SHEEP
+	# 	CatanCards.CARD_WOOD,
+	# 	CatanCards.CARD_BRICK,
+	# 	CatanCards.CARD_WHEAT,
+	# 	CatanCards.CARD_SHEEP
 	# ])
 	
 	# # the second player tries to build a settlement on the first player's
@@ -187,10 +228,10 @@ if __name__ == "__main__":
 	# 	print("Error with building Settlement on top of another: %s" % stat)
 		
 	# # gives player 1 a sheep
-	# (c.players[0]).add_cards([CatanPlayer.CARD_SHEEP])
+	# (c.players[0]).add_cards([CatanCards.CARD_SHEEP])
 	
 	# # gives player 2 a wood
-	# (c.players[1]).add_cards([CatanPlayer.CARD_WOOD])
+	# (c.players[1]).add_cards([CatanCards.CARD_WOOD])
 	
 	# # prints the cards
 	# print("Player 1 Cards:")
@@ -199,7 +240,7 @@ if __name__ == "__main__":
 	# CatanPlayer.print_cards(c.players[1].cards)
 	
 	# # trades sheep for wood
-	# trade_result = c.trade(player_one=0, player_two=1, cards_one=[CatanPlayer.CARD_SHEEP], cards_two=[CatanPlayer.CARD_WOOD])
+	# trade_result = c.trade(player_one=0, player_two=1, cards_one=[CatanCards.CARD_SHEEP], cards_two=[CatanCards.CARD_WOOD])
 	
 	# if trade_result == CatanStatuses.ALL_GOOD:
 	# 	print("Successfully traded")
@@ -215,10 +256,10 @@ if __name__ == "__main__":
 	
 	# # gives player 3 four brick cards
 	# (c.players[2]).add_cards(cards=[
-	# 	CatanPlayer.CARD_BRICK,
-	# 	CatanPlayer.CARD_BRICK,
-	# 	CatanPlayer.CARD_BRICK,
-	# 	CatanPlayer.CARD_BRICK
+	# 	CatanCards.CARD_BRICK,
+	# 	CatanCards.CARD_BRICK,
+	# 	CatanCards.CARD_BRICK,
+	# 	CatanCards.CARD_BRICK
 	# ])
 	
 	
@@ -228,11 +269,11 @@ if __name__ == "__main__":
 	
 	# # has player 3 exchange them into the bank
 	# stat = c.trade_to_bank(player=2, cards=[
-	# 	CatanPlayer.CARD_BRICK,
-	# 	CatanPlayer.CARD_BRICK,
-	# 	CatanPlayer.CARD_BRICK,
-	# 	CatanPlayer.CARD_BRICK
-	# ], request=CatanPlayer.CARD_WOOD)
+	# 	CatanCards.CARD_BRICK,
+	# 	CatanCards.CARD_BRICK,
+	# 	CatanCards.CARD_BRICK,
+	# 	CatanCards.CARD_BRICK
+	# ], request=CatanCards.CARD_WOOD)
 	
 	# print("Trading 4 to bank is %s" % stat)
 	# print("Printing Player 3's cards'")
@@ -240,10 +281,10 @@ if __name__ == "__main__":
 	
 	# # gives player 3 a settlement on a harbor
 	# (c.players[2]).add_cards(cards=[
-	# 	CatanPlayer.CARD_WOOD,
-	# 	CatanPlayer.CARD_BRICK,
-	# 	CatanPlayer.CARD_WHEAT,
-	# 	CatanPlayer.CARD_SHEEP
+	# 	CatanCards.CARD_WOOD,
+	# 	CatanCards.CARD_BRICK,
+	# 	CatanCards.CARD_WHEAT,
+	# 	CatanCards.CARD_SHEEP
 	# ])
 	# stat = c.add_settlement(player=2, r=0, i=0)
 	
@@ -263,14 +304,14 @@ if __name__ == "__main__":
 	# status = c.trade_to_bank(player=2, cards=[
 	# 	harbor_type,
 	# 	harbor_type
-	# ], request=CatanPlayer.CARD_BRICK)
+	# ], request=CatanCards.CARD_BRICK)
 	
 	# gives player 4 a settlement
 	(c.players[4]).add_cards([
-		CatanPlayer.CARD_WOOD,
-		CatanPlayer.CARD_BRICK,
-		CatanPlayer.CARD_WHEAT,
-		CatanPlayer.CARD_SHEEP
+		CatanCards.CARD_WOOD,
+		CatanCards.CARD_BRICK,
+		CatanCards.CARD_WHEAT,
+		CatanCards.CARD_SHEEP
 	])
 	
 	status = c.add_settlement(player=4, r=3, i=0)
@@ -280,8 +321,8 @@ if __name__ == "__main__":
 	# gives player 4 a six long road segment
 	for i in range(6):
 		(c.players[4]).add_cards([
-			CatanPlayer.CARD_WOOD,
-			CatanPlayer.CARD_BRICK
+			CatanCards.CARD_WOOD,
+			CatanCards.CARD_BRICK
 		])
 		
 		status = c.add_road(player=4, start=[3, i], end=[3, i + 1])
@@ -299,10 +340,10 @@ if __name__ == "__main__":
 	
 	# gives player 5 a settlement
 	(c.players[5]).add_cards([
-		CatanPlayer.CARD_WOOD,
-		CatanPlayer.CARD_BRICK,
-		CatanPlayer.CARD_WHEAT,
-		CatanPlayer.CARD_SHEEP
+		CatanCards.CARD_WOOD,
+		CatanCards.CARD_BRICK,
+		CatanCards.CARD_WHEAT,
+		CatanCards.CARD_SHEEP
 	])
 	
 	stat = c.add_settlement(player=5, r=4, i=2)
@@ -312,8 +353,8 @@ if __name__ == "__main__":
 	points = []
 	for count in range(10):
 		(c.players[5]).add_cards([
-			CatanPlayer.CARD_WOOD,
-			CatanPlayer.CARD_BRICK
+			CatanCards.CARD_WOOD,
+			CatanCards.CARD_BRICK
 		])
 		
 		r = math.floor(count / 5) + 4
@@ -337,10 +378,10 @@ if __name__ == "__main__":
 	print("Player 5's longest road is %s" % (c.players[5]).longest_road_length)
 	
 	(c.players[1]).add_cards([
-		CatanPlayer.CARD_WOOD,
-		CatanPlayer.CARD_WHEAT,
-		CatanPlayer.CARD_BRICK,
-		CatanPlayer.CARD_SHEEP
+		CatanCards.CARD_WOOD,
+		CatanCards.CARD_WHEAT,
+		CatanCards.CARD_BRICK,
+		CatanCards.CARD_SHEEP
 	])
 	
 	c.add_settlement(player=1, r=1, i=3)
@@ -358,11 +399,11 @@ if __name__ == "__main__":
 	
 	# gives player 1 a city
 	(c.players[1]).add_cards([
-		CatanPlayer.CARD_WHEAT,
-		CatanPlayer.CARD_WHEAT,
-		CatanPlayer.CARD_ORE,
-		CatanPlayer.CARD_ORE,
-		CatanPlayer.CARD_ORE
+		CatanCards.CARD_WHEAT,
+		CatanCards.CARD_WHEAT,
+		CatanCards.CARD_ORE,
+		CatanCards.CARD_ORE,
+		CatanCards.CARD_ORE
 	])
 	
 	status = c.add_city(player=1, r=1, i=3)
@@ -373,3 +414,14 @@ if __name__ == "__main__":
 	c.add_yield_for_roll(3)
 	
 	CatanPlayer.print_cards(c.players[1].cards)
+	
+	# gives player 1 a developement card
+	(c.players[1]).add_cards([
+		CatanCards.CARD_WHEAT,
+		CatanCards.CARD_ORE,
+		CatanCards.CARD_SHEEP
+	])
+	
+	c.build_dev(player=1)
+	
+	print(c.players[1].dev_cards)

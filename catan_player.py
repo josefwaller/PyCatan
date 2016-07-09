@@ -1,17 +1,11 @@
 from catan_building import CatanBuilding
 from catan_statuses import CatanStatuses
+from catan_cards import CatanCards
 
 import math
 
 # The player class for Catan
 class CatanPlayer:
-
-	# the different types of cards
-	CARD_WOOD = 0
-	CARD_BRICK = 1
-	CARD_ORE = 2
-	CARD_SHEEP = 3
-	CARD_WHEAT = 4
 	
 	def __init__ (self, game, num):
 	
@@ -32,17 +26,21 @@ class CatanPlayer:
 		# each will be a number corresponding with the static variables CARD_<type>
 		self.cards = []
 		
+		# the development cards this player has
+		self.dev_cards = []
+		
 		# the longest road segment this player has
 		self.longest_road_length = 0
-		
+	
+	# builds a settlement belonging to this player	
 	def build_settlement (self, settle_r, settle_i):
 	
 		# makes sure the player has the cards to build a settlements
 		cards_needed = [
-			self.CARD_WOOD,
-			self.CARD_BRICK,
-			self.CARD_SHEEP,
-			self.CARD_WHEAT
+			CatanCards.CARD_WOOD,
+			CatanCards.CARD_BRICK,
+			CatanCards.CARD_SHEEP,
+			CatanCards.CARD_WHEAT
 		]
 		
 		# the indexes of the cards needed
@@ -103,11 +101,13 @@ class CatanPlayer:
 				
 		return True
 	
+	# adds some cards to a player's hand
 	def add_cards(self, cards):
 		
 		for c in cards:
 			self.cards.append(c)
-			
+		
+	# removes cards from a player's hand	
 	def remove_cards(self, cards):
 	
 		# makes sure it has all the cards before deleting any
@@ -120,6 +120,9 @@ class CatanPlayer:
 				index = self.cards.index(c)
 				del self.cards[index]
 			
+	#adds a development card
+	def add_dev_card(self, dev_card):
+		self.dev_cards.append(dev_card)
 	# builds a road
 	def build_road(self, start, end, is_starting=False):
 	
@@ -188,8 +191,8 @@ class CatanPlayer:
 		
 			# checks that it has the proper cards
 			cards_needed = [
-				self.CARD_WOOD,
-				self.CARD_BRICK
+				CatanCards.CARD_WOOD,
+				CatanCards.CARD_BRICK
 			]
 			
 			card_indexes = []
@@ -329,19 +332,19 @@ class CatanPlayer:
 			
 			card_name = ""
 			
-			if c == CatanPlayer.CARD_WOOD:
+			if c == CatanCards.CARD_WOOD:
 				card_name = "Wood"
 			
-			elif c == CatanPlayer.CARD_SHEEP:
+			elif c == CatanCards.CARD_SHEEP:
 				card_name = "Sheep"
 				
-			elif c == CatanPlayer.CARD_BRICK:
+			elif c == CatanCards.CARD_BRICK:
 				card_name = "Brick"
 				
-			elif c == CatanPlayer.CARD_WHEAT:
+			elif c == CatanCards.CARD_WHEAT:
 				card_name = "Wheat"
 				
-			elif c == CatanPlayer.CARD_ORE:
+			elif c == CatanCards.CARD_ORE:
 				card_name = "Ore"
 			
 			else:

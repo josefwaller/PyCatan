@@ -2,6 +2,7 @@ from catan_harbor import CatanHarbor
 from catan_player import CatanPlayer
 from catan_statuses import CatanStatuses
 from catan_building import CatanBuilding
+from catan_cards import CatanCards
 
 # used to shuffle the deck of hexes
 import random
@@ -324,11 +325,11 @@ class CatanBoard:
 
 		# checks the player has the cards
 		needed_cards = [
-			CatanPlayer.CARD_WHEAT,
-			CatanPlayer.CARD_WHEAT,
-			CatanPlayer.CARD_ORE,
-			CatanPlayer.CARD_ORE,
-			CatanPlayer.CARD_ORE
+			CatanCards.CARD_WHEAT,
+			CatanCards.CARD_WHEAT,
+			CatanCards.CARD_ORE,
+			CatanCards.CARD_ORE,
+			CatanCards.CARD_ORE
 		]
 		if not (self.game).players[player].has_cards(needed_cards):
 			return CatanStatuses.ERR_CARDS
@@ -424,24 +425,6 @@ class CatanBoard:
 		# # TOP    |   -1    |   +1
 		# # BOTTOM |   +1    |   -1
 		
-		# offset = 1
-		
-		# if (r == math.floor(half_height) or r == math.ceil(half_height)) and i % 2 == 0:
-		# 	offset = 0
-		# elif r < half_height:
-		# 	offset = -1
-			
-		# else:
-		# 	offset = 1
-		
-		# # gets the point above/below
-		
-		# if has_point_above:
-		# 	connected_points.append([r - 1, i - offset])
-			
-		# else:
-		# 	connected_points.append([r + 1, i - offset])
-			
 		# gets the adjacent points
 		if i > 0:
 			connected_points.append([r, i - 1])

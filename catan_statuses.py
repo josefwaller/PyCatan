@@ -32,3 +32,6 @@ class CatanStatuses:
 	
 	# the player is trying to build a city on another city rather than a settlement
 	ERR_UPGRADE_CITY = 9
+	
+	# there are not enough cards in the deck to perform this action
+	ERR_DECK = 10
