@@ -2,6 +2,7 @@ from catan_board import CatanBoard
 from catan_player import CatanPlayer
 from catan_statuses import CatanStatuses
 from catan_cards import CatanCards
+from catan_building import CatanBuilding
 
 import random
 import math
@@ -163,6 +164,97 @@ class CatanGame:
 	
 		return self.board.upgrade_settlement(player, r, i)
 		
+	# uses a developement card
+	def use_dev_card(self, player, card, args):
+		
+		# checks the player has the development card
+		if not self.players[player].has_dev_cards([card]):
+			return CatanStatuses.ERR_CARDS
+		
+		if card == CatanCards.DEV_ROAD:	
+			
+			# checks the correct arguments are given
+			road_names = [
+				"road_one",
+				"road_two"
+			]	
+			for r in road_names:
+				if not r in args:
+					return CatanStatuses.ERR_INPUT
+					
+				else:
+					if not "start" in args[r] or not "end" in args[r]:
+						return CatanStatuses.ERR_INPUT
+						
+			# checks the road location is valid
+			
+			# whether the other road is completely isolated but is connected to this road
+			other_road_is_isolated = False
+			
+			for r in road_names:
+
+				location_status = self.players[player].road_location_is_valid(args[r]['start'], args[r]['end'])
+				
+				# if the road location is not OK
+				# since the player can build two roads, some 
+				# locations that would be invalid are valid depending on the other road location
+				if not location_status == CatanStatuses.ALL_GOOD:
+				
+					# checks if it is isolated, but would be connected to the other road
+					if location_status == CatanStatuses.ERR_ISOLATED:
+						
+						# if the other road is also isolated, just return an error
+						if other_road_is_isolated:
+							return location_status
+						
+						# checks if the two roads are connected 
+						# (since the other one is connected, this road is connected through it)
+						road_points = [
+							"start",
+							"end"
+						]
+						roads_are_connected = False
+						for p_one in road_points:
+							for p_two in road_points:
+								if args["road_one"][p_one] == args['road_two'][p_two]:
+									other_road_is_isolated = True
+									
+									# doesn't return an isolated error
+									roads_are_connected = True
+						
+						if not roads_are_connected:			
+							return location_status
+					else:
+						return location_status
+				
+			# builds the roads
+			for r in road_names:
+				self.board.add_road(CatanBuilding(point_one=args[r]["start"], point_two=args[r]["end"], owner=player, type=CatanBuilding.BUILDING_ROAD))	
+				
+			return CatanStatuses.ALL_GOOD
+			
+		elif card == CatanCards.DEV_KNIGHT:
+			pass
+			
+		elif card == CatanCards.DEV_MONOPOLY:
+			pass
+			
+		elif card == CatanCards.DEV_VP:
+			pass
+			
+		elif card == CatanCards.DEV_YOP:
+			pass
+			
+		else:
+			# error here
+			pass
+		
+		# applies the action
+		
+		# removes the card
+		
+		return CatanStatuses.ALL_GOOD
+		
 	# simulates 2 dice rolling
 	def get_roll(self):
 		return round(random.random() * 6) + round(random.random() * 6)
@@ -175,136 +267,6 @@ if __name__ == "__main__":
 		
 	# creates a new game with three players
 	c = CatanGame(num_of_players=6, on_win=win)
-	
-	# # gives the first player settlement cards
-	# (c.players[0]).add_cards([
-	# 	CatanCards.CARD_WOOD,
-	# 	CatanCards.CARD_BRICK,
-	# 	CatanCards.CARD_WHEAT,
-	# 	CatanCards.CARD_SHEEP
-	# ])
-	
-	# # gets the first player to build a settlement
-	# print("Settlement status is: %s" % (c.add_settlement(player=0, r=2, i=2)))
-	
-	# # gets the yield for the new settlement
-	# c.add_yield_for_roll(5)
-	
-	# # adds cards for a road
-	# (c.players[0]).add_cards([
-	# 	CatanCards.CARD_WOOD,
-	# 	CatanCards.CARD_BRICK
-	# ])
-	
-	# # builds a road
-	# c.add_road(player=0, start=[2, 2], end=[2, 3])
-	
-	# # gives the second player cards to build a settlement
-	# (c.players[1]).add_cards([
-	# 	CatanCards.CARD_WOOD,
-	# 	CatanCards.CARD_BRICK,
-	# 	CatanCards.CARD_WHEAT,
-	# 	CatanCards.CARD_SHEEP
-	# ])
-	
-	# # the second player tries to build a settlement on the first player's
-	# stat = c.add_settlement(player=1, r=2, i=2)
-	# if stat == CatanStatuses.ERR_BLOCKED:
-	# 	print("Cannot build a settlement on top of another")
-		
-	# 	# builds one 1 away
-	# 	if c.add_settlement(player=1, r=2, i=1) == CatanStatuses.ERR_BLOCKED:
-	# 		print("Cannot build a settlement one away, sideways")
-			
-	# 		# builds one away, down
-	# 		if c.add_settlement(player=1, r=3, i=2) == CatanStatuses.ERR_BLOCKED:
-	# 			print("Cannot build a settlement one away, striaght down")
-				
-	# 			# builds 2 away
-	# 			if c.add_settlement(player=1, r=2, i=0) == CatanStatuses.ALL_GOOD:
-	# 				print("All Good")
-				
-	# else:
-	# 	print("Error with building Settlement on top of another: %s" % stat)
-		
-	# # gives player 1 a sheep
-	# (c.players[0]).add_cards([CatanCards.CARD_SHEEP])
-	
-	# # gives player 2 a wood
-	# (c.players[1]).add_cards([CatanCards.CARD_WOOD])
-	
-	# # prints the cards
-	# print("Player 1 Cards:")
-	# CatanPlayer.print_cards(c.players[0].cards)
-	# print("Player 2 Cards")
-	# CatanPlayer.print_cards(c.players[1].cards)
-	
-	# # trades sheep for wood
-	# trade_result = c.trade(player_one=0, player_two=1, cards_one=[CatanCards.CARD_SHEEP], cards_two=[CatanCards.CARD_WOOD])
-	
-	# if trade_result == CatanStatuses.ALL_GOOD:
-	# 	print("Successfully traded")
-		
-	# else:
-	# 	print("Trade Failed with error %s" % trade_result)
-		
-	# print("Player 1 Cards:")
-	# CatanPlayer.print_cards(c.players[0].cards)
-	# print("Player 2 Cards")
-	# CatanPlayer.print_cards(c.players[1].cards)
-	
-	
-	# # gives player 3 four brick cards
-	# (c.players[2]).add_cards(cards=[
-	# 	CatanCards.CARD_BRICK,
-	# 	CatanCards.CARD_BRICK,
-	# 	CatanCards.CARD_BRICK,
-	# 	CatanCards.CARD_BRICK
-	# ])
-	
-	
-	# # print("Player 3's cards before:")
-	# # CatanPlayer.print_cards(c.players[2].cards)
-	
-	
-	# # has player 3 exchange them into the bank
-	# stat = c.trade_to_bank(player=2, cards=[
-	# 	CatanCards.CARD_BRICK,
-	# 	CatanCards.CARD_BRICK,
-	# 	CatanCards.CARD_BRICK,
-	# 	CatanCards.CARD_BRICK
-	# ], request=CatanCards.CARD_WOOD)
-	
-	# print("Trading 4 to bank is %s" % stat)
-	# print("Printing Player 3's cards'")
-	# CatanPlayer.print_cards(c.players[2].cards)
-	
-	# # gives player 3 a settlement on a harbor
-	# (c.players[2]).add_cards(cards=[
-	# 	CatanCards.CARD_WOOD,
-	# 	CatanCards.CARD_BRICK,
-	# 	CatanCards.CARD_WHEAT,
-	# 	CatanCards.CARD_SHEEP
-	# ])
-	# stat = c.add_settlement(player=2, r=0, i=0)
-	
-	# print("Player 3 build settlement is %s" % stat)
-	
-	# # gets the type of harbor next to the new settlement
-	# harbor_type = c.players[2].get_harbors()[0]
-	
-	# # gives player 3 two cards of the harbor type
-	# (c.players[2]).add_cards(cards=[
-	# 	harbor_type,
-	# 	harbor_type
-	# ])
-	
-	
-	# # has player 3 trade in 2 wood for 1 brick
-	# status = c.trade_to_bank(player=2, cards=[
-	# 	harbor_type,
-	# 	harbor_type
-	# ], request=CatanCards.CARD_BRICK)
 	
 	# gives player 4 a settlement
 	(c.players[4]).add_cards([
@@ -362,8 +324,6 @@ if __name__ == "__main__":
 		i = int(5 - math.fabs(count - 4))
 		
 		points.append([r, i])
-			
-	print(points)
 	
 	for index in range(len(points)):
 	
@@ -425,3 +385,20 @@ if __name__ == "__main__":
 	c.build_dev(player=1)
 	
 	print(c.players[1].dev_cards)
+	
+	build_res = c.use_dev_card(player=1, card=CatanCards.DEV_ROAD, args={
+		"road_one": {
+			"start": [1, 3],
+			"end":	[1, 2]
+		},
+		"road_two": {
+			"start": [1, 2],
+			"end": [1, 1]
+		}
+	})
+	
+	if build_res == CatanStatuses.ALL_GOOD:
+		print("Successfully used a build road dev card")
+		
+	else:
+		print("Build road unsuccessfull with error %s" % build_res)

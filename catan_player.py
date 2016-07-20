@@ -43,19 +43,21 @@ class CatanPlayer:
 			CatanCards.CARD_WHEAT
 		]
 		
-		# the indexes of the cards needed
-		# used to quickly delete them
-		card_indexes = []
+		# # the indexes of the cards needed
+		# # used to quickly delete them
+		# card_indexes = []
 		
-		for i in range(len(cards_needed)):
+		# for i in range(len(cards_needed)):
 			
-			# checks if the card exists
-			if self.cards.count(cards_needed[i]) < 1:
-				return CatanStatuses.ERR_CARDS
+		# 	# checks if the card exists
+		# 	if self.cards.count(cards_needed[i]) < 1:
+		# 		return CatanStatuses.ERR_CARDS
 				
-			else:
-				# adds the index 
-				card_indexes.append(self.cards.index(cards_needed[i]))
+		# 	else:
+		# 		# adds the index 
+		# 		card_indexes.append(self.cards.index(cards_needed[i]))
+		if not self.has_cards(cards_needed):
+			return CatanStatuses.ERR_CARDS
 		
 		# checks that a building does not already exist there
 		if not (self.game).board.point_is_empty(settle_r, settle_i):
@@ -71,12 +73,8 @@ class CatanPlayer:
 			if p != None:
 				return CatanStatuses.ERR_BLOCKED
 		
-		# sorts in descending order, so that removing cards does not change the index of other cards
-		card_indexes.sort(reverse=True)
-		
 		# removes the cards
-		for i in range(len(card_indexes)):
-			del self.cards[card_indexes[i]]
+		self.remove_cards(cards_needed)
 		
 		# adds the house
 		((self.game).board).add_building(CatanBuilding(owner=self.num, type=CatanBuilding.BUILDING_SETTLEMENT), r=settle_r, i=settle_i)
@@ -123,8 +121,9 @@ class CatanPlayer:
 	#adds a development card
 	def add_dev_card(self, dev_card):
 		self.dev_cards.append(dev_card)
-	# builds a road
-	def build_road(self, start, end, is_starting=False):
+		
+	# checks a road location is valid
+	def road_location_is_valid(self, start, end):
 	
 		# checks the two points are connected
 		connected = False
@@ -136,6 +135,7 @@ class CatanPlayer:
 			if end == p:
 				connected = True
 				break
+				
 		if not connected:
 			return CatanStatuses.ERR_NOT_CON
 			
@@ -185,6 +185,17 @@ class CatanPlayer:
 		if not is_connected:
 			return CatanStatuses.ERR_ISOLATED
 			
+		return CatanStatuses.ALL_GOOD
+			
+	# builds a road
+	def build_road(self, start, end, is_starting=False):
+			
+		# checks the location is valid
+		location_status = self.road_location_is_valid(start=start, end=end)
+		
+		if not location_status == CatanStatuses.ALL_GOOD:
+			return location_status	
+				
 		# if the road is being created on the starting turn, the player does not needed
 		# to have the cards
 		if not is_starting:
@@ -322,6 +333,18 @@ class CatanPlayer:
 				roads.append(r)
 				
 		return roads
+	
+	def has_dev_cards(self, cards):
+		card_duplicate = self.cards[:]
+		
+		for c in cards:
+			if not card_duplicate.count(c) > 0:
+				return False
+			
+			else:
+				del card_duplicate[card_duplicate.index(c)]
+				
+		return True
 	
 	# prints the cards given
 	@staticmethod

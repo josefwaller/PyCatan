@@ -35,3 +35,6 @@ class CatanStatuses:
 	
 	# there are not enough cards in the deck to perform this action
 	ERR_DECK = 10
+	
+	# the input given is missing components/invalid
+	ERR_INPUT = 11
