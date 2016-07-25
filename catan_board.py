@@ -225,52 +225,7 @@ class CatanBoard:
 				
 				if self.points[r][i] != None:
 					
-					# the indexes of he hexes to check
-					hex_indexes = []
-					
-					# gets the adjacent hexes differently depending on whether the point is in the top or the bottom
-					if r < len(self.points) / 2:
-						# gets the hexes below the point ------------------
-						
-						# adds the hexes to the right
-						if i < len(self.points[r]) - 1:
-							hex_indexes.append([r, math.floor(i / 2)])
-						
-						# if the index is even, the number is between two hexes
-						if i % 2 == 0 and i > 0:
-							hex_indexes.append([r, math.floor(i / 2) - 1])
-							
-						# gets the hexes above the point ------------------
-						
-						# gets the hex to the right
-						if i > 0 and i < len(self.points[r]) - 2:
-							hex_indexes.append([r - 1, math.floor((i - 1) / 2)])
-							
-						# gets the hex to the left
-						if i % 2 == 1 and i < len(self.points[r]) - 1 and i > 1:
-							hex_indexes.append([r - 1, math.floor((i - 1) / 2) - 1])
-			
-					else:
-						
-						# adds the below -------------
-						
-						# gets the hex to the right or directly below
-						if i < len(self.points[r]) - 2 and i > 0:
-							hex_indexes.append([r, math.floor((i - 1) / 2)])
-							
-						# gets the hex to the left
-						if i % 2 == 1 and i > 1 and i < len(self.points[r]):
-							hex_indexes.append([r, math.floor((i - 1) / 2 - 1)])
-							
-						# gets the hexes above ------------
-						
-						# gets the hex above and to the right or directly above
-						if i < len(self.points[r]) - 1:
-							hex_indexes.append([r - 1, math.floor(i / 2)])
-							
-						# gets the hex to the left
-						if i > 1 and i % 2 == 0:
-							hex_indexes.append([r - 1, math.floor((i - 1) / 2)])
+					hex_indexes = self.get_hexes_for_point(r, i)
 					
 					# checks if any hexes have the right number
 					for num in hex_indexes:
@@ -298,7 +253,58 @@ class CatanBoard:
 								(self.game).players[owner].add_cards([
 									card_type
 								])
-								
+	
+	# returns all the hexes connected to a certain point
+	def get_hexes_for_point(self, r, i):
+	
+		# the indexes of the hexes
+		hex_indexes = []
+		
+		# gets the adjacent hexes differently depending on whether the point is in the top or the bottom
+		if r < len(self.points) / 2:
+			# gets the hexes below the point ------------------
+			
+			# adds the hexes to the right
+			if i < len(self.points[r]) - 1:
+				hex_indexes.append([r, math.floor(i / 2)])
+			
+			# if the index is even, the number is between two hexes
+			if i % 2 == 0 and i > 0:
+				hex_indexes.append([r, math.floor(i / 2) - 1])
+				
+			# gets the hexes above the point ------------------
+			
+			# gets the hex to the right
+			if i > 0 and i < len(self.points[r]) - 2:
+				hex_indexes.append([r - 1, math.floor((i - 1) / 2)])
+				
+			# gets the hex to the left
+			if i % 2 == 1 and i < len(self.points[r]) - 1 and i > 1:
+				hex_indexes.append([r - 1, math.floor((i - 1) / 2) - 1])
+
+		else:
+			
+			# adds the below -------------
+			
+			# gets the hex to the right or directly below
+			if i < len(self.points[r]) - 2 and i > 0:
+				hex_indexes.append([r, math.floor((i - 1) / 2)])
+				
+			# gets the hex to the left
+			if i % 2 == 1 and i > 1 and i < len(self.points[r]):
+				hex_indexes.append([r, math.floor((i - 1) / 2 - 1)])
+				
+			# gets the hexes above ------------
+			
+			# gets the hex above and to the right or directly above
+			if i < len(self.points[r]) - 1:
+				hex_indexes.append([r - 1, math.floor(i / 2)])
+				
+			# gets the hex to the left
+			if i > 1 and i % 2 == 0:
+				hex_indexes.append([r - 1, math.floor((i - 1) / 2)])
+		
+		return hex_indexes							
 		
 	# adds a CatanBuilding object to the board
 	def add_building(self, building, r, i):

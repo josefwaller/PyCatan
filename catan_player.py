@@ -29,6 +29,9 @@ class CatanPlayer:
 		# the development cards this player has
 		self.dev_cards = []
 		
+		# the number of knight cards the player has played
+		self.knight_cards = 0
+		
 		# the longest road segment this player has
 		self.longest_road_length = 0
 	
@@ -121,6 +124,20 @@ class CatanPlayer:
 	#adds a development card
 	def add_dev_card(self, dev_card):
 		self.dev_cards.append(dev_card)
+	
+	# removes a dev card
+	def remove_dev_card(self, card):
+	
+		# finds the card
+		for i in range(len(self.dev_cards)):
+			if self.dev_cards[i] == card:
+				
+				# deletes the card
+				del self.dev_cards[i]
+				return CatanStatuses.ALL_GOOD
+				
+		# error if the player does not have the cards
+		return CatanStatuses.ERR_CARDS
 		
 	# checks a road location is valid
 	def road_location_is_valid(self, start, end):
@@ -224,10 +241,6 @@ class CatanPlayer:
 		road = CatanBuilding(owner=self.num, type=CatanBuilding.BUILDING_ROAD, point_one=start, point_two=end)
 		(self.game).board.add_road(road)
 		
-		# records the road if it is a starting road
-		if is_starting:
-			self.starting_roads.append(road)
-		
 		self.get_longest_road(new_road=road)
 		
 		return CatanStatuses.ALL_GOOD
@@ -265,6 +278,7 @@ class CatanPlayer:
 		roads = self.get_roads()
 		
 		del roads[roads.index(new_road)]
+		
 		# checks for longest road
 		self.check_connected_roads(road=new_road, all_roads=roads, length=1)
 	
@@ -287,6 +301,7 @@ class CatanPlayer:
 			
 				# if this is the longest road so far
 				if length > self.longest_road_length:
+				
 					# records the length
 					self.longest_road_length = length
 					# self.begin_celebration()

@@ -38,3 +38,6 @@ class CatanStatuses:
 	
 	# the input given is missing components/invalid
 	ERR_INPUT = 11
+	
+	# when running the testing module, an error was found
+	ERR_TEST = 12
