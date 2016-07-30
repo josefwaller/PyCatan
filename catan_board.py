@@ -127,12 +127,12 @@ class CatanBoard:
 				
 				self.points[i].append(None)
 				
-		print("Hex Numbers:")
-		p.pprint(self.hex_nums)
-		print("Hexes: ")
-		p.pprint(self.hexes)
-		print("Points: ")
-		p.pprint(self.points)
+		# print("Hex Numbers:")
+		# p.pprint(self.hex_nums)
+		# print("Hexes: ")
+		# p.pprint(self.hexes)
+		# print("Points: ")
+		# p.pprint(self.points)
 		
 		# adds harbors
 		# each harbor is around the edge of the board
@@ -205,9 +205,6 @@ class CatanBoard:
 			
 			# adds one to count
 			count += 1
-		
-		for h in self.harbors:
-			print(h)
 			
 		# puts the robber on the desert hex to start
 		
@@ -345,6 +342,9 @@ class CatanBoard:
 		
 		# changes the settlement to a city
 		self.points[r][i].type = CatanBuilding.BUILDING_CITY
+		
+		# adds another victory point
+		(self.game).get_player(player).victory_points += 1
 
 		return CatanStatuses.ALL_GOOD
 

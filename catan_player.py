@@ -36,31 +36,20 @@ class CatanPlayer:
 		self.longest_road_length = 0
 	
 	# builds a settlement belonging to this player	
-	def build_settlement (self, settle_r, settle_i):
+	def build_settlement (self, settle_r, settle_i, is_starting=False):
 	
-		# makes sure the player has the cards to build a settlements
-		cards_needed = [
-			CatanCards.CARD_WOOD,
-			CatanCards.CARD_BRICK,
-			CatanCards.CARD_SHEEP,
-			CatanCards.CARD_WHEAT
-		]
-		
-		# # the indexes of the cards needed
-		# # used to quickly delete them
-		# card_indexes = []
-		
-		# for i in range(len(cards_needed)):
+		if not is_starting:
+			# makes sure the player has the cards to build a settlements
+			cards_needed = [
+				CatanCards.CARD_WOOD,
+				CatanCards.CARD_BRICK,
+				CatanCards.CARD_SHEEP,
+				CatanCards.CARD_WHEAT
+			]
 			
-		# 	# checks if the card exists
-		# 	if self.cards.count(cards_needed[i]) < 1:
-		# 		return CatanStatuses.ERR_CARDS
-				
-		# 	else:
-		# 		# adds the index 
-		# 		card_indexes.append(self.cards.index(cards_needed[i]))
-		if not self.has_cards(cards_needed):
-			return CatanStatuses.ERR_CARDS
+			# checks the player has the cards
+			if not self.has_cards(cards_needed):
+				return CatanStatuses.ERR_CARDS
 		
 		# checks that a building does not already exist there
 		if not (self.game).board.point_is_empty(settle_r, settle_i):
@@ -76,11 +65,15 @@ class CatanPlayer:
 			if p != None:
 				return CatanStatuses.ERR_BLOCKED
 		
-		# removes the cards
-		self.remove_cards(cards_needed)
+		if not is_starting:
+			# removes the cards
+			self.remove_cards(cards_needed)
 		
 		# adds the house
 		((self.game).board).add_building(CatanBuilding(owner=self.num, type=CatanBuilding.BUILDING_SETTLEMENT), r=settle_r, i=settle_i)
+		
+		# adds a victory point
+		self.victory_points += 1
 		
 		return CatanStatuses.ALL_GOOD
 		
@@ -349,8 +342,9 @@ class CatanPlayer:
 				
 		return roads
 	
+	# checks if the player has some development cards
 	def has_dev_cards(self, cards):
-		card_duplicate = self.cards[:]
+		card_duplicate = self.dev_cards[:]
 		
 		for c in cards:
 			if not card_duplicate.count(c) > 0:
@@ -360,6 +354,10 @@ class CatanPlayer:
 				del card_duplicate[card_duplicate.index(c)]
 				
 		return True
+	
+	# returns the number of VP
+	def get_VP(self):
+		return self.victory_points
 	
 	# prints the cards given
 	@staticmethod

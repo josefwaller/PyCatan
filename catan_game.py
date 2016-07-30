@@ -10,7 +10,7 @@ import math
 class CatanGame:
 	
 	# initializes the Catan game
-	def __init__(self, num_of_players, on_win):
+	def __init__(self, num_of_players=3, on_win=None):
 		
 		# creates a board
 		self.board = CatanBoard(game=self);
@@ -43,10 +43,10 @@ class CatanGame:
 		self.largest_army = None
 	
 	# creates a new settlement belong to the player at the coodinates
-	def add_settlement(self, player, r, i):
+	def add_settlement(self, player, r, i, is_starting=False):
 	
 		# builds the settlement
-		return self.players[player].build_settlement(settle_r=r, settle_i=i)
+		return self.players[player].build_settlement(settle_r=r, settle_i=i, is_starting=is_starting)
 			
 	# builds a road going from point start to point end
 	def add_road(self, player, start, end):
@@ -146,9 +146,13 @@ class CatanGame:
 	
 		# takes a random card from the victim
 		if victim != None:
-			index = math.round(random.random() * len(self.players[victim].cards))
+			
+			# removes a random card from the victim
+			index = round(random.random() * (len(self.players[victim].cards) - 1))
 			card = self.players[victim].cards[index]
 			self.players[victim].remove_cards([card])
+			
+			# adds it to the player
 			self.players[player].add_cards([card])
 		
 		return CatanStatuses.ALL_GOOD
@@ -217,6 +221,7 @@ class CatanGame:
 		
 		# checks the player has the development card
 		if not self.players[player].has_dev_cards([card]):
+			print (self.players[player].dev_cards)
 			return CatanStatuses.ERR_CARDS
 		
 		# applies the action
@@ -291,17 +296,20 @@ class CatanGame:
 			# checks the victim input is valid
 			if args["victim"] != None:
 				if args["victim"] < 0 or args["victim"] >= len(self.players) or args["victim"] == player:
+					print("1")
 					return CatanStatuses.ERR_INPUT
 			
 			# moves the robber
 			result = self.move_robber(r=args["robber_pos"][0], i=args["robber_pos"][1], player=player, victim=args["victim"])
 			
 			if result != CatanStatuses.ALL_GOOD:
+				print("2 %s" % result)
 				return result
 			
 			# adds one to the player's knight count
 			(self.players[player]).knight_cards += 1
 			
+			print(self.players[player].knight_cards)
 			# checks for the largest army
 			if self.largest_army == None:
 				# if nobody has the largest army, the player needs at least 3 cards
