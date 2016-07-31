@@ -356,9 +356,29 @@ class CatanPlayer:
 		return True
 	
 	# returns the number of VP
-	def get_VP(self):
-		return self.victory_points
+	# if include_dev is False, it will not include points from developement cards
+	# because other players aren't able to see them
+	def get_VP(self, include_dev=False):
+		
+		# gets the victory points from settlements and cities
+		points = self.victory_points
+		
+		# adds VPs from longest road
+		if self.game.get_longest_road() == self.num:
+			points += 2
+		
+		# adds VPs from largest army
+		if self.game.get_largest_army() == self.num:
+			points += 2
+		
+		# adds VPs from developement cards
+		if include_dev:
+			for d in self.dev_cards:
+				if d == CatanCards.DEV_VP:
+					points += 1
 	
+		return points
+		
 	# prints the cards given
 	@staticmethod
 	def print_cards(cards):

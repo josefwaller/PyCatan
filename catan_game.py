@@ -39,14 +39,27 @@ class CatanGame:
 		# random.shuffle(self.dev_deck)
 	
 		# the longest road owner and largest army owner
-		self.longest_road = None
+		self.longest_road_owner = None
 		self.largest_army = None
+		
+		# whether the game has finished or not
+		self.has_ended = False
 	
 	# creates a new settlement belong to the player at the coodinates
 	def add_settlement(self, player, r, i, is_starting=False):
 	
 		# builds the settlement
-		return self.players[player].build_settlement(settle_r=r, settle_i=i, is_starting=is_starting)
+		status = self.players[player].build_settlement(settle_r=r, settle_i=i, is_starting=is_starting)
+			
+		if status == CatanStatuses.ALL_GOOD:
+			
+			# checks if the player won
+			if self.players[player].get_VP() >= 10:
+				
+				self.has_ended = True
+				self.winner = player
+		
+		return status
 			
 	# builds a road going from point start to point end
 	def add_road(self, player, start, end):
@@ -199,29 +212,46 @@ class CatanGame:
 	def set_longest_road(self):
 		
 		longest = 0
-		owner = None
+		owner = self.longest_road_owner
 		
 		for p in self.players:
 			
-			if p.longest_road_length > longest and p.longest_road_length > 4:
+			# longest road needs to be longer than anbody else's
+			# and at least 5 road segments long
+			if p.longest_road_length > longest and p.longest_road_length >= 5:
 				
 				longest = p.longest_road_length
 				
 				owner = self.players.index(p)
 				
-		self.longest_road = owner
+		if self.longest_road_owner != owner:
+			
+			self.longest_road_owner = owner
+		
+			# checks if the player has won now that they has longest road
+			if self.players[owner].get_VP() >= 10:
+				
+				self.has_ended = True
+				self.winner = owner
 		
 	# changes a settlement on the board for a city
 	def add_city(self, player, r, i):
 	
-		return self.board.upgrade_settlement(player, r, i)
+		status = self.board.upgrade_settlement(player, r, i)
+		
+		if status == CatanStatuses.ALL_GOOD:
+			
+			# checks if the player won
+			if self.players[player].get_VP() >= 10:
+				self.winner = player
+		
+		return status
 		
 	# uses a developement card
 	def use_dev_card(self, player, card, args):
 		
 		# checks the player has the development card
 		if not self.players[player].has_dev_cards([card]):
-			print (self.players[player].dev_cards)
 			return CatanStatuses.ERR_CARDS
 		
 		# applies the action
@@ -296,20 +326,17 @@ class CatanGame:
 			# checks the victim input is valid
 			if args["victim"] != None:
 				if args["victim"] < 0 or args["victim"] >= len(self.players) or args["victim"] == player:
-					print("1")
 					return CatanStatuses.ERR_INPUT
 			
 			# moves the robber
 			result = self.move_robber(r=args["robber_pos"][0], i=args["robber_pos"][1], player=player, victim=args["victim"])
 			
 			if result != CatanStatuses.ALL_GOOD:
-				print("2 %s" % result)
 				return result
 			
 			# adds one to the player's knight count
 			(self.players[player]).knight_cards += 1
 			
-			print(self.players[player].knight_cards)
 			# checks for the largest army
 			if self.largest_army == None:
 				# if nobody has the largest army, the player needs at least 3 cards
@@ -353,6 +380,23 @@ class CatanGame:
 			
 		return self.players[i]
 	
+	# returns True/False depending if the game has ended
+	def get_has_ended(self):
+		return self.has_ended
+		
+	# returns the index of the player who has won
+	# or None if nobody has won
+	def get_winner(self):
+		return self.winner
+		
+	# returns the player who has the longest road, or None
+	def get_longest_road(self):
+		return self.longest_road_owner
+		
+	# returns the player who has largest_army, or None
+	def get_largest_army(self):
+		return self.largest_army
+		
 # creates a new game for debugging
 if __name__ == "__main__":
 
@@ -374,62 +418,6 @@ if __name__ == "__main__":
 	
 	if status != CatanStatuses.ALL_GOOD:
 		print("Failed to build settlement with code %s" % status)
-	# gives player 4 a six long road segment
-	for i in range(6):
-		(c.players[4]).add_cards([
-			CatanCards.CARD_WOOD,
-			CatanCards.CARD_BRICK
-		])
-		
-		status = c.add_road(player=4, start=[3, i], end=[3, i + 1])
-	
-		if status != CatanStatuses.ALL_GOOD:
-			print("Exited with status %s on loop %s" % (status, i))
-	
-	# prints player 4's longest road
-	print("Printing Player 4's longest road")
-	print((c.players[4]).longest_road_length)
-	
-	# prints the longest road owner
-	print("The longest road belongs to player:")
-	print(c.set_longest_road())
-	
-	# gives player 5 a settlement
-	(c.players[5]).add_cards([
-		CatanCards.CARD_WOOD,
-		CatanCards.CARD_BRICK,
-		CatanCards.CARD_WHEAT,
-		CatanCards.CARD_SHEEP
-	])
-	
-	stat = c.add_settlement(player=5, r=4, i=2)
-	print("Player 5 building settlement is %s" % stat)
-	
-	# gives player 5 a 10 long looping road segment
-	points = []
-	for count in range(10):
-		(c.players[5]).add_cards([
-			CatanCards.CARD_WOOD,
-			CatanCards.CARD_BRICK
-		])
-		
-		r = math.floor(count / 5) + 4
-		
-		i = int(5 - math.fabs(count - 4))
-		
-		points.append([r, i])
-	
-	for index in range(len(points)):
-	
-		end_index = (index + 1) % len(points)
-		status = c.add_road(player=5, start=points[index], end=points[end_index])
-	
-		if status != CatanStatuses.ALL_GOOD:
-			print("Exited with status %s on loop %s when building a road from %s, %s to %s, %s" 
-			% (status, index, points[index][0], points[index][1], points[end_index][0], points[end_index][1]))
-	
-	print("Longest road owner is now %s" % c.set_longest_road())
-	print("Player 5's longest road is %s" % (c.players[5]).longest_road_length)
 	
 	(c.players[1]).add_cards([
 		CatanCards.CARD_WOOD,
