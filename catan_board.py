@@ -16,12 +16,12 @@ import pprint
 class CatanBoard:
 	
 	# different types of hexes
-	HEX_FOREST = 0
-	HEX_HILLS = 1
-	HEX_MOUNTAINS = 2
-	HEX_PASTURE = 3
-	HEX_FIELDS = 4
-	HEX_DESERT = 5
+	HEX_FOREST = 5
+	HEX_HILLS = 4
+	HEX_MOUNTAINS = 3
+	HEX_PASTURE = 2
+	HEX_FIELDS = 1
+	HEX_DESERT = 0
 	
 	def __init__(self, game):
 	
@@ -238,7 +238,10 @@ class CatanBoard:
 							# adds the card to the player's inventory
 							owner = self.points[r][i].owner
 							
-							card_type = self.hexes[num[0]][num[1]]
+							# gets the card type
+							hex_type = self.hexes[num[0]][num[1]]
+							card_type = self.get_card_from_hex(hex_type)
+							
 							# adds two if it is a city
 							if self.points[r][i].type == CatanBuilding.BUILDING_CITY:
 								(self.game).players[owner].add_cards([
@@ -251,6 +254,29 @@ class CatanBoard:
 									card_type
 								])
 	
+	# returns the card associated with the hex
+	# for example, Brick for Hills, Wood for forests, etc
+	def get_card_from_hex(self, hex):
+		
+		# returns the appropriete card
+		if hex == CatanBoard.HEX_FOREST:
+			return CatanCards.CARD_WOOD
+			
+		elif hex == CatanBoard.HEX_HILLS:
+			return CatanCards.CARD_BRICK
+			
+		elif hex == CatanBoard.HEX_PASTURE:
+			return CatanCards.CARD_SHEEP
+			
+		elif hex == CatanBoard.HEX_FIELDS:
+			return CatanCards.CARD_WHEAT
+			
+		elif hex == CatanBoard.HEX_MOUNTAINS:
+			return CatanCards.CARD_ORE
+			
+		else:
+			return None
+		
 	# returns all the hexes connected to a certain point
 	def get_hexes_for_point(self, r, i):
 	
@@ -371,6 +397,7 @@ class CatanBoard:
 			
 		return False
 		
+	# gets the points that are connected to the point given
 	def get_connected_points(self, r, i):
 		
 		# the connected points
@@ -439,6 +466,7 @@ class CatanBoard:
 			connected_points.append([r, i + 1])
 			
 		return connected_points
-			
+		
+	# returns a single point	
 	def get_point(self, r, i):
 		return self.points[r][i]
