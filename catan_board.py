@@ -191,11 +191,27 @@ class CatanBoard:
 		# the pattern of spaces between harbors
 		pattern = [2, 3, 2]
 		
+		# the different types of harbors
+		harbor_types = [
+			CatanHarbor.TYPE_WOOD,
+			CatanHarbor.TYPE_BRICK,
+			CatanHarbor.TYPE_ORE,
+			CatanHarbor.TYPE_WHEAT,
+			CatanHarbor.TYPE_SHEEP,
+			CatanHarbor.TYPE_ANY,
+			CatanHarbor.TYPE_ANY,
+			CatanHarbor.TYPE_ANY,
+			CatanHarbor.TYPE_ANY
+		]
+		
+		# shuffles the harbors
+		# random.shuffle(harbor_types)
+		
 		# goes around the board once and adds harbors
 		while index < len(outside_points):
 		
 			# creates a new harbor
-			harbor = CatanHarbor(point_one=outside_points[index], point_two=outside_points[index + 1], type=CatanHarbor.TYPE_WOOD)
+			harbor = CatanHarbor(point_one=outside_points[index], point_two=outside_points[index + 1], type=harbor_types[count])
 			
 			# adds it to harbors
 			self.harbors.append(harbor)
@@ -205,9 +221,10 @@ class CatanBoard:
 			
 			# adds one to count
 			count += 1
+		
+		print(self.harbors)	
 			
 		# puts the robber on the desert hex to start
-		
 		for r in range(len(self.hexes)):
 			# checks if this row has the desert
 			if self.hexes[r].count(CatanBoard.HEX_DESERT) > 0:
