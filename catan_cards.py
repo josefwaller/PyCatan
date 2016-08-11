@@ -14,3 +14,4 @@ class CatanCards:
 	DEV_MONOPOLY = 3
 	DEV_YOP = 4
 	
+	

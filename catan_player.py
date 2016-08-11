@@ -50,6 +50,27 @@ class CatanPlayer:
 			# checks the player has the cards
 			if not self.has_cards(cards_needed):
 				return CatanStatuses.ERR_CARDS
+				
+			# checks it is connected to a road owned by the player
+			connected_by_road = False
+			
+			# gets the roads
+			roads = (self.game).board.get_roads()
+			
+			for r in roads:
+				
+				print(r)
+				# checks if the road is connected
+				if r.point_one == [settle_r, settle_i] or r.point_two == [settle_r, settle_i]:
+					
+					print(r.owner)
+					# checks this player owns the road
+					if r.owner == self.num:
+						
+						connected_by_road = True
+		
+			if not connected_by_road:
+				return CatanStatuses.ERR_ISOLATED
 		
 		# checks that a building does not already exist there
 		if not (self.game).board.point_is_empty(settle_r, settle_i):
@@ -215,20 +236,11 @@ class CatanPlayer:
 				CatanCards.CARD_WOOD,
 				CatanCards.CARD_BRICK
 			]
-			
-			card_indexes = []
-			
-			for i in range(len(cards_needed)):
-				if self.cards.count(cards_needed[i]) < 1:
-					return CatanStatuses.ERR_CARDS
-					
-				else:
-					card_indexes.append(i)
+			if not self.has_cards(cards_needed):
+				return CatanStatuses.ERR_CARDS
 						
 			# removes the cards
-			card_indexes.sort(reverse=True)
-			for i in card_indexes:
-				del self.cards[i]
+			self.remove_cards(cards_needed)
 		
 		# adds the road
 		road = CatanBuilding(owner=self.num, type=CatanBuilding.BUILDING_ROAD, point_one=start, point_two=end)

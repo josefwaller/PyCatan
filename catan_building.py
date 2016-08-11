@@ -17,3 +17,14 @@ class CatanBuilding:
 		
 			self.point_one = point_one
 			self.point_two = point_two
+	
+	def __repr__(self):
+		
+		if self.type == CatanBuilding.BUILDING_ROAD:
+			return "CatanRoad, owned by player %s, from %s to %s" % (self.owner, self.point_one, self.point_two)
+			
+		elif self.type == CatanBuilding.BUILDING_SETTLEMENT:
+			return "CatanSettlement, owned by player %s" % self.owner
+			
+		else:
+			return "CatanCity, owned by player %s" % self.owner

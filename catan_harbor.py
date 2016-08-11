@@ -19,7 +19,7 @@ class CatanHarbor:
 		self.point_one = point_one
 		self.point_two = point_two
 		
-	def __str__(self):
+	def __repr__(self):
 		return "Harbor %s, %s Type %s" % (self.point_one, self.point_two, self.type)
 		
 	def get_points(self):

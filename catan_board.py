@@ -221,8 +221,6 @@ class CatanBoard:
 			
 			# adds one to count
 			count += 1
-		
-		print(self.harbors)	
 			
 		# puts the robber on the desert hex to start
 		for r in range(len(self.hexes)):
@@ -487,3 +485,10 @@ class CatanBoard:
 	# returns a single point	
 	def get_point(self, r, i):
 		return self.points[r][i]
+		
+	# gets all the roads in the game
+	def get_roads(self):
+		return self.roads
+		
+	def __repr__(self):
+		print("CatanBoard Object")
