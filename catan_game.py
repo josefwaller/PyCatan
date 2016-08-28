@@ -12,6 +12,7 @@ class CatanGame:
 	# initializes the Catan game
 	def __init__(self, num_of_players=3, on_win=None):
 		
+		
 		# creates a board
 		self.board = CatanBoard(game=self);
 		
@@ -351,16 +352,10 @@ class CatanGame:
 					self.largest_army = player
 			
 		elif card == CatanCards.DEV_MONOPOLY:
-			pass		
-			
-		elif card == CatanCards.DEV_VP:
-			pass
-			
-		elif card == CatanCards.DEV_YOP:
 			
 			# gets the type of card
 			card_type = args['card_type']
-			print(card_type)
+			
 			# for each player, checks if they have the card
 			for p in self.players:
 				
@@ -375,6 +370,21 @@ class CatanGame:
 					
 					# adds them to the user's cards
 					self.players[player].add_cards(cards_to_give)
+			
+		elif card == CatanCards.DEV_VP:
+			pass
+			
+		elif card == CatanCards.DEV_YOP:
+			
+			# checks the player gave two development cards
+			if not 'card_one' in args and not 'card_two' in args:
+				return CatanStatuses.ERR_INPUT
+				
+			# gives the player 2 resource cards of their choice
+			self.players[player].add_cards([
+				args['card_one'],
+				args['card_two']
+			])
 			
 		else:
 			# error here
