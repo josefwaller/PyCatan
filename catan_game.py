@@ -235,7 +235,7 @@ class CatanGame:
 				self.winner = owner
 		
 	# changes a settlement on the board for a city
-	def add_city(self, player, r, i):
+	def add_city(self, r, i, player):
 	
 		status = self.board.upgrade_settlement(player, r, i)
 		
@@ -340,24 +340,41 @@ class CatanGame:
 			# checks for the largest army
 			if self.largest_army == None:
 				# if nobody has the largest army, the player needs at least 3 cards
-				if self.get_player(player).knight_cards >= 3:
+				if self.players[player].knight_cards >= 3:
 					self.largest_army = player
 					
 			else:
 				# the player needs to have more than anybody else
-				current_longest = self.get_player(self.largest_army).knight_cards
+				current_longest = self.players[self.largest_army].knight_cards
 				
-				if self.get_player(player).knight_cards > current_longest:
+				if self.players[player].knight_cards > current_longest:
 					self.largest_army = player
 			
 		elif card == CatanCards.DEV_MONOPOLY:
-			pass
+			pass		
 			
 		elif card == CatanCards.DEV_VP:
 			pass
 			
 		elif card == CatanCards.DEV_YOP:
-			pass
+			
+			# gets the type of card
+			card_type = args['card_type']
+			print(card_type)
+			# for each player, checks if they have the card
+			for p in self.players:
+				
+				if p.has_cards([card_type]):
+					
+					# gets how many this player has
+					number_of_cards = p.cards.count(card_type)
+					cards_to_give = [card_type] * number_of_cards
+					
+					# removes the cards
+					p.remove_cards(cards_to_give)
+					
+					# adds them to the user's cards
+					self.players[player].add_cards(cards_to_give)
 			
 		else:
 			# error here
@@ -371,31 +388,7 @@ class CatanGame:
 	# simulates 2 dice rolling
 	def get_roll(self):
 		return round(random.random() * 6) + round(random.random() * 6)
-	
-	# gets the player at the index
-	def get_player(self, i):
-	
-		if i < 0 or i > len(self.players) - 1:
-			return CatanStatuses.ERR_INPUT
-			
-		return self.players[i]
-	
-	# returns True/False depending if the game has ended
-	def get_has_ended(self):
-		return self.has_ended
 		
-	# returns the index of the player who has won
-	# or None if nobody has won
-	def get_winner(self):
-		return self.winner
-		
-	# returns the player who has the longest road, or None
-	def get_longest_road(self):
-		return self.longest_road_owner
-		
-	# returns the player who has largest_army, or None
-	def get_largest_army(self):
-		return self.largest_army
 		
 # creates a new game for debugging
 if __name__ == "__main__":

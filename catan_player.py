@@ -55,7 +55,7 @@ class CatanPlayer:
 			connected_by_road = False
 			
 			# gets the roads
-			roads = (self.game).board.get_roads()
+			roads = (self.game).board.roads
 			
 			for r in roads:
 				
@@ -82,7 +82,7 @@ class CatanPlayer:
 		for coord in point_coords:
 			
 			# checks if the point is occupied
-			p = (self.game).board.get_point(coord[0], coord[1])
+			p = (self.game).board.points[coord[0]][coord[1]]
 			if p != None:
 				return CatanStatuses.ERR_BLOCKED
 		
@@ -183,8 +183,8 @@ class CatanPlayer:
 		is_connected = False
 		
 		# first checks if there is a settlements on either point
-		point_one = (self.game).board.get_point(r=start[0], i=start[1])
-		point_two = (self.game).board.get_point(r=end[0], i=end[1])
+		point_one = (self.game).board.points[start[0]][start[1]]
+		point_two = (self.game).board.points[end[0]][end[1]]
 		
 		if point_one != None:
 		
@@ -376,11 +376,11 @@ class CatanPlayer:
 		points = self.victory_points
 		
 		# adds VPs from longest road
-		if self.game.get_longest_road() == self.num:
+		if self.game.longest_road_owner == self.num:
 			points += 2
 		
 		# adds VPs from largest army
-		if self.game.get_largest_army() == self.num:
+		if self.game.largest_army == self.num:
 			points += 2
 		
 		# adds VPs from developement cards

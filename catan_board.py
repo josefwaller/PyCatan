@@ -255,7 +255,7 @@ class CatanBoard:
 							
 							# gets the card type
 							hex_type = self.hexes[num[0]][num[1]]
-							card_type = self.get_card_from_hex(hex_type)
+							card_type = CatanBoard.get_card_from_hex(hex_type)
 							
 							# adds two if it is a city
 							if self.points[r][i].type == CatanBuilding.BUILDING_CITY:
@@ -271,7 +271,8 @@ class CatanBoard:
 	
 	# returns the card associated with the hex
 	# for example, Brick for Hills, Wood for forests, etc
-	def get_card_from_hex(self, hex):
+	@staticmethod
+	def get_card_from_hex(hex):
 		
 		# returns the appropriete card
 		if hex == CatanBoard.HEX_FOREST:
@@ -356,15 +357,17 @@ class CatanBoard:
 	# upgrades an existing settlement to a city
 	def upgrade_settlement(self, player, r, i):
 		
-		# checks there is a settlement at r, i which is controlled by the player
+		# checks there is a settlement at r, i
 		if self.points[r][i] == None:
 			return CatanStatuses.ERR_NOT_EXIST
-			
-		elif self.points[r][i].owner != player:
+		
+		# checks the settlement is controlled by the correct player
+		# if no player is specified, uses the current controlling player
+		if self.points[r][i].owner != player:
 			return CatanStatuses.ERR_BAD_OWNER
 
 		# checks it is a settlement and not a city
-		elif self.points[r][i].type != CatanBuilding.BUILDING_SETTLEMENT:
+		if self.points[r][i].type != CatanBuilding.BUILDING_SETTLEMENT:
 			return CatanStatuses.ERR_UPGRADE_CITY		
 
 		# checks the player has the cards
@@ -385,7 +388,7 @@ class CatanBoard:
 		self.points[r][i].type = CatanBuilding.BUILDING_CITY
 		
 		# adds another victory point
-		(self.game).get_player(player).victory_points += 1
+		(self.game).players[player].victory_points += 1
 
 		return CatanStatuses.ALL_GOOD
 
@@ -482,13 +485,7 @@ class CatanBoard:
 			
 		return connected_points
 		
-	# returns a single point	
-	def get_point(self, r, i):
-		return self.points[r][i]
-		
-	# gets all the roads in the game
-	def get_roads(self):
-		return self.roads
+
 		
 	def __repr__(self):
 		print("CatanBoard Object")
