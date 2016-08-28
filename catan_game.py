@@ -372,7 +372,9 @@ class CatanGame:
 					self.players[player].add_cards(cards_to_give)
 			
 		elif card == CatanCards.DEV_VP:
-			pass
+			
+			# players do not play developement cards, so it returns an error
+			return CatanStatuses.ERR_INPUT
 			
 		elif card == CatanCards.DEV_YOP:
 			
