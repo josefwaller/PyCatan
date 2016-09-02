@@ -59,9 +59,11 @@ class CatanPlayer:
 			
 			for r in roads:
 				
+				print(r)
 				# checks if the road is connected
 				if r.point_one == [settle_r, settle_i] or r.point_two == [settle_r, settle_i]:
 					
+					print(r.owner)
 					# checks this player owns the road
 					if r.owner == self.num:
 						

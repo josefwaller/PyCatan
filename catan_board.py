@@ -10,9 +10,6 @@ import random
 # used for lots of things
 import math
 
-# used for reading the starting_board file
-import json
-
 # used for debugging
 import pprint
 
@@ -26,7 +23,7 @@ class CatanBoard:
 	HEX_FIELDS = 1
 	HEX_DESERT = 0
 	
-	def __init__(self, game, starting_board=False):
+	def __init__(self, game):
 	
 		# the game the board is in
 		self.game = game
@@ -60,117 +57,67 @@ class CatanBoard:
 		# creates a new PrettyPrinter for debugging
 		p = pprint.PrettyPrinter()
 		
-		if not starting_board:
-			# sets up all_hexes
-			for i in range(4):
+		# sets up all_hexes
+		for i in range(4):
+			
+			# adds four fields, forests and pastures
+			
+			self.all_hexes.append(self.HEX_FIELDS)
+			self.all_hexes.append(self.HEX_FOREST)
+			self.all_hexes.append(self.HEX_PASTURE)
+			
+			# adds three mountains and hills
+			if i < 3:
+				self.all_hexes.append(self.HEX_MOUNTAINS)
+				self.all_hexes.append(self.HEX_HILLS)
 				
-				# adds four fields, forests and pastures
+			# adds one desert
+			if i == 0:
+				self.all_hexes.append(self.HEX_DESERT)
 				
-				self.all_hexes.append(CatanBoard.HEX_FIELDS)
-				self.all_hexes.append(CatanBoard.HEX_FOREST)
-				self.all_hexes.append(CatanBoard.HEX_PASTURE)
-				
-				# adds three mountains and hills
-				if i < 3:
-					self.all_hexes.append(CatanBoard.HEX_MOUNTAINS)
-					self.all_hexes.append(CatanBoard.HEX_HILLS)
+		# shuffles the deck
+		#random.shuffle(self.all_hexes)
+		
+		# sets up all_hex_nums
+		for i in range(2):
+			
+			for x in range(2, 13):
+			
+				# does not add a number token with 7
+				if x != 7:
 					
-				# adds one desert
-				if i == 0:
-					self.all_hexes.append(CatanBoard.HEX_DESERT)
-					
-			# shuffles the deck
-			random.shuffle(self.all_hexes)
-
-			# sets up all_hex_nums
-			for i in range(2):
-				
-				for x in range(2, 13):
-				
-					# does not add a number token with 7
-					if x != 7:
+					# only adds one 2 and one 12
+					if x == 2 or x == 12:
+						if i == 0:
+							self.all_hex_nums.append(x)
 						
-						# only adds one 2 and one 12
-						if x == 2 or x == 12:
-							if i == 0:
-								self.all_hex_nums.append(x)
-							
-						# adds two of everything else
-						else:
-							self.all_hex_nums.append(x) 
-					
-			# shuffles the hex numbers
-			random.shuffle(self.all_hex_nums)
-
-			self.hexes = []
-			self.hex_nums = []
-
-			last_index = 0
-			for i in range(5):
-			
-				# the length of this row of hexes
-				length = round(-math.fabs(i - 2) + 5)
-				
-				self.hexes.append(self.all_hexes[last_index:last_index + length])
-				self.hex_nums.append(self.all_hex_nums[last_index:last_index + length])
-				
-				# checks if the dessert was placed in this row
-				if self.hexes[i].count(CatanBoard.HEX_DESERT) > 0:
-					
-					# takes the chip off the desert and puts it at the back of the deck
-					# so that it will be used at the end
-					index = self.hexes[i].index(CatanBoard.HEX_DESERT)
-
-					if index == len(self.hexes[i]) - 1 and i == len(self.hexes) - 1:
-
-						self.hex_nums.append(None)
-
-					else:	
-						self.all_hex_nums.append(self.hex_nums[i][index])
-						self.hex_nums[i][index] = None
-					
-				last_index += length
-
-		else:
-			# reads the starting_board.json file and copies the board from it
-			file = open("starting_board.json")
-			board_json = file.read()
-			board_data = json.loads(board_json)
-
-			# copies the hexes
-			for i in range(len(board_data['hexes'])):
-				
-				self.hexes.append([])
-				self.hex_nums.append([])
-				
-				for x in range(len(board_data['hexes'][i])):
-
-					hex = board_data['hexes'][i][x]
-					to_append = None
-
-					if hex == "fo":
-						to_append = CatanBoard.HEX_FOREST
-					
-					elif hex == "fi":
-						to_append = CatanBoard.HEX_FIELDS
-
-					elif hex == "m":
-						to_append = CatanBoard.HEX_MOUNTAINS
-
-					elif hex == "h":
-						to_append = CatanBoard.HEX_HILLS
-
-					elif hex == "p":
-						to_append = CatanBoard.HEX_PASTURE
-
+					# adds two of everything else
 					else:
-						to_append = CatanBoard.HEX_DESERT
-					
-					self.hexes[i].append(to_append)
-
-					self.hex_nums[i].append(board_data['hex_nums'][i][x])
+						self.all_hex_nums.append(x) 
+				
+		# shuffles the hex numbers
+		#random.shuffle(self.all_hex_nums)
+		
+		last_index = 0
+		for i in range(5):
+		
+			# the length of this row of hexes
+			length = round(-math.fabs(i - 2) + 5)
 			
+			self.hexes.append(self.all_hexes[last_index:last_index + length])
+			self.hex_nums.append(self.all_hex_nums[last_index:last_index + length])
 			
+			# checks if the dessert was placed in this row
+			if self.hexes[i].count(self.HEX_DESERT) > 0:
+				
+				# takes the chip off the desert and puts it at the back of the deck
+				# so that it will be used at the end
+				index = self.hexes[i].index(self.HEX_DESERT)
+				self.all_hex_nums.append(self.hex_nums[i][index])
+				self.hex_nums[i][index] = None
+				
+			last_index += length
+		
 		# adds None to points for each point on the hexes
 		for i in range(6):
 			
@@ -179,6 +126,13 @@ class CatanBoard:
 			for x in range(round(12 - math.fabs(2 * i - 5))):
 				
 				self.points[i].append(None)
+				
+		# print("Hex Numbers:")
+		# p.pprint(self.hex_nums)
+		# print("Hexes: ")
+		# p.pprint(self.hexes)
+		# print("Points: ")
+		# p.pprint(self.points)
 		
 		# adds harbors
 		# each harbor is around the edge of the board
@@ -465,7 +419,7 @@ class CatanBoard:
 	def point_exists(self, r, i):
 		
 		if r >= 0 and r < len(self.points):
-			if i >= 0 and i < len(self.points[r]):
+			if i >= 0 and i < len(self.points):
 				return True
 
 		return False

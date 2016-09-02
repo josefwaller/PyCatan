@@ -10,11 +10,11 @@ import math
 class CatanGame:
 	
 	# initializes the Catan game
-	def __init__(self, num_of_players=3, on_win=None, starting_board=False):
+	def __init__(self, num_of_players=3, on_win=None):
 		
 		
 		# creates a board
-		self.board = CatanBoard(game=self, starting_board=starting_board);
+		self.board = CatanBoard(game=self);
 		
 		# creates players
 		self.players = []
@@ -401,3 +401,91 @@ class CatanGame:
 	def get_roll(self):
 		return round(random.random() * 6) + round(random.random() * 6)
 		
+		
+# creates a new game for debugging
+if __name__ == "__main__":
+
+	def win(player):
+		print("Player %s wins!" % player)
+		
+	# creates a new game with three players
+	c = CatanGame(num_of_players=6, on_win=win)
+	
+	# gives player 4 a settlement
+	(c.players[4]).add_cards([
+		CatanCards.CARD_WOOD,
+		CatanCards.CARD_BRICK,
+		CatanCards.CARD_WHEAT,
+		CatanCards.CARD_SHEEP
+	])
+	
+	status = c.add_settlement(player=4, r=3, i=0)
+	
+	if status != CatanStatuses.ALL_GOOD:
+		print("Failed to build settlement with code %s" % status)
+	
+	(c.players[1]).add_cards([
+		CatanCards.CARD_WOOD,
+		CatanCards.CARD_WHEAT,
+		CatanCards.CARD_BRICK,
+		CatanCards.CARD_SHEEP
+	])
+	
+	c.add_settlement(player=1, r=1, i=3)
+	
+	c.move_robber(r=0, i=1)
+	print("Player 1 cards before")
+	CatanPlayer.print_cards((c.players[1]).cards)
+	
+	c.add_yield_for_roll(3)
+	print("Player 1 cards after")
+	CatanPlayer.print_cards((c.players[1]).cards)
+	
+	# moves the robber away
+	c.move_robber(r=0, i=0)
+	
+	# gives player 1 a city
+	(c.players[1]).add_cards([
+		CatanCards.CARD_WHEAT,
+		CatanCards.CARD_WHEAT,
+		CatanCards.CARD_ORE,
+		CatanCards.CARD_ORE,
+		CatanCards.CARD_ORE
+	])
+	
+	status = c.add_city(player=1, r=1, i=3)
+	print("Status for upgrading a city is %s. Cards are below:" % status)
+	CatanPlayer.print_cards(c.players[1].cards)
+	
+	# checks the city gives twice the nubmer of cards
+	c.add_yield_for_roll(3)
+	
+	CatanPlayer.print_cards(c.players[1].cards)
+	
+	# gives player 1 a developement card
+	(c.players[1]).add_cards([
+		CatanCards.CARD_WHEAT,
+		CatanCards.CARD_ORE,
+		CatanCards.CARD_SHEEP
+	])
+	
+	c.build_dev(player=1)
+	
+	print(c.players[1].dev_cards)
+	
+	build_res = c.use_dev_card(player=1, card=CatanCards.DEV_ROAD, args={
+		"road_one": {
+			"start": [1, 3],
+			"end":	[1, 2]
+		},
+		"road_two": {
+			"start": [1, 2],
+			"end": [1, 1]
+		}
+	})
+	
+	if build_res == CatanStatuses.ALL_GOOD:
+		print("Successfully used a build road dev card")
+		
+	else:
+		print("Build road unsuccessfull with error %s" % build_res)
