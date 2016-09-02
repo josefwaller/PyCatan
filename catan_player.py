@@ -72,6 +72,10 @@ class CatanPlayer:
 			if not connected_by_road:
 				return CatanStatuses.ERR_ISOLATED
 		
+		# checks the point exists
+		if not (self.game).board.point_exists(settle_r, settle_i):
+			return CatanStatuses.ERR_BAD_POINT
+
 		# checks that a building does not already exist there
 		if not (self.game).board.point_is_empty(settle_r, settle_i):
 			return CatanStatuses.ERR_BLOCKED

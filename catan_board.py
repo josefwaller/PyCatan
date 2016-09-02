@@ -415,6 +415,15 @@ class CatanBoard:
 			
 		return False
 		
+	# checks if a point exists on the board
+	def point_exists(self, r, i):
+		
+		if r >= 0 and r < len(self.points):
+			if i >= 0 and i < len(self.points):
+				return True
+
+		return False
+
 	# gets the points that are connected to the point given
 	def get_connected_points(self, r, i):
 		
@@ -446,7 +455,7 @@ class CatanBoard:
 			
 			else: 
 				# adds a point above
-				if r < 0 and i < 0:
+				if r > 0 and i > 0:
 					connected_points.append([r - 1, i - 1])
 			
 		# if it is in the bottom half	
@@ -488,4 +497,4 @@ class CatanBoard:
 
 		
 	def __repr__(self):
-		print("CatanBoard Object")
+		return ("CatanBoard Object")

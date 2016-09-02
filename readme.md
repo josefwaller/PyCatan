@@ -1,1 +1,0 @@
-A Catan API used in the python programming language
