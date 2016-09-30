@@ -121,13 +121,29 @@ class CatanBoard:
 					# so that it will be used at the end
 					index = self.hexes[i].index(CatanBoard.HEX_DESERT)
 
+					# checks if the desert is the last hex in this row
+					# if so, we must append a hex because the row is too short
 					if index == len(self.hexes[i]) - 1 and i == len(self.hexes) - 1:
 
 						self.hex_nums.append(None)
 
-					else:	
-						self.all_hex_nums.append(self.hex_nums[i][index])
+					else:
+
+						# saves the value
+						cnt_num = self.hex_nums[i][index]
+
+						# replaces the hex with None
 						self.hex_nums[i][index] = None
+
+						# if this is the last row, we should just add the circular
+						# number token to this row, since putting it back on all_hexes
+						# will result ijn it never being used
+
+						if i == 4:
+							self.hex_nums[i].append(cnt_num)
+
+						else:
+							self.all_hex_nums.append(cnt_num)
 					
 				last_index += length
 
