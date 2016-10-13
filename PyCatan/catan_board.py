@@ -1,8 +1,8 @@
-from catan_harbor import CatanHarbor
-from catan_player import CatanPlayer
-from catan_statuses import CatanStatuses
-from catan_building import CatanBuilding
-from catan_cards import CatanCards
+from .catan_harbor import CatanHarbor
+from .catan_player import CatanPlayer
+from .catan_statuses import CatanStatuses
+from .catan_building import CatanBuilding
+from .catan_cards import CatanCards
 
 # used to shuffle the deck of hexes
 import random

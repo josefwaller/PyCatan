@@ -1,8 +1,8 @@
-from catan_board import CatanBoard
-from catan_player import CatanPlayer
-from catan_statuses import CatanStatuses
-from catan_cards import CatanCards
-from catan_building import CatanBuilding
+from .catan_board import CatanBoard
+from .catan_player import CatanPlayer
+from .catan_statuses import CatanStatuses
+from .catan_cards import CatanCards
+from .catan_building import CatanBuilding
 
 import random
 import math
