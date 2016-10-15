@@ -63,10 +63,10 @@ class CatanGame:
 		return status
 			
 	# builds a road going from point start to point end
-	def add_road(self, player, start, end):
+	def add_road(self, player, start, end, is_starting=False):
 		
 		# builds the road
-		stat = self.players[player].build_road(start=start, end=end)
+		stat = self.players[player].build_road(start=start, end=end, is_starting=is_starting)
 		
 		# checks for a new longest road segment
 		self.set_longest_road()

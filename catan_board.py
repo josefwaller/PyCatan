@@ -114,7 +114,7 @@ class CatanBoard:
 				self.hexes.append(self.all_hexes[last_index:last_index + length])
 				self.hex_nums.append(self.all_hex_nums[last_index:last_index + length])
 				
-				# checks if the dessert was placed in this row
+				# checks if the desert was placed in this row
 				if self.hexes[i].count(CatanBoard.HEX_DESERT) > 0:
 					
 					# takes the chip off the desert and puts it at the back of the deck
@@ -125,7 +125,7 @@ class CatanBoard:
 					# if so, we must append a hex because the row is too short
 					if index == len(self.hexes[i]) - 1 and i == len(self.hexes) - 1:
 
-						self.hex_nums.append(None)
+						self.hex_nums[i].append(None)
 
 					else:
 
@@ -267,7 +267,7 @@ class CatanBoard:
 		]
 		
 		# shuffles the harbors
-		# random.shuffle(harbor_types)
+		random.shuffle(harbor_types)
 		
 		# goes around the board once and adds harbors
 		while index < len(outside_points):
