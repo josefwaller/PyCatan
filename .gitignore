@@ -47,6 +47,6 @@ Temporary Items
 .apdisk
 
 # Manually added stuff below this ------------------------------------------
-__pycache__/
-.vscode/
-todo.txt
+PyCatan/__pycache__/
+PyCatan/.vscode/
+PyCatan/todo.txt
