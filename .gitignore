@@ -47,6 +47,18 @@ Temporary Items
 .apdisk
 
 # Manually added stuff below this ------------------------------------------
+
+# the pychache folder
 PyCatan/__pycache__/
+
+# vscode settings
 PyCatan/.vscode/
+
+# the todo list
 PyCatan/todo.txt
+
+# PIP distribution files
+dist/
+
+# other PIP files
+pycatan.egg-info/
