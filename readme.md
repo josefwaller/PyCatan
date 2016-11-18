@@ -4,9 +4,12 @@ A Library for simulating a game of *The Settlers of Catan*
 
 ## Contents
 * Documentation
-  * Other stuff
+  * `CatanGame`
+  * `CatanBoard`
+  * `CatanPlayer`
+  * Etc
 * Example game
-  *
+  * Something
 
 ## Documentation
 
@@ -25,14 +28,15 @@ Represents a game of Catan
 
 #### Functions
 
-###### `CatanGame.__init__(self, num_of_players=3, on_win=None, starting_board=False)`
+##### `CatanGame.__init__(self, num_of_players=3, on_win=None, starting_board=False)`
 
 Creates a new `CatanGame`
-
 * `num_of_players`: The number of players playing the game
 * `on_win`: Optional function to run when the game is won
 * `starting_board`: Whether or not to use the beginner's board
-* 
+
+
+
 ##### `CatanGame.add_settlement(self, player, r, i, is_starting=False)`
 
 Builds a new settlement
@@ -43,6 +47,8 @@ Builds a new settlement
 * `is_starting`: Whether or not the settlement is being build during the building phase, and thus should be build for free
 
 Returns a `CatanStatus` value.
+
+
 
 ##### `CatanGame.add_road(self, player, start, end, is_starting=False)`
 
@@ -128,6 +134,53 @@ Also will trade only 2 cards if the player is connected to the right harbor
 * `request`: The `CatanCard` value the player will receive
 
 Returns a `CatanStatus` value
+
+
+## `CatanBoard`
+
+Represents a Catan game board.
+
+### Static values
+
+* `CatanBoard.HEX_FOREST`
+  * Represents a forest hex
+* `CatanBoard.HEX_Hills`
+  * Represents a hills hex
+* `CatanBoard.HEX_MOUNTAINS`
+  * Represents a mountains hex
+* `CatanBoard.HEX_PASTURE`
+  * Represents a pasture hex
+* `CatanBoard.HEX_FIELDS`
+  * Represents a fields hex
+* `CatanBoard.HEX_DESERT`
+  * Represents a desert hex
+
+### Attributes
+
+* `hexes`
+  * An array representing the hexes on the board
+* `hex_nums`
+  * An array representing the number tokens on the board
+* `points`
+  * An array representing the intersections between hexes (where settlements are placed)
+* `roads`
+  * An array of `CatanBuildings` representing all the roads in the game
+* `harbors`
+  * An array of `CatanHarbors` representing all the harbors on the board
+* `robber`
+  * An array representing the robber's position (given as `[row, index]`)
+
+### Functions
+
+#### `CatanBoard.get_card_from_hex(hex)`
+Gets a `CatanCards` value for a corresponding `CatanBoard` Hex value
+* `hex`: The `CatanBoard` hex value to get the card for
+
+Ex: `CatanBoard.get_card_from_hex(CatanBoard.HEX_HILLS)` would return `CatanCards.CARD_BRICK`
+
+Returns a `CatanCards` value
+
+#### 
 
 ## Example game
 
