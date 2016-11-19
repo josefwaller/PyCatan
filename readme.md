@@ -136,11 +136,11 @@ Also will trade only 2 cards if the player is connected to the right harbor
 Returns a `CatanStatus` value
 
 
-## `CatanBoard`
+### `CatanBoard`
 
 Represents a Catan game board.
 
-### Static values
+#### Static values
 
 * `CatanBoard.HEX_FOREST`
   * Represents a forest hex
@@ -155,7 +155,7 @@ Represents a Catan game board.
 * `CatanBoard.HEX_DESERT`
   * Represents a desert hex
 
-### Attributes
+#### Attributes
 
 * `hexes`
   * An array representing the hexes on the board
@@ -170,9 +170,9 @@ Represents a Catan game board.
 * `robber`
   * An array representing the robber's position (given as `[row, index]`)
 
-### Functions
+#### Functions
 
-#### `CatanBoard.get_card_from_hex(hex)`
+##### `CatanBoard.get_card_from_hex(hex)`
 Gets a `CatanCards` value for a corresponding `CatanBoard` Hex value
 * `hex`: The `CatanBoard` hex value to get the card for
 
@@ -180,7 +180,169 @@ Ex: `CatanBoard.get_card_from_hex(CatanBoard.HEX_HILLS)` would return `CatanCard
 
 Returns a `CatanCards` value
 
-#### 
+### `CatanBuilding`
+
+Represents a Catan Building
+
+#### Static Values
+
+##### `CatanBuilding.BUILDING_ROAD`
+
+Represents a road
+
+##### `CatanBuilding.BUILDING_SETTLEMENT`
+
+Represents a settlement
+
+##### `CatanBuilding.BUILDING_CITY`
+
+Represents a city
+
+### `CatanCards`
+
+Contains values representing different resource and developement cards
+
+#### Static Values
+
+##### `CatanCards.CARD_WOOD`
+
+Represents a wood resource card.
+
+##### `CatanCards.CARD_BRICK`
+
+Represents a brick resource card.
+
+##### `CatanCards.CARD_SHEEP`
+
+Represents a sheep resource card.
+
+##### `CatanCards.CARD_ORE`
+
+Represents a ore resource card.
+
+##### `CatanCards.CARD_WHEAT`
+
+Represents a wheat resource card.
+
+##### `CatanCards.DEV_ROAD`
+
+Represents a road building developement card.
+
+##### `CatanCards.DEV_VP`
+
+Represents a victory point developement card.
+
+##### `CatanCards.DEV_MONOPOLY`
+
+Represents a monopoly developement card.
+
+##### `CatanCards.DEV_YOP`
+
+Represents a year of plenty developement card.
+
+##### `CatanCards.DEV_KNIGHT`
+
+Represents a knight developement card.
+
+### `CatanHarbor`
+
+Represents a harbor.
+
+#### Static values
+
+##### `CatanHarbor.TYPE_WOOD`
+
+Represents a 2:1 Wood harbor
+
+##### `CatanHarbor.TYPE_BRICK`
+
+Represents a 2:1 Brick harbor
+
+##### `CatanHarbor.TYPE_WHEAT`
+
+Represents a 2:1 Wheat harbor
+
+##### `CatanHarbor.TYPE_ORE`
+
+Represents a 2:1 Ore harbor
+
+##### `CatanHarbor.TYPE_SHEEP`
+
+Represents a 2:1 Sheep harbor
+
+#### Functions
+
+##### `CatanHarbor.get_type(self)`
+
+Returns a string representation of the harbor's type
+
+### `CatanPlayer`
+
+Represents a player in the game.
+
+#### Functions
+
+##### `CatanPlayer.get_VP(self, include_dev=False)`
+
+Returns the number of victory points the player has.
+
+* `include_dev`: Whether to include victory points from developement cards, which are only counted if the player wins and should be hidden otherwise.
+
+### `CatanStatuses`
+
+Interger representation of different statuses returned by functions.
+
+#### Static values
+
+##### `CatanStatuses.ALL_GOOD`
+
+The function ran successfully
+
+##### `CatanStatuses.ERR_CARDS`
+
+The player trying to perform an action lacks the necessary cards.
+
+##### `CatanStatuses.ERR_BLOCKED`
+
+A building is blocking the action.
+
+##### `CatanStatuses.ERR_BAD_POINT`
+
+The point being used does not exist.
+
+##### `CatanStatuses.ERR_NOT_CON`
+
+The player is trying to build a building which is not connected to any of their roads.
+
+##### `CatanStatuses.ERR_HARBOR`
+
+The player is trying to use a harbor which they are not connected to
+
+##### `CatanStatuses.ERR_NOT_EXIST`
+
+The player is trying to use a building which does not exist
+
+##### `CatanStatuses.ERR_BAD_OWNER`
+
+The player is trying to use a building which belongs to another player
+
+##### `CatanStatuses.ERR_UPGRADE_CITY`
+
+The player is trying to build a city on an invalid location
+
+##### `CatanStatuses.ERR_DECK`
+
+There are not enough cards in the deck to perform this action
+
+##### `CatanStatuses.ERR_INPUT`
+
+The input given is missing mandatory information
+
+##### `CatanStatuses.ERR_TEST`
+
+When running the test module, an error was encountered
+
+
 
 ## Example game
 
