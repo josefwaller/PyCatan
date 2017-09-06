@@ -3,7 +3,7 @@ from player import Player
 from statuses import Statuses
 from building import Building
 from hex import Hex
-from cards import Cards
+from card import ResCard, DevCard
 
 # used to shuffle the deck of hexes
 import random
@@ -291,19 +291,19 @@ class Board:
 
         # returns the appropriete card
         if hex == Hex.FOREST:
-            return Cards.CARD_WOOD
+            return ResCard.WOOD
 
         elif hex == Hex.HILLS:
-            return Cards.CARD_BRICK
+            return ResCard.BRICK
 
         elif hex == Hex.PASTURE:
-            return Cards.CARD_SHEEP
+            return ResCard.SHEEP
 
         elif hex == Hex.FIELDS:
-            return Cards.CARD_WHEAT
+            return ResCard.WHEAT
 
         elif hex == Hex.MOUNTAINS:
-            return Cards.CARD_ORE
+            return ResCard.ORE
 
         else:
             return None
@@ -385,11 +385,11 @@ class Board:
 
         # checks the player has the cards
         needed_cards = [
-            Cards.CARD_WHEAT,
-            Cards.CARD_WHEAT,
-            Cards.CARD_ORE,
-            Cards.CARD_ORE,
-            Cards.CARD_ORE
+            ResCard.WHEAT,
+            ResCard.WHEAT,
+            ResCard.ORE,
+            ResCard.ORE,
+            ResCard.ORE
         ]
         if not (self.game).players[player].has_cards(needed_cards):
             return Statuses.ERR_CARDS

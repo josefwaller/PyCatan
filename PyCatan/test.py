@@ -2,7 +2,7 @@ from game import Game
 from hex import Hex
 
 # imports all the different types of cards (Resource and development)
-from cards import Cards
+from card import ResCard, DevCard
 
 # imports the board for static methods
 from board import Board
@@ -77,10 +77,10 @@ class Tester:
 
         # adds two roads leading away from the settlement
         game.players[0].add_cards([
-            Cards.CARD_BRICK,
-            Cards.CARD_BRICK,
-            Cards.CARD_WOOD,
-            Cards.CARD_WOOD
+            ResCard.BRICK,
+            ResCard.BRICK,
+            ResCard.WOOD,
+            ResCard.WOOD
         ])
 
         for i in range(1, 3):
@@ -92,10 +92,10 @@ class Tester:
 
         # tries to build an isolated settlement
         game.players[0].add_cards([
-            Cards.CARD_BRICK,
-            Cards.CARD_SHEEP,
-            Cards.CARD_WOOD,
-            Cards.CARD_WHEAT
+            ResCard.BRICK,
+            ResCard.SHEEP,
+            ResCard.WOOD,
+            ResCard.WHEAT
         ])
         stat = game.add_settlement(player=0, r=0, i=3)
 
@@ -122,11 +122,11 @@ class Tester:
 
         # upgrades the settlement to a city
         game.players[0].add_cards([
-            Cards.CARD_WHEAT,
-            Cards.CARD_WHEAT,
-            Cards.CARD_ORE,
-            Cards.CARD_ORE,
-            Cards.CARD_ORE
+            ResCard.WHEAT,
+            ResCard.WHEAT,
+            ResCard.ORE,
+            ResCard.ORE,
+            ResCard.ORE
         ])
         stat = game.add_city(r=0, i=0, player=0)
 
@@ -154,8 +154,8 @@ class Tester:
         game.add_settlement(player=0, r=0, i=0, is_starting=True)
 
         game.players[0].add_cards([
-            Cards.CARD_WOOD,
-            Cards.CARD_BRICK
+            ResCard.WOOD,
+            ResCard.BRICK
         ])
 
         result = game.add_road(player=0, start=[0, 0], end=[0, 1])
@@ -180,8 +180,8 @@ class Tester:
         # gives player 0 a six long road segment
         for i in range(6):
             game.players[0].add_cards([
-                Cards.CARD_WOOD,
-                Cards.CARD_BRICK
+                ResCard.WOOD,
+                ResCard.BRICK
             ])
 
             status = game.add_road(player=0, start=[3, i], end=[3, i + 1])
@@ -212,8 +212,8 @@ class Tester:
         points = []
         for count in range(10):
             game.players[1].add_cards([
-                Cards.CARD_WOOD,
-                Cards.CARD_BRICK
+                ResCard.WOOD,
+                ResCard.BRICK
             ])
 
             r = math.floor(count / 5) + 4
@@ -249,9 +249,9 @@ class Tester:
 
         game.add_settlement(player=0, r=0, i=1, is_starting=True)
 
-        game.players[0].add_dev_card(Cards.DEV_ROAD)
+        game.players[0].add_dev_card(DevCard.ROAD)
 
-        result = game.use_dev_card(player=0, card=Cards.DEV_ROAD, args={
+        result = game.use_dev_card(player=0, card=DevCard.ROAD, args={
             "road_one": {
                 "start": [0, 2],
                 "end": [0, 3]
@@ -274,10 +274,10 @@ class Tester:
         game = Game()
 
         # gives the player a knight card
-        game.players[1].add_dev_card(Cards.DEV_KNIGHT)
+        game.players[1].add_dev_card(DevCard.KNIGHT)
 
         # makes sure player 0 only has a wood card and player 2 has no resource cards
-        game.players[0].cards = [Cards.CARD_WOOD]
+        game.players[0].cards = [ResCard.WOOD]
         game.players[1].cards = []
 
         # makes sure player 0 has a settlement on the target hex
@@ -289,7 +289,7 @@ class Tester:
         # uses the knight card
         # move the robber to robber_pos
         # takes a cad from player 0
-        result = game.use_dev_card(player=1, card=Cards.DEV_KNIGHT, args={
+        result = game.use_dev_card(player=1, card=DevCard.KNIGHT, args={
             "robber_pos": [0, 0],
             "victim": 0
         })
@@ -298,7 +298,7 @@ class Tester:
             return result
 
         if game.players[0].cards == []:
-            if game.players[1].cards == [Cards.CARD_WOOD]:
+            if game.players[1].cards == [ResCard.WOOD]:
                 return True
 
         return Statuses.ERR_TEST
@@ -310,10 +310,10 @@ class Tester:
 
         # gives player 0 three knight cards
         for i in range(3):
-            game.players[0].add_dev_card(Cards.DEV_KNIGHT)
+            game.players[0].add_dev_card(DevCard.KNIGHT)
 
             # plays it
-            stat = game.use_dev_card(player=0, card=Cards.DEV_KNIGHT, args={
+            stat = game.use_dev_card(player=0, card=DevCard.KNIGHT, args={
                 "robber_pos": [0, i],
                 "victim": None
             })
@@ -327,10 +327,10 @@ class Tester:
 
         # gives player 2 three knight cards too
         for i in range(3):
-            game.players[2].add_dev_card(Cards.DEV_KNIGHT)
+            game.players[2].add_dev_card(DevCard.KNIGHT)
 
             # plays it
-            game.use_dev_card(player=2, card=Cards.DEV_KNIGHT, args={
+            game.use_dev_card(player=2, card=DevCard.KNIGHT, args={
                 "robber_pos": [0, i],
                 "victim": None
             })
@@ -340,10 +340,10 @@ class Tester:
             return Statuses.ERR_TEST
 
         # gives player 2 another knight card
-        game.players[2].add_dev_card(Cards.DEV_KNIGHT)
+        game.players[2].add_dev_card(DevCard.KNIGHT)
 
         # plays it
-        game.use_dev_card(player=2, card=Cards.DEV_KNIGHT, args={
+        game.use_dev_card(player=2, card=DevCard.KNIGHT, args={
             "robber_pos": [0, 0],
             "victim": None
         })
@@ -377,11 +377,11 @@ class Tester:
 
         # upgrades the settlement to a city
         game.players[0].add_cards([
-            Cards.CARD_WHEAT,
-            Cards.CARD_WHEAT,
-            Cards.CARD_ORE,
-            Cards.CARD_ORE,
-            Cards.CARD_ORE
+            ResCard.WHEAT,
+            ResCard.WHEAT,
+            ResCard.ORE,
+            ResCard.ORE,
+            ResCard.ORE
         ])
 
         game.add_city(r=1, i=2, player=0)
@@ -425,45 +425,45 @@ class Tester:
         game = Game()
 
         # gives player 0 a YOP card
-        game.players[0].add_dev_card(Cards.DEV_MONOPOLY)
+        game.players[0].add_dev_card(DevCard.MONOPOLY)
 
         # gives players 1 and 2 some cards
         game.players[1].add_cards([
-            Cards.CARD_BRICK,
-            Cards.CARD_BRICK,
-            Cards.CARD_BRICK,
-            Cards.CARD_WOOD,
+            ResCard.BRICK,
+            ResCard.BRICK,
+            ResCard.BRICK,
+            ResCard.WOOD,
         ])
 
         game.players[2].add_cards([
-            Cards.CARD_BRICK,
-            Cards.CARD_WHEAT,
-            Cards.CARD_WHEAT,
-            Cards.CARD_ORE,
-            Cards.CARD_ORE,
-            Cards.CARD_ORE,
+            ResCard.BRICK,
+            ResCard.WHEAT,
+            ResCard.WHEAT,
+            ResCard.ORE,
+            ResCard.ORE,
+            ResCard.ORE,
         ])
 
         # uses the dev card
-        game.use_dev_card(player=0, card=Cards.DEV_MONOPOLY, args={
-            "card_type": Cards.CARD_BRICK
+        game.use_dev_card(player=0, card=DevCard.MONOPOLY, args={
+            "card_type": ResCard.BRICK
         })
 
         # makes sure player 0 got a bunch of brick
-        if not game.players[0].cards == [Cards.CARD_BRICK] * 4:
+        if not game.players[0].cards == [ResCard.BRICK] * 4:
             return Statuses.ERR_TEST
 
 
         # makes sure players 1 and 2 lost their cards
-        if not game.players[1].cards == [Cards.CARD_WOOD]:
+        if not game.players[1].cards == [ResCard.WOOD]:
             return Statuses.ERR_TEST
 
         if not game.players[2].cards == [
-            Cards.CARD_WHEAT,
-            Cards.CARD_WHEAT,
-            Cards.CARD_ORE,
-            Cards.CARD_ORE,
-            Cards.CARD_ORE
+            ResCard.WHEAT,
+            ResCard.WHEAT,
+            ResCard.ORE,
+            ResCard.ORE,
+            ResCard.ORE
         ]:
             return Statuses.ERR_TEST
 
@@ -476,34 +476,34 @@ class Tester:
         game = Game()
 
         # gives player 0 a yop card
-        game.players[0].add_dev_card(Cards.DEV_YOP)
+        game.players[0].add_dev_card(DevCard.YOP)
 
         # player one uses it to get two brick
-        stat = game.use_dev_card(player=0, card=Cards.DEV_YOP, args={
-            "card_one": Cards.CARD_BRICK,
-            "card_two": Cards.CARD_BRICK
+        stat = game.use_dev_card(player=0, card=DevCard.YOP, args={
+            "card_one": ResCard.BRICK,
+            "card_two": ResCard.BRICK
         })
         if stat != Statuses.ALL_GOOD:
             return stat
 
         # checks it worked
-        if not game.players[0].cards == [Cards.CARD_BRICK] * 2:
+        if not game.players[0].cards == [ResCard.BRICK] * 2:
             return Statuses.ERR_TEST
 
         # gives player 2 a yop card
-        game.players[2].add_dev_card(Cards.DEV_YOP)
+        game.players[2].add_dev_card(DevCard.YOP)
 
         # uses it to get one wood and one brick
-        stat = game.use_dev_card(player=2, card=Cards.DEV_YOP, args={
-            "card_one": Cards.CARD_BRICK,
-            "card_two": Cards.CARD_WOOD
+        stat = game.use_dev_card(player=2, card=DevCard.YOP, args={
+            "card_one": ResCard.BRICK,
+            "card_two": ResCard.WOOD
         })
         if stat != Statuses.ALL_GOOD:
             return stat
 
         # checks it worked
-        if not (game.players[2].cards.count(Cards.CARD_BRICK) == 1
-        and game.players[2].cards.count(Cards.CARD_WOOD) == 1):
+        if not (game.players[2].cards.count(ResCard.BRICK) == 1
+        and game.players[2].cards.count(ResCard.WOOD) == 1):
             return Statuses.ERR_TEST
 
         return True
@@ -515,7 +515,7 @@ class Tester:
         game = Game()
 
         # gives player 0 a VP dev card
-        game.players[0].add_dev_card(Cards.DEV_VP)
+        game.players[0].add_dev_card(DevCard.VP)
 
         # checks it doesn't show up when getting VPs
         if not game.players[0].get_VP() == 0:
@@ -526,7 +526,7 @@ class Tester:
             return Statuses.ERR_TEST
 
         # checks it works with multiple dev cards
-        game.players[0].add_dev_card(Cards.DEV_VP)
+        game.players[0].add_dev_card(DevCard.VP)
 
         if not game.players[0].get_VP(include_dev=True) == 2:
             return Statuses.ERR_TEST

@@ -1,7 +1,7 @@
 from board import Board
 from player import Player
 from statuses import Statuses
-from cards import Cards
+from card import ResCard, DevCard
 from building import Building
 
 import random
@@ -27,14 +27,14 @@ class Game:
         for i in range(14):
 
             if i < 2:
-                self.dev_deck.append(Cards.DEV_ROAD)
-                self.dev_deck.append(Cards.DEV_MONOPOLY)
-                self.dev_deck.append(Cards.DEV_YOP)
+                self.dev_deck.append(DevCard.ROAD)
+                self.dev_deck.append(DevCard.MONOPOLY)
+                self.dev_deck.append(DevCard.YOP)
 
             if i < 5:
-                self.dev_deck.append(Cards.DEV_VP)
+                self.dev_deck.append(DevCard.VP)
 
-            self.dev_deck.append(Cards.DEV_KNIGHT)
+            self.dev_deck.append(DevCard.KNIGHT)
 
         # random.shuffle(self.dev_deck)
 
@@ -247,7 +247,7 @@ class Game:
             return Statuses.ERR_CARDS
 
         # applies the action
-        if card == Cards.DEV_ROAD:
+        if card == DevCard.ROAD:
             # checks the correct arguments are given
             road_names = [
                 "road_one",
@@ -305,7 +305,7 @@ class Game:
 
             return Statuses.ALL_GOOD
 
-        elif card == Cards.DEV_KNIGHT:
+        elif card == DevCard.KNIGHT:
             # checks there are the right arguments
             if not ("robber_pos" in args and "victim" in args):
                 return Statuses.ERR_INPUT
@@ -337,7 +337,7 @@ class Game:
                 if self.players[player].knight_cards > current_longest:
                     self.largest_army = player
 
-        elif card == Cards.DEV_MONOPOLY:
+        elif card == DevCard.MONOPOLY:
             # gets the type of card
             card_type = args['card_type']
             # for each player, checks if they have the card
@@ -353,11 +353,11 @@ class Game:
                     # adds them to the user's cards
                     self.players[player].add_cards(cards_to_give)
 
-        elif card == Cards.DEV_VP:
+        elif card == DevCard.VP:
             # players do not play developement cards, so it returns an error
             return Statuses.ERR_INPUT
 
-        elif card == Cards.DEV_YOP:
+        elif card == DevCard.YOP:
             # checks the player gave two development cards
             if not 'card_one' in args and not 'card_two' in args:
                 return Statuses.ERR_INPUT

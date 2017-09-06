@@ -1,6 +1,6 @@
 from building import Building
 from statuses import Statuses
-from cards import Cards
+from card import ResCard, DevCard
 
 import math
 
@@ -33,10 +33,10 @@ class Player:
         if not is_starting:
             # makes sure the player has the cards to build a settlements
             cards_needed = [
-                Cards.CARD_WOOD,
-                Cards.CARD_BRICK,
-                Cards.CARD_SHEEP,
-                Cards.CARD_WHEAT
+                ResCard.WOOD,
+                ResCard.BRICK,
+                ResCard.SHEEP,
+                ResCard.WHEAT
             ]
 
             # checks the player has the cards
@@ -214,8 +214,8 @@ class Player:
 
             # checks that it has the proper cards
             cards_needed = [
-                Cards.CARD_WOOD,
-                Cards.CARD_BRICK
+                ResCard.WOOD,
+                ResCard.BRICK
             ]
             if not self.has_cards(cards_needed):
                 return Statuses.ERR_CARDS
@@ -349,7 +349,7 @@ class Player:
         # adds VPs from developement cards
         if include_dev:
             for d in self.dev_cards:
-                if d == Cards.DEV_VP:
+                if d == DevCard.VP:
                     points += 1
 
         return points
@@ -362,19 +362,19 @@ class Player:
 
             card_name = ""
 
-            if c == Cards.CARD_WOOD:
+            if c == ResCard.WOOD:
                 card_name = "Wood"
 
-            elif c == Cards.CARD_SHEEP:
+            elif c == ResCard.SHEEP:
                 card_name = "Sheep"
 
-            elif c == Cards.CARD_BRICK:
+            elif c == ResCard.BRICK:
                 card_name = "Brick"
 
-            elif c == Cards.CARD_WHEAT:
+            elif c == ResCard.WHEAT:
                 card_name = "Wheat"
 
-            elif c == Cards.CARD_ORE:
+            elif c == ResCard.ORE:
                 card_name = "Ore"
 
             else:
