@@ -1,4 +1,5 @@
 from game import Game
+from hex import Hex
 
 # imports all the different types of cards (Resource and development)
 from cards import Cards
@@ -539,13 +540,13 @@ class Tester:
         game = Game(starting_board=True)
 
         # makes sure some hexes are in the right place
-        if not game.board.hexes[0][0] == Board.HEX_FOREST:
+        if not game.board.hexes[0][0] == Hex.FOREST:
             return Statuses.ERR_TEST
 
-        elif not game.board.hexes[4][2] == Board.HEX_FOREST:
+        elif not game.board.hexes[4][2] == Hex.FOREST:
             return Statuses.ERR_TEST
 
-        elif not game.board.hexes[2][2] == Board.HEX_FIELDS:
+        elif not game.board.hexes[2][2] == Hex.FIELDS:
             return Statuses.ERR_TEST
 
         return True

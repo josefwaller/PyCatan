@@ -2,6 +2,7 @@ from harbor import Harbor
 from player import Player
 from statuses import Statuses
 from building import Building
+from hex import Hex
 from cards import Cards
 
 # used to shuffle the deck of hexes
@@ -17,14 +18,6 @@ import json
 import pprint
 
 class Board:
-
-    # different types of hexes
-    HEX_FOREST = 5
-    HEX_HILLS = 4
-    HEX_MOUNTAINS = 3
-    HEX_PASTURE = 2
-    HEX_FIELDS = 1
-    HEX_DESERT = 0
 
     def __init__(self, game, starting_board=False):
         # the game the board is in
@@ -55,17 +48,17 @@ class Board:
             for i in range(4):
 
                 # adds four fields, forests and pastures
-                self.all_hexes.append(Board.HEX_FIELDS)
-                self.all_hexes.append(Board.HEX_FOREST)
-                self.all_hexes.append(Board.HEX_PASTURE)
+                self.all_hexes.append(Hex.FIELDS)
+                self.all_hexes.append(Hex.FOREST)
+                self.all_hexes.append(Hex.PASTURE)
                 # adds three mountains and hills
                 if i < 3:
-                    self.all_hexes.append(Board.HEX_MOUNTAINS)
-                    self.all_hexes.append(Board.HEX_HILLS)
+                    self.all_hexes.append(Hex.MOUNTAINS)
+                    self.all_hexes.append(Hex.HILLS)
 
                 # adds one desert
                 if i == 0:
-                    self.all_hexes.append(Board.HEX_DESERT)
+                    self.all_hexes.append(Hex.DESERT)
 
             # shuffles the deck
             random.shuffle(self.all_hexes)
@@ -99,11 +92,11 @@ class Board:
                 self.hex_nums.append(self.all_hex_nums[last_index:last_index + length])
 
                 # checks if the desert was placed in this row
-                if self.hexes[i].count(Board.HEX_DESERT) > 0:
+                if self.hexes[i].count(Hex.DESERT) > 0:
 
                     # takes the chip off the desert and puts it at the back of the deck
                     # so that it will be used at the end
-                    index = self.hexes[i].index(Board.HEX_DESERT)
+                    index = self.hexes[i].index(Hex.DESERT)
                     # checks if the desert is the last hex in this row
                     # if so, we must append a hex because the row is too short
                     if index == len(self.hexes[i]) - 1 and i == len(self.hexes) - 1:
@@ -141,22 +134,22 @@ class Board:
                     to_append = None
 
                     if hex == "fo":
-                        to_append = Board.HEX_FOREST
+                        to_append = Hex.FOREST
 
                     elif hex == "fi":
-                        to_append = Board.HEX_FIELDS
+                        to_append = Hex.FIELDS
 
                     elif hex == "m":
-                        to_append = Board.HEX_MOUNTAINS
+                        to_append = Hex.MOUNTAINS
 
                     elif hex == "h":
-                        to_append = Board.HEX_HILLS
+                        to_append = Hex.HILLS
 
                     elif hex == "p":
-                        to_append = Board.HEX_PASTURE
+                        to_append = Hex.PASTURE
 
                     else:
-                        to_append = Board.HEX_DESERT
+                        to_append = Hex.DESERT
 
                     self.hexes[i].append(to_append)
                     self.hex_nums[i].append(board_data['hex_nums'][i][x])
@@ -253,9 +246,9 @@ class Board:
         # puts the robber on the desert hex to start
         for r in range(len(self.hexes)):
             # checks if this row has the desert
-            if self.hexes[r].count(Board.HEX_DESERT) > 0:
+            if self.hexes[r].count(Hex.DESERT) > 0:
                 # places the robber
-                self.robber = [r, self.hexes[r].index(Board.HEX_DESERT)]
+                self.robber = [r, self.hexes[r].index(Hex.DESERT)]
 
     # gives the players cards for a certain roll
     def add_yield(self, roll):
@@ -297,19 +290,19 @@ class Board:
     def get_card_from_hex(hex):
 
         # returns the appropriete card
-        if hex == Board.HEX_FOREST:
+        if hex == Hex.FOREST:
             return Cards.CARD_WOOD
 
-        elif hex == Board.HEX_HILLS:
+        elif hex == Hex.HILLS:
             return Cards.CARD_BRICK
 
-        elif hex == Board.HEX_PASTURE:
+        elif hex == Hex.PASTURE:
             return Cards.CARD_SHEEP
 
-        elif hex == Board.HEX_FIELDS:
+        elif hex == Hex.FIELDS:
             return Cards.CARD_WHEAT
 
-        elif hex == Board.HEX_MOUNTAINS:
+        elif hex == Hex.MOUNTAINS:
             return Cards.CARD_ORE
 
         else:
