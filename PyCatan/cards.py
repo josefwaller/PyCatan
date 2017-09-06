@@ -6,7 +6,7 @@ class Cards:
     CARD_ORE = 2
     CARD_SHEEP = 3
     CARD_WHEAT = 4
-    
+
     # the developement cards
     DEV_ROAD = 0
     DEV_VP = 1
