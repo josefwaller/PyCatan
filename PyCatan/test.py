@@ -1,19 +1,19 @@
-from .catan_game import CatanGame
+from game import Game
 
 # imports all the different types of cards (Resource and development)
-from .catan_cards import CatanCards
+from cards import Cards
 
 # imports the board for static methods
-from .catan_board import CatanBoard
+from board import Board
 
 # imports the different Statuses
-from .catan_statuses import CatanStatuses
+from statuses import Statuses
 
 # is used
 import math
 
-# tests the CatanGame module
-class CatanTester:
+# tests the Game module
+class Tester:
 	
 	def __init__(self):
 		self.game = None
@@ -59,51 +59,51 @@ class CatanTester:
 	# tests creating a game
 	def init_game(self):
 	
-		self.game = CatanGame()
+		self.game = Game()
 			
 		return True
 		
 	# tests building a settlement at a location
 	def test_settlement(self):
 		
-		game = CatanGame()
+		game = Game()
 			
 		# tests just building a starting settlement
 		res = game.add_settlement(player=0, r=0, i=0, is_starting=True)
 		
-		if res != CatanStatuses.ALL_GOOD:
+		if res != Statuses.ALL_GOOD:
 			return res
 			
 		# adds two roads leading away from the settlement
 		game.players[0].add_cards([
-			CatanCards.CARD_BRICK,
-			CatanCards.CARD_BRICK,
-			CatanCards.CARD_WOOD,
-			CatanCards.CARD_WOOD
+			Cards.CARD_BRICK,
+			Cards.CARD_BRICK,
+			Cards.CARD_WOOD,
+			Cards.CARD_WOOD
 		])
 		
 		for i in range(1, 3):
 			
 			stat = game.add_road(player=0, start=[0, i - 1], end=[0, i])
 			
-			if stat != CatanStatuses.ALL_GOOD:
+			if stat != Statuses.ALL_GOOD:
 				return stat
 			
 		# tries to build an isolated settlement
 		game.players[0].add_cards([
-			CatanCards.CARD_BRICK,
-			CatanCards.CARD_SHEEP,
-			CatanCards.CARD_WOOD,
-			CatanCards.CARD_WHEAT
+			Cards.CARD_BRICK,
+			Cards.CARD_SHEEP,
+			Cards.CARD_WOOD,
+			Cards.CARD_WHEAT
 		])
 		stat = game.add_settlement(player=0, r=0, i=3)	
 		
-		if stat != CatanStatuses.ERR_ISOLATED:
-			return CatanStatuses.ERR_TEST
+		if stat != Statuses.ERR_ISOLATED:
+			return Statuses.ERR_TEST
 			
 		# builds a connected settlement
 		stat = game.add_settlement(player=0, r=0, i=2)
-		if stat != CatanStatuses.ALL_GOOD:
+		if stat != Statuses.ALL_GOOD:
 			return stat
 		
 		return True
@@ -112,54 +112,54 @@ class CatanTester:
 	def test_city(self):
 		
 		# creates a new game
-		game = CatanGame()
+		game = Game()
 		
 		# adds a settlement
 		stat = game.add_settlement(player=0, r=0, i=0, is_starting=True)
-		if stat != CatanStatuses.ALL_GOOD:
+		if stat != Statuses.ALL_GOOD:
 			return stat
 			
 		# upgrades the settlement to a city
 		game.players[0].add_cards([
-			CatanCards.CARD_WHEAT,
-			CatanCards.CARD_WHEAT,
-			CatanCards.CARD_ORE,
-			CatanCards.CARD_ORE,
-			CatanCards.CARD_ORE
+			Cards.CARD_WHEAT,
+			Cards.CARD_WHEAT,
+			Cards.CARD_ORE,
+			Cards.CARD_ORE,
+			Cards.CARD_ORE
 		])
 		stat = game.add_city(r=0, i=0, player=0)
 		
-		if stat != CatanStatuses.ALL_GOOD:
+		if stat != Statuses.ALL_GOOD:
 			return stat
 		
 		# checks that the player gets 2 of each resource
 		
 		# gets the type of card the player will get
-		card_type = CatanBoard.get_card_from_hex(game.board.hexes[0][0])
+		card_type = Board.get_card_from_hex(game.board.hexes[0][0])
 		hex_num = game.board.hex_nums[0][0]
 		
 		game.add_yield_for_roll(hex_num)
 		
 		if game.players[0].cards != [card_type, card_type]:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 		
 		return True
 		
 	# tests building a road using resource cards
 	def test_road(self):
 	
-		game = CatanGame()
+		game = Game()
 		
 		game.add_settlement(player=0, r=0, i=0, is_starting=True)
 		
 		game.players[0].add_cards([
-			CatanCards.CARD_WOOD,
-			CatanCards.CARD_BRICK
+			Cards.CARD_WOOD,
+			Cards.CARD_BRICK
 		])
 		
 		result = game.add_road(player=0, start=[0, 0], end=[0, 1])
 		
-		if result == CatanStatuses.ALL_GOOD:
+		if result == Statuses.ALL_GOOD:
 			return True
 			
 		else:
@@ -168,51 +168,51 @@ class CatanTester:
 	# tests that longest road works as intended
 	def test_longest_road(self):
 		
-		game = CatanGame()
+		game = Game()
 		
 		# gives player 0 a settlement
 		status = game.add_settlement(player=0, r=3, i=0, is_starting=True)
 		
-		if status != CatanStatuses.ALL_GOOD:
+		if status != Statuses.ALL_GOOD:
 			return status
 			
 		# gives player 0 a six long road segment
 		for i in range(6):
 			game.players[0].add_cards([
-				CatanCards.CARD_WOOD,
-				CatanCards.CARD_BRICK
+				Cards.CARD_WOOD,
+				Cards.CARD_BRICK
 			])
 			
 			status = game.add_road(player=0, start=[3, i], end=[3, i + 1])
 		
-			if status != CatanStatuses.ALL_GOOD:
+			if status != Statuses.ALL_GOOD:
 				return status
 		
 		# prints player 0's longest road
 		if game.players[0].longest_road_length != 6:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 		
 		# prints the longest road owner
 		if game.longest_road_owner != 0:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 		
 		# checks player 0 got victory points
 		# one from the settlement, two from longest road
 		if not game.players[0].get_VP() == 3:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 		
 		# gives player 1 a settlement		
 		stat = game.add_settlement(player=1, r=4, i=2, is_starting=True)
 		
-		if stat != CatanStatuses.ALL_GOOD:
+		if stat != Statuses.ALL_GOOD:
 			return stat
 		
 		# gives player 1 a 10 long looping road segment
 		points = []
 		for count in range(10):
 			game.players[1].add_cards([
-				CatanCards.CARD_WOOD,
-				CatanCards.CARD_BRICK
+				Cards.CARD_WOOD,
+				Cards.CARD_BRICK
 			])
 			
 			r = math.floor(count / 5) + 4
@@ -226,31 +226,31 @@ class CatanTester:
 			end_index = (index + 1) % len(points)
 			status = game.add_road(player=1, start=points[index], end=points[end_index])
 		
-			if status != CatanStatuses.ALL_GOOD:
+			if status != Statuses.ALL_GOOD:
 				return status
 		
 		if game.longest_road_owner != 1:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 			
 		# checks victory points are correctly given out
 		if not game.players[0].get_VP() == 1:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 		
 		if not game.players[1].get_VP() == 3:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 			
 		return True
 	
 	# tests using a road building card
 	def test_road_building(self):
 		
-		game = CatanGame()
+		game = Game()
 	
 		game.add_settlement(player=0, r=0, i=1, is_starting=True)
 	
-		game.players[0].add_dev_card(CatanCards.DEV_ROAD)
+		game.players[0].add_dev_card(Cards.DEV_ROAD)
 		
-		result = game.use_dev_card(player=0, card=CatanCards.DEV_ROAD, args={
+		result = game.use_dev_card(player=0, card=Cards.DEV_ROAD, args={
 			"road_one": {
 				"start": [0, 2],
 				"end": [0, 3]
@@ -261,7 +261,7 @@ class CatanTester:
 			}
 		})
 	
-		if result != CatanStatuses.ALL_GOOD:
+		if result != Statuses.ALL_GOOD:
 			return result
 			
 		return True
@@ -270,90 +270,90 @@ class CatanTester:
 	# tests using a knight card
 	def test_knight(self):
 		
-		game = CatanGame()
+		game = Game()
 		
 		# gives the player a knight card
-		game.players[1].add_dev_card(CatanCards.DEV_KNIGHT)
+		game.players[1].add_dev_card(Cards.DEV_KNIGHT)
 		
 		# makes sure player 0 only has a wood card and player 2 has no resource cards
-		game.players[0].cards = [CatanCards.CARD_WOOD]
+		game.players[0].cards = [Cards.CARD_WOOD]
 		game.players[1].cards = []
 		
 		# makes sure player 0 has a settlement on the target hex
 		stat = game.add_settlement(r=0, i=0, player=0, is_starting=True)
 		
-		if not stat == CatanStatuses.ALL_GOOD:
+		if not stat == Statuses.ALL_GOOD:
 			return stat
 		
 		# uses the knight card
 		# move the robber to robber_pos
 		# takes a cad from player 0
-		result = game.use_dev_card(player=1, card=CatanCards.DEV_KNIGHT, args={
+		result = game.use_dev_card(player=1, card=Cards.DEV_KNIGHT, args={
 			"robber_pos": [0, 0],
 			"victim": 0
 		})
 		
-		if result != CatanStatuses.ALL_GOOD:
+		if result != Statuses.ALL_GOOD:
 			return result
 			
 		if game.players[0].cards == []:
-			if game.players[1].cards == [CatanCards.CARD_WOOD]:
+			if game.players[1].cards == [Cards.CARD_WOOD]:
 				return True
 				
-		return CatanStatuses.ERR_TEST
+		return Statuses.ERR_TEST
 			
 	# tests getting the largest army
 	def test_largest_army(self):
 	
-		game = CatanGame()
+		game = Game()
 	
 		# gives player 0 three knight cards
 		for i in range(3):
-			game.players[0].add_dev_card(CatanCards.DEV_KNIGHT)
+			game.players[0].add_dev_card(Cards.DEV_KNIGHT)
 			
 			# plays it
-			stat = game.use_dev_card(player=0, card=CatanCards.DEV_KNIGHT, args={
+			stat = game.use_dev_card(player=0, card=Cards.DEV_KNIGHT, args={
 				"robber_pos": [0, i],
 				"victim": None
 			})
 		
-			if stat != CatanStatuses.ALL_GOOD:
+			if stat != Statuses.ALL_GOOD:
 				return stat
 			
 		# checks if player 0 now has largest army
 		if not game.largest_army == 0:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 			
 		# gives player 2 three knight cards too
 		for i in range(3):
-			game.players[2].add_dev_card(CatanCards.DEV_KNIGHT)
+			game.players[2].add_dev_card(Cards.DEV_KNIGHT)
 			
 			# plays it
-			game.use_dev_card(player=2, card=CatanCards.DEV_KNIGHT, args={
+			game.use_dev_card(player=2, card=Cards.DEV_KNIGHT, args={
 				"robber_pos": [0, i],
 				"victim": None
 			})
 		
 		# checks that 0 still has the largest army
 		if not game.largest_army == 0:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 		
 		# gives player 2 another knight card
-		game.players[2].add_dev_card(CatanCards.DEV_KNIGHT)
+		game.players[2].add_dev_card(Cards.DEV_KNIGHT)
 		
 		# plays it
-		game.use_dev_card(player=2, card=CatanCards.DEV_KNIGHT, args={
+		game.use_dev_card(player=2, card=Cards.DEV_KNIGHT, args={
 			"robber_pos": [0, 0],
 			"victim": None
 		})
 		
 		# checks player 2 now has the knight card
 		if not game.largest_army == 2:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 			
 		# checks player 2 gained 2 victory points
 		if not game.players[2].get_VP() == 2:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 				
 		return True
 	
@@ -361,39 +361,39 @@ class CatanTester:
 	def test_victory_points(self):
 		
 		# creates a new game
-		game = CatanGame()
+		game = Game()
 		
 		# makes sure the players has 0 VP
 		if not game.players[0].get_VP() == 0:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 		
 		# adds a settlement
 		game.add_settlement(player=0, r=1, i=2, is_starting=True)
 		
 		# checks the player gained a victory point for it
 		if not game.players[0].get_VP() == 1:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 		
 		# upgrades the settlement to a city
 		game.players[0].add_cards([
-			CatanCards.CARD_WHEAT,
-			CatanCards.CARD_WHEAT,
-			CatanCards.CARD_ORE,
-			CatanCards.CARD_ORE,
-			CatanCards.CARD_ORE
+			Cards.CARD_WHEAT,
+			Cards.CARD_WHEAT,
+			Cards.CARD_ORE,
+			Cards.CARD_ORE,
+			Cards.CARD_ORE
 		])
 		
 		game.add_city(r=1, i=2, player=0)
 		
 		if not game.players[0].get_VP() == 2:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 			
 		return True
 		
 	# tests winning after gaining 10 victory points
 	def test_victory(self):
 		
-		game = CatanGame()
+		game = Game()
 		
 		# gives player 0 ten settlements
 		
@@ -402,69 +402,69 @@ class CatanTester:
 			# builds two settlements
 			stat = game.add_settlement(player=0, r=2, i=2 * i, is_starting=True)
 		
-			if stat != CatanStatuses.ALL_GOOD:
+			if stat != Statuses.ALL_GOOD:
 				return stat
 		
 			stat = game.add_settlement(player=0, r=3, i=2 * i + 1, is_starting=True)
 		
-			if stat != CatanStatuses.ALL_GOOD:
+			if stat != Statuses.ALL_GOOD:
 				return stat
 				
 		if not game.has_ended:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 			
 		if not game.winner == 0:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 			
 		return True
 	
 	# tests the monopoly developement card	
 	def test_monopoly(self):
 	
-		game = CatanGame()
+		game = Game()
 		
 		# gives player 0 a YOP card
-		game.players[0].add_dev_card(CatanCards.DEV_MONOPOLY)
+		game.players[0].add_dev_card(Cards.DEV_MONOPOLY)
 		
 		# gives players 1 and 2 some cards
 		game.players[1].add_cards([
-			CatanCards.CARD_BRICK,
-			CatanCards.CARD_BRICK,
-			CatanCards.CARD_BRICK,
-			CatanCards.CARD_WOOD,
+			Cards.CARD_BRICK,
+			Cards.CARD_BRICK,
+			Cards.CARD_BRICK,
+			Cards.CARD_WOOD,
 		])
 		
 		game.players[2].add_cards([
-			CatanCards.CARD_BRICK,
-			CatanCards.CARD_WHEAT,
-			CatanCards.CARD_WHEAT,
-			CatanCards.CARD_ORE,
-			CatanCards.CARD_ORE,
-			CatanCards.CARD_ORE,
+			Cards.CARD_BRICK,
+			Cards.CARD_WHEAT,
+			Cards.CARD_WHEAT,
+			Cards.CARD_ORE,
+			Cards.CARD_ORE,
+			Cards.CARD_ORE,
 		])
 		
 		# uses the dev card
-		game.use_dev_card(player=0, card=CatanCards.DEV_MONOPOLY, args={
-			"card_type": CatanCards.CARD_BRICK
+		game.use_dev_card(player=0, card=Cards.DEV_MONOPOLY, args={
+			"card_type": Cards.CARD_BRICK
 		})
 		
 		# makes sure player 0 got a bunch of brick
-		if not game.players[0].cards == [CatanCards.CARD_BRICK] * 4:
-			return CatanStatuses.ERR_TEST
+		if not game.players[0].cards == [Cards.CARD_BRICK] * 4:
+			return Statuses.ERR_TEST
 			
 		
 		# makes sure players 1 and 2 lost their cards
-		if not game.players[1].cards == [CatanCards.CARD_WOOD]:
-			return CatanStatuses.ERR_TEST
+		if not game.players[1].cards == [Cards.CARD_WOOD]:
+			return Statuses.ERR_TEST
 			
 		if not game.players[2].cards == [
-			CatanCards.CARD_WHEAT,
-			CatanCards.CARD_WHEAT,
-			CatanCards.CARD_ORE,
-			CatanCards.CARD_ORE,
-			CatanCards.CARD_ORE
+			Cards.CARD_WHEAT,
+			Cards.CARD_WHEAT,
+			Cards.CARD_ORE,
+			Cards.CARD_ORE,
+			Cards.CARD_ORE
 		]:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 		
 		return True
 	
@@ -472,38 +472,38 @@ class CatanTester:
 	def test_yop(self):
 		
 		# creates a new game
-		game = CatanGame()
+		game = Game()
 		
 		# gives player 0 a yop card
-		game.players[0].add_dev_card(CatanCards.DEV_YOP)
+		game.players[0].add_dev_card(Cards.DEV_YOP)
 		
 		# player one uses it to get two brick
-		stat = game.use_dev_card(player=0, card=CatanCards.DEV_YOP, args={
-			"card_one": CatanCards.CARD_BRICK,
-			"card_two": CatanCards.CARD_BRICK
+		stat = game.use_dev_card(player=0, card=Cards.DEV_YOP, args={
+			"card_one": Cards.CARD_BRICK,
+			"card_two": Cards.CARD_BRICK
 		})
-		if stat != CatanStatuses.ALL_GOOD:
+		if stat != Statuses.ALL_GOOD:
 			return stat
 			
 		# checks it worked
-		if not game.players[0].cards == [CatanCards.CARD_BRICK] * 2:
-			return CatanStatuses.ERR_TEST
+		if not game.players[0].cards == [Cards.CARD_BRICK] * 2:
+			return Statuses.ERR_TEST
 			
 		# gives player 2 a yop card
-		game.players[2].add_dev_card(CatanCards.DEV_YOP)
+		game.players[2].add_dev_card(Cards.DEV_YOP)
 		
 		# uses it to get one wood and one brick
-		stat = game.use_dev_card(player=2, card=CatanCards.DEV_YOP, args={
-			"card_one": CatanCards.CARD_BRICK,
-			"card_two": CatanCards.CARD_WOOD
+		stat = game.use_dev_card(player=2, card=Cards.DEV_YOP, args={
+			"card_one": Cards.CARD_BRICK,
+			"card_two": Cards.CARD_WOOD
 		})
-		if stat != CatanStatuses.ALL_GOOD:
+		if stat != Statuses.ALL_GOOD:
 			return stat
 		
 		# checks it worked
-		if not (game.players[2].cards.count(CatanCards.CARD_BRICK) == 1
-		and game.players[2].cards.count(CatanCards.CARD_WOOD) == 1):
-			return CatanStatuses.ERR_TEST
+		if not (game.players[2].cards.count(Cards.CARD_BRICK) == 1
+		and game.players[2].cards.count(Cards.CARD_WOOD) == 1):
+			return Statuses.ERR_TEST
 		
 		return True
 		
@@ -511,24 +511,24 @@ class CatanTester:
 	def test_VP_card(self):
 		
 		# creates a new game
-		game = CatanGame()	
+		game = Game()	
 		
 		# gives player 0 a VP dev card
-		game.players[0].add_dev_card(CatanCards.DEV_VP)
+		game.players[0].add_dev_card(Cards.DEV_VP)
 		
 		# checks it doesn't show up when getting VPs
 		if not game.players[0].get_VP() == 0:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 			
 		# checks it does show up if explicitly told to
 		if not game.players[0].get_VP(include_dev=True) == 1:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 	
 		# checks it works with multiple dev cards
-		game.players[0].add_dev_card(CatanCards.DEV_VP)
+		game.players[0].add_dev_card(Cards.DEV_VP)
 		
 		if not game.players[0].get_VP(include_dev=True) == 2:
-			return CatanStatuses.ERR_TEST
+			return Statuses.ERR_TEST
 	
 		return True
 	
@@ -536,20 +536,20 @@ class CatanTester:
 	def test_starting_board(self):
 		
 		# makes sure it doesn't crash
-		game = CatanGame(starting_board=True)
+		game = Game(starting_board=True)
 
 		# makes sure some hexes are in the right place
-		if not game.board.hexes[0][0] == CatanBoard.HEX_FOREST:
-			return CatanStatuses.ERR_TEST
+		if not game.board.hexes[0][0] == Board.HEX_FOREST:
+			return Statuses.ERR_TEST
 
-		elif not game.board.hexes[4][2] == CatanBoard.HEX_FOREST:
-			return CatanStatuses.ERR_TEST
+		elif not game.board.hexes[4][2] == Board.HEX_FOREST:
+			return Statuses.ERR_TEST
 
-		elif not game.board.hexes[2][2] == CatanBoard.HEX_FIELDS:
-			return CatanStatuses.ERR_TEST
+		elif not game.board.hexes[2][2] == Board.HEX_FIELDS:
+			return Statuses.ERR_TEST
 
 		return True
 
 if __name__ == "__main__":
-	tester = CatanTester()
+	tester = Tester()
 	tester.test_all()

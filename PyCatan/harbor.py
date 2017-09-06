@@ -1,5 +1,5 @@
 # represents a catan harbor 
-class CatanHarbor:
+class Harbor:
 	
 	# the different 2:1 types
 	TYPE_WOOD = 0
@@ -29,20 +29,20 @@ class CatanHarbor:
 	# Ex: 3:1, 2:1S, 2:1Wh
 	def get_type(self):
 
-		if self.type == CatanHarbor.TYPE_WOOD:
+		if self.type == Harbor.TYPE_WOOD:
 			return "2:1W"
 		
-		elif self.type == CatanHarbor.TYPE_SHEEP:
+		elif self.type == Harbor.TYPE_SHEEP:
 			return "2:1S"
 
-		elif self.type == CatanHarbor.TYPE_BRICK:
+		elif self.type == Harbor.TYPE_BRICK:
 			return "2:1B"
 
-		elif self.type == CatanHarbor.TYPE_WHEAT:
+		elif self.type == Harbor.TYPE_WHEAT:
 			return "2:1Wh"
 
-		elif self.type == CatanHarbor.TYPE_ORE:
+		elif self.type == Harbor.TYPE_ORE:
 			return "2:1O"
 
-		elif self.type == CatanHarbor.TYPE_ANY:
+		elif self.type == Harbor.TYPE_ANY:
 			return "3:1"

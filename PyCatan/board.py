@@ -1,8 +1,8 @@
-from .catan_harbor import CatanHarbor
-from .catan_player import CatanPlayer
-from .catan_statuses import CatanStatuses
-from .catan_building import CatanBuilding
-from .catan_cards import CatanCards
+from harbor import Harbor
+from player import Player
+from statuses import Statuses
+from building import Building
+from cards import Cards
 
 # used to shuffle the deck of hexes
 import random
@@ -16,7 +16,7 @@ import json
 # used for debugging
 import pprint
 
-class CatanBoard:
+class Board:
 	
 	# different types of hexes
 	HEX_FOREST = 5
@@ -66,18 +66,18 @@ class CatanBoard:
 				
 				# adds four fields, forests and pastures
 				
-				self.all_hexes.append(CatanBoard.HEX_FIELDS)
-				self.all_hexes.append(CatanBoard.HEX_FOREST)
-				self.all_hexes.append(CatanBoard.HEX_PASTURE)
+				self.all_hexes.append(Board.HEX_FIELDS)
+				self.all_hexes.append(Board.HEX_FOREST)
+				self.all_hexes.append(Board.HEX_PASTURE)
 				
 				# adds three mountains and hills
 				if i < 3:
-					self.all_hexes.append(CatanBoard.HEX_MOUNTAINS)
-					self.all_hexes.append(CatanBoard.HEX_HILLS)
+					self.all_hexes.append(Board.HEX_MOUNTAINS)
+					self.all_hexes.append(Board.HEX_HILLS)
 					
 				# adds one desert
 				if i == 0:
-					self.all_hexes.append(CatanBoard.HEX_DESERT)
+					self.all_hexes.append(Board.HEX_DESERT)
 					
 			# shuffles the deck
 			random.shuffle(self.all_hexes)
@@ -115,11 +115,11 @@ class CatanBoard:
 				self.hex_nums.append(self.all_hex_nums[last_index:last_index + length])
 				
 				# checks if the desert was placed in this row
-				if self.hexes[i].count(CatanBoard.HEX_DESERT) > 0:
+				if self.hexes[i].count(Board.HEX_DESERT) > 0:
 					
 					# takes the chip off the desert and puts it at the back of the deck
 					# so that it will be used at the end
-					index = self.hexes[i].index(CatanBoard.HEX_DESERT)
+					index = self.hexes[i].index(Board.HEX_DESERT)
 
 					# checks if the desert is the last hex in this row
 					# if so, we must append a hex because the row is too short
@@ -165,22 +165,22 @@ class CatanBoard:
 					to_append = None
 
 					if hex == "fo":
-						to_append = CatanBoard.HEX_FOREST
+						to_append = Board.HEX_FOREST
 					
 					elif hex == "fi":
-						to_append = CatanBoard.HEX_FIELDS
+						to_append = Board.HEX_FIELDS
 
 					elif hex == "m":
-						to_append = CatanBoard.HEX_MOUNTAINS
+						to_append = Board.HEX_MOUNTAINS
 
 					elif hex == "h":
-						to_append = CatanBoard.HEX_HILLS
+						to_append = Board.HEX_HILLS
 
 					elif hex == "p":
-						to_append = CatanBoard.HEX_PASTURE
+						to_append = Board.HEX_PASTURE
 
 					else:
-						to_append = CatanBoard.HEX_DESERT
+						to_append = Board.HEX_DESERT
 					
 					self.hexes[i].append(to_append)
 
@@ -255,15 +255,15 @@ class CatanBoard:
 		
 		# the different types of harbors
 		harbor_types = [
-			CatanHarbor.TYPE_WOOD,
-			CatanHarbor.TYPE_BRICK,
-			CatanHarbor.TYPE_ORE,
-			CatanHarbor.TYPE_WHEAT,
-			CatanHarbor.TYPE_SHEEP,
-			CatanHarbor.TYPE_ANY,
-			CatanHarbor.TYPE_ANY,
-			CatanHarbor.TYPE_ANY,
-			CatanHarbor.TYPE_ANY
+			Harbor.TYPE_WOOD,
+			Harbor.TYPE_BRICK,
+			Harbor.TYPE_ORE,
+			Harbor.TYPE_WHEAT,
+			Harbor.TYPE_SHEEP,
+			Harbor.TYPE_ANY,
+			Harbor.TYPE_ANY,
+			Harbor.TYPE_ANY,
+			Harbor.TYPE_ANY
 		]
 		
 		# shuffles the harbors
@@ -273,7 +273,7 @@ class CatanBoard:
 		while index < len(outside_points):
 		
 			# creates a new harbor
-			harbor = CatanHarbor(point_one=outside_points[index], point_two=outside_points[index + 1], type=harbor_types[count])
+			harbor = Harbor(point_one=outside_points[index], point_two=outside_points[index + 1], type=harbor_types[count])
 			
 			# adds it to harbors
 			self.harbors.append(harbor)
@@ -287,9 +287,9 @@ class CatanBoard:
 		# puts the robber on the desert hex to start
 		for r in range(len(self.hexes)):
 			# checks if this row has the desert
-			if self.hexes[r].count(CatanBoard.HEX_DESERT) > 0:
+			if self.hexes[r].count(Board.HEX_DESERT) > 0:
 				# places the robber
-				self.robber = [r, self.hexes[r].index(CatanBoard.HEX_DESERT)]
+				self.robber = [r, self.hexes[r].index(Board.HEX_DESERT)]
 			
 	# gives the players cards for a certain roll
 	def add_yield(self, roll):
@@ -317,10 +317,10 @@ class CatanBoard:
 							
 							# gets the card type
 							hex_type = self.hexes[num[0]][num[1]]
-							card_type = CatanBoard.get_card_from_hex(hex_type)
+							card_type = Board.get_card_from_hex(hex_type)
 							
 							# adds two if it is a city
-							if self.points[r][i].type == CatanBuilding.BUILDING_CITY:
+							if self.points[r][i].type == Building.BUILDING_CITY:
 								(self.game).players[owner].add_cards([
 									card_type,
 									card_type
@@ -337,20 +337,20 @@ class CatanBoard:
 	def get_card_from_hex(hex):
 		
 		# returns the appropriete card
-		if hex == CatanBoard.HEX_FOREST:
-			return CatanCards.CARD_WOOD
+		if hex == Board.HEX_FOREST:
+			return Cards.CARD_WOOD
 			
-		elif hex == CatanBoard.HEX_HILLS:
-			return CatanCards.CARD_BRICK
+		elif hex == Board.HEX_HILLS:
+			return Cards.CARD_BRICK
 			
-		elif hex == CatanBoard.HEX_PASTURE:
-			return CatanCards.CARD_SHEEP
+		elif hex == Board.HEX_PASTURE:
+			return Cards.CARD_SHEEP
 			
-		elif hex == CatanBoard.HEX_FIELDS:
-			return CatanCards.CARD_WHEAT
+		elif hex == Board.HEX_FIELDS:
+			return Cards.CARD_WHEAT
 			
-		elif hex == CatanBoard.HEX_MOUNTAINS:
-			return CatanCards.CARD_ORE
+		elif hex == Board.HEX_MOUNTAINS:
+			return Cards.CARD_ORE
 			
 		else:
 			return None
@@ -407,11 +407,11 @@ class CatanBoard:
 		
 		return hex_indexes							
 		
-	# adds a CatanBuilding object to the board
+	# adds a Building object to the board
 	def add_building(self, building, r, i):
 		self.points[r][i] = building
 	
-	# adds a CatanBuilding object, which must be a road	
+	# adds a Building object, which must be a road	
 	# since roads record their own position and are not in self.points
 	def add_road(self, road):
 		self.roads.append(road)
@@ -421,38 +421,38 @@ class CatanBoard:
 		
 		# checks there is a settlement at r, i
 		if self.points[r][i] == None:
-			return CatanStatuses.ERR_NOT_EXIST
+			return Statuses.ERR_NOT_EXIST
 		
 		# checks the settlement is controlled by the correct player
 		# if no player is specified, uses the current controlling player
 		if self.points[r][i].owner != player:
-			return CatanStatuses.ERR_BAD_OWNER
+			return Statuses.ERR_BAD_OWNER
 
 		# checks it is a settlement and not a city
-		if self.points[r][i].type != CatanBuilding.BUILDING_SETTLEMENT:
-			return CatanStatuses.ERR_UPGRADE_CITY		
+		if self.points[r][i].type != Building.BUILDING_SETTLEMENT:
+			return Statuses.ERR_UPGRADE_CITY		
 
 		# checks the player has the cards
 		needed_cards = [
-			CatanCards.CARD_WHEAT,
-			CatanCards.CARD_WHEAT,
-			CatanCards.CARD_ORE,
-			CatanCards.CARD_ORE,
-			CatanCards.CARD_ORE
+			Cards.CARD_WHEAT,
+			Cards.CARD_WHEAT,
+			Cards.CARD_ORE,
+			Cards.CARD_ORE,
+			Cards.CARD_ORE
 		]
 		if not (self.game).players[player].has_cards(needed_cards):
-			return CatanStatuses.ERR_CARDS
+			return Statuses.ERR_CARDS
 			
 		# removes the cards
 		(self.game).players[player].remove_cards(needed_cards)
 		
 		# changes the settlement to a city
-		self.points[r][i].type = CatanBuilding.BUILDING_CITY
+		self.points[r][i].type = Building.BUILDING_CITY
 		
 		# adds another victory point
 		(self.game).players[player].victory_points += 1
 
-		return CatanStatuses.ALL_GOOD
+		return Statuses.ALL_GOOD
 
 	# gets all the buildings on the board
 	def get_buildings(self):
@@ -559,4 +559,4 @@ class CatanBoard:
 
 		
 	def __repr__(self):
-		return ("CatanBoard Object")
+		return ("Board Object")

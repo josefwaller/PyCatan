@@ -1,9 +1,9 @@
 # imports neccessary modules
-from catan_game import CatanGame
-from catan_statuses import CatanStatuses
+from game import Game
+from statuses import Statuses
 
-# creates a new game of Catan
-game = CatanGame()
+# creates a new game of 
+game = Game()
 
 # Do for each player twice:
 for i in range(2 * len(game.players)):
@@ -23,13 +23,13 @@ for i in range(2 * len(game.players)):
         status = game.add_settlement(player=p, r=r, i=i, is_starting=True)
         
     	# if it didn't work, tell them why and try again
-        if status != CatanStatuses.ALL_GOOD:
+        if status != Statuses.ALL_GOOD:
            
             # figure out what went wrong
-            if status == CatanStatuses.ERR_BLOCKED:
+            if status == Statuses.ERR_BLOCKED:
                 print("That settlement position is to close to another settlement")
             
-            elif status == CatanStatuses.ERR_BAD_POINT:
+            elif status == Statuses.ERR_BAD_POINT:
                 print("That settlement position doesn't exist!")
     			
             else:

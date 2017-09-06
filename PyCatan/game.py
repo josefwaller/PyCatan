@@ -1,25 +1,25 @@
-from .catan_board import CatanBoard
-from .catan_player import CatanPlayer
-from .catan_statuses import CatanStatuses
-from .catan_cards import CatanCards
-from .catan_building import CatanBuilding
+from board import Board
+from player import Player
+from statuses import Statuses
+from cards import Cards
+from building import Building
 
 import random
 import math
 
-class CatanGame:
+class Game:
 	
-	# initializes the Catan game
+	# initializes the  game
 	def __init__(self, num_of_players=3, on_win=None, starting_board=False):
 		
 		
 		# creates a board
-		self.board = CatanBoard(game=self, starting_board=starting_board);
+		self.board = Board(game=self, starting_board=starting_board);
 		
 		# creates players
 		self.players = []
 		for i in range(num_of_players):
-			self.players.append(CatanPlayer(num=i, game=self))
+			self.players.append(Player(num=i, game=self))
 		
 		self.on_win = on_win
 		
@@ -28,14 +28,14 @@ class CatanGame:
 		for i in range(14):
 			
 			if i < 2:
-				self.dev_deck.append(CatanCards.DEV_ROAD)
-				self.dev_deck.append(CatanCards.DEV_MONOPOLY)
-				self.dev_deck.append(CatanCards.DEV_YOP)
+				self.dev_deck.append(Cards.DEV_ROAD)
+				self.dev_deck.append(Cards.DEV_MONOPOLY)
+				self.dev_deck.append(Cards.DEV_YOP)
 				
 			if i < 5:
-				self.dev_deck.append(CatanCards.DEV_VP)
+				self.dev_deck.append(Cards.DEV_VP)
 				
-			self.dev_deck.append(CatanCards.DEV_KNIGHT)
+			self.dev_deck.append(Cards.DEV_KNIGHT)
 			
 		# random.shuffle(self.dev_deck)
 	
@@ -52,7 +52,7 @@ class CatanGame:
 		# builds the settlement
 		status = self.players[player].build_settlement(settle_r=r, settle_i=i, is_starting=is_starting)
 			
-		if status == CatanStatuses.ALL_GOOD:
+		if status == Statuses.ALL_GOOD:
 			
 			# checks if the player won
 			if self.players[player].get_VP() >= 10:
@@ -79,16 +79,16 @@ class CatanGame:
 		
 		# makes sure there is still at least one development card left
 		if len(self.dev_deck) < 1:
-			return CatanStatuses.ERR_DECK
+			return Statuses.ERR_DECK
 			
 		# makes sure the player has the right cards
 		needed_cards = [
-			CatanCards.CARD_WHEAT,
-			CatanCards.CARD_ORE,
-			CatanCards.CARD_SHEEP
+			Cards.CARD_WHEAT,
+			Cards.CARD_ORE,
+			Cards.CARD_SHEEP
 		]
 		if not self.players[player].has_cards(needed_cards):
-			return CatanStatuses.ERR_CARDS
+			return Statuses.ERR_CARDS
 			
 		# removes the cards
 		self.players[player].remove_cards(needed_cards)
@@ -110,10 +110,10 @@ class CatanGame:
 		# check if they players have the cards they are trading
 		# Needs to do this before deleting because one might have the cards while the other does not
 		if not self.players[player_one].has_cards(cards_one):
-			return CatanStatuses.ERR_CARDS
+			return Statuses.ERR_CARDS
 			
 		elif not self.players[player_two].has_cards(cards_two):
-			return CatanStatuses.ERR_CARDS
+			return Statuses.ERR_CARDS
 			
 		else:
 			# removes the cards
@@ -124,7 +124,7 @@ class CatanGame:
 			self.players[player_one].add_cards(cards_two)
 			self.players[player_two].add_cards(cards_one)
 			
-			return CatanStatuses.ALL_GOOD
+			return Statuses.ALL_GOOD
 	
 	# moves the robber
 	# Note that player is the player moving the robber 
@@ -134,11 +134,11 @@ class CatanGame:
 		# makes sure the input is valid		
 		# checks the row exists
 		if r < 0 or r >= len((self.board).points):
-			return CatanStatuses.ERR_INPUJT
+			return Statuses.ERR_INPUJT
 			
 		# checks the index exists
 		elif i < 0 or i >= len((self.board).points[r]):
-			return CatanStatuses.ERR_INPUT
+			return Statuses.ERR_INPUT
 			
 		# checks the player wants to take a card from somebody
 		if victim != None:
@@ -153,7 +153,7 @@ class CatanGame:
 						has_settlement = True
 		
 			if not has_settlement:
-				return CatanStatuses.ERR_INPUT
+				return Statuses.ERR_INPUT
 		
 		# moves the robber
 		self.board.move_robber(r, i)
@@ -169,7 +169,7 @@ class CatanGame:
 			# adds it to the player
 			self.players[player].add_cards([card])
 		
-		return CatanStatuses.ALL_GOOD
+		return Statuses.ALL_GOOD
 		
 	# trades cards from a player to the bank
 	# either by 4 for 1 or using a harbor
@@ -177,13 +177,13 @@ class CatanGame:
 		
 		# makes sure the player has the cards
 		if not (self.players[player]).has_cards(cards):
-			return CatanStatuses.ERR_CARDS
+			return Statuses.ERR_CARDS
 		
 		# checks all the cards are the same type
 		card_type = cards[0]
 		for c in cards[1:]:
 			if c != card_type:
-				return CatanStatuses.ERR_CARDS
+				return Statuses.ERR_CARDS
 		
 		# if there are not four cards
 		if len(cards) != 4:
@@ -198,7 +198,7 @@ class CatanGame:
 					break
 					
 			if not has_harbor:
-				return CatanStatuses.ERR_HARBOR
+				return Statuses.ERR_HARBOR
 				
 					
 		# removes cards
@@ -207,7 +207,7 @@ class CatanGame:
 		# adds the new card
 		(self.players[player]).add_cards([request])
 		
-		return CatanStatuses.ALL_GOOD
+		return Statuses.ALL_GOOD
 		
 	# gives the longest road to the correct player
 	def set_longest_road(self):
@@ -240,7 +240,7 @@ class CatanGame:
 	
 		status = self.board.upgrade_settlement(player, r, i)
 		
-		if status == CatanStatuses.ALL_GOOD:
+		if status == Statuses.ALL_GOOD:
 			
 			# checks if the player won
 			if self.players[player].get_VP() >= 10:
@@ -253,10 +253,10 @@ class CatanGame:
 		
 		# checks the player has the development card
 		if not self.players[player].has_dev_cards([card]):
-			return CatanStatuses.ERR_CARDS
+			return Statuses.ERR_CARDS
 		
 		# applies the action
-		if card == CatanCards.DEV_ROAD:	
+		if card == Cards.DEV_ROAD:	
 			
 			# checks the correct arguments are given
 			road_names = [
@@ -265,11 +265,11 @@ class CatanGame:
 			]	
 			for r in road_names:
 				if not r in args:
-					return CatanStatuses.ERR_INPUT
+					return Statuses.ERR_INPUT
 					
 				else:
 					if not "start" in args[r] or not "end" in args[r]:
-						return CatanStatuses.ERR_INPUT
+						return Statuses.ERR_INPUT
 						
 			# checks the road location is valid
 			
@@ -283,10 +283,10 @@ class CatanGame:
 				# if the road location is not OK
 				# since the player can build two roads, some 
 				# locations that would be invalid are valid depending on the other road location
-				if not location_status == CatanStatuses.ALL_GOOD:
+				if not location_status == Statuses.ALL_GOOD:
 				
 					# checks if it is isolated, but would be connected to the other road
-					if location_status == CatanStatuses.ERR_ISOLATED:
+					if location_status == Statuses.ERR_ISOLATED:
 						
 						# if the other road is also isolated, just return an error
 						if other_road_is_isolated:
@@ -314,25 +314,25 @@ class CatanGame:
 				
 			# builds the roads
 			for r in road_names:
-				self.board.add_road(CatanBuilding(point_one=args[r]["start"], point_two=args[r]["end"], owner=player, type=CatanBuilding.BUILDING_ROAD))	
+				self.board.add_road(Building(point_one=args[r]["start"], point_two=args[r]["end"], owner=player, type=Building.BUILDING_ROAD))	
 				
-			return CatanStatuses.ALL_GOOD
+			return Statuses.ALL_GOOD
 			
-		elif card == CatanCards.DEV_KNIGHT:
+		elif card == Cards.DEV_KNIGHT:
 			
 			# checks there are the right arguments
 			if not ("robber_pos" in args and "victim" in args):
-				return CatanStatuses.ERR_INPUT
+				return Statuses.ERR_INPUT
 			
 			# checks the victim input is valid
 			if args["victim"] != None:
 				if args["victim"] < 0 or args["victim"] >= len(self.players) or args["victim"] == player:
-					return CatanStatuses.ERR_INPUT
+					return Statuses.ERR_INPUT
 			
 			# moves the robber
 			result = self.move_robber(r=args["robber_pos"][0], i=args["robber_pos"][1], player=player, victim=args["victim"])
 			
-			if result != CatanStatuses.ALL_GOOD:
+			if result != Statuses.ALL_GOOD:
 				return result
 			
 			# adds one to the player's knight count
@@ -351,7 +351,7 @@ class CatanGame:
 				if self.players[player].knight_cards > current_longest:
 					self.largest_army = player
 			
-		elif card == CatanCards.DEV_MONOPOLY:
+		elif card == Cards.DEV_MONOPOLY:
 			
 			# gets the type of card
 			card_type = args['card_type']
@@ -371,16 +371,16 @@ class CatanGame:
 					# adds them to the user's cards
 					self.players[player].add_cards(cards_to_give)
 			
-		elif card == CatanCards.DEV_VP:
+		elif card == Cards.DEV_VP:
 			
 			# players do not play developement cards, so it returns an error
-			return CatanStatuses.ERR_INPUT
+			return Statuses.ERR_INPUT
 			
-		elif card == CatanCards.DEV_YOP:
+		elif card == Cards.DEV_YOP:
 			
 			# checks the player gave two development cards
 			if not 'card_one' in args and not 'card_two' in args:
-				return CatanStatuses.ERR_INPUT
+				return Statuses.ERR_INPUT
 				
 			# gives the player 2 resource cards of their choice
 			self.players[player].add_cards([
@@ -390,12 +390,12 @@ class CatanGame:
 			
 		else:
 			# error here
-			return CatanStatuses.ERR_INPUT
+			return Statuses.ERR_INPUT
 		
 		# removes the card
 		self.players[player].remove_dev_card(card)
 		
-		return CatanStatuses.ALL_GOOD
+		return Statuses.ALL_GOOD
 		
 	# simulates 2 dice rolling
 	def get_roll(self):

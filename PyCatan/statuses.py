@@ -1,6 +1,6 @@
-# different statuses in the CatanGame module
+# different statuses in the Game module
 # skips 0 and 1 because there are already equal to True and False
-class CatanStatuses:
+class Statuses:
 	
 	# the action was successfully completed
 	ALL_GOOD = 2

@@ -1,11 +1,11 @@
-from .catan_building import CatanBuilding
-from .catan_statuses import CatanStatuses
-from .catan_cards import CatanCards
+from building import Building
+from statuses import Statuses
+from cards import Cards
 
 import math
 
-# The player class for Catan
-class CatanPlayer:
+# The player class for 
+class Player:
 	
 	def __init__ (self, game, num):
 	
@@ -41,15 +41,15 @@ class CatanPlayer:
 		if not is_starting:
 			# makes sure the player has the cards to build a settlements
 			cards_needed = [
-				CatanCards.CARD_WOOD,
-				CatanCards.CARD_BRICK,
-				CatanCards.CARD_SHEEP,
-				CatanCards.CARD_WHEAT
+				Cards.CARD_WOOD,
+				Cards.CARD_BRICK,
+				Cards.CARD_SHEEP,
+				Cards.CARD_WHEAT
 			]
 			
 			# checks the player has the cards
 			if not self.has_cards(cards_needed):
-				return CatanStatuses.ERR_CARDS
+				return Statuses.ERR_CARDS
 				
 			# checks it is connected to a road owned by the player
 			connected_by_road = False
@@ -68,15 +68,15 @@ class CatanPlayer:
 						connected_by_road = True
 		
 			if not connected_by_road:
-				return CatanStatuses.ERR_ISOLATED
+				return Statuses.ERR_ISOLATED
 		
 		# checks the point exists
 		if not (self.game).board.point_exists(settle_r, settle_i):
-			return CatanStatuses.ERR_BAD_POINT
+			return Statuses.ERR_BAD_POINT
 
 		# checks that a building does not already exist there
 		if not (self.game).board.point_is_empty(settle_r, settle_i):
-			return CatanStatuses.ERR_BLOCKED
+			return Statuses.ERR_BLOCKED
 		
 		# checks all other settlements are at least 2 away
 		# gets the connecting point's coords
@@ -86,19 +86,19 @@ class CatanPlayer:
 			# checks if the point is occupied
 			p = (self.game).board.points[coord[0]][coord[1]]
 			if p != None:
-				return CatanStatuses.ERR_BLOCKED
+				return Statuses.ERR_BLOCKED
 		
 		if not is_starting:
 			# removes the cards
 			self.remove_cards(cards_needed)
 		
 		# adds the house
-		((self.game).board).add_building(CatanBuilding(owner=self.num, type=CatanBuilding.BUILDING_SETTLEMENT), r=settle_r, i=settle_i)
+		((self.game).board).add_building(Building(owner=self.num, type=Building.BUILDING_SETTLEMENT), r=settle_r, i=settle_i)
 		
 		# adds a victory point
 		self.victory_points += 1
 		
-		return CatanStatuses.ALL_GOOD
+		return Statuses.ALL_GOOD
 		
 	# checks if the player has all of the cards given in an array
 	def has_cards(self, cards):
@@ -129,7 +129,7 @@ class CatanPlayer:
 	
 		# makes sure it has all the cards before deleting any
 		if not self.has_cards(cards):
-			return CatanStatuses.ERR_CARDS
+			return Statuses.ERR_CARDS
 			
 		else:
 			# removes the cards
@@ -150,10 +150,10 @@ class CatanPlayer:
 				
 				# deletes the card
 				del self.dev_cards[i]
-				return CatanStatuses.ALL_GOOD
+				return Statuses.ALL_GOOD
 				
 		# error if the player does not have the cards
-		return CatanStatuses.ERR_CARDS
+		return Statuses.ERR_CARDS
 		
 	# checks a road location is valid
 	def road_location_is_valid(self, start, end):
@@ -170,7 +170,7 @@ class CatanPlayer:
 				break
 				
 		if not connected:
-			return CatanStatuses.ERR_NOT_CON
+			return Statuses.ERR_NOT_CON
 			
 		connected_by_road = False
 		for road in (self.game).board.roads:
@@ -179,7 +179,7 @@ class CatanPlayer:
 			if road.point_one == start or road.point_two == start:
 				
 				if road.point_one == end or road.point_two == end:
-					return CatanStatuses.ERR_BLOCKED
+					return Statuses.ERR_BLOCKED
 			
 		# check this player has a settlement on one of these points or a connecting road
 		is_connected = False
@@ -216,9 +216,9 @@ class CatanPlayer:
 						is_connected = True
 		
 		if not is_connected:
-			return CatanStatuses.ERR_ISOLATED
+			return Statuses.ERR_ISOLATED
 			
-		return CatanStatuses.ALL_GOOD
+		return Statuses.ALL_GOOD
 			
 	# builds a road
 	def build_road(self, start, end, is_starting=False):
@@ -226,7 +226,7 @@ class CatanPlayer:
 		# checks the location is valid
 		location_status = self.road_location_is_valid(start=start, end=end)
 		
-		if not location_status == CatanStatuses.ALL_GOOD:
+		if not location_status == Statuses.ALL_GOOD:
 			return location_status	
 				
 		# if the road is being created on the starting turn, the player does not needed
@@ -235,22 +235,22 @@ class CatanPlayer:
 		
 			# checks that it has the proper cards
 			cards_needed = [
-				CatanCards.CARD_WOOD,
-				CatanCards.CARD_BRICK
+				Cards.CARD_WOOD,
+				Cards.CARD_BRICK
 			]
 			if not self.has_cards(cards_needed):
-				return CatanStatuses.ERR_CARDS
+				return Statuses.ERR_CARDS
 						
 			# removes the cards
 			self.remove_cards(cards_needed)
 		
 		# adds the road
-		road = CatanBuilding(owner=self.num, type=CatanBuilding.BUILDING_ROAD, point_one=start, point_two=end)
+		road = Building(owner=self.num, type=Building.BUILDING_ROAD, point_one=start, point_two=end)
 		(self.game).board.add_road(road)
 		
 		self.get_longest_road(new_road=road)
 		
-		return CatanStatuses.ALL_GOOD
+		return Statuses.ALL_GOOD
 		
 	# returns an array of all the harbors the player has access to
 	def get_harbors(self):
@@ -388,7 +388,7 @@ class CatanPlayer:
 		# adds VPs from developement cards
 		if include_dev:
 			for d in self.dev_cards:
-				if d == CatanCards.DEV_VP:
+				if d == Cards.DEV_VP:
 					points += 1
 	
 		return points
@@ -402,19 +402,19 @@ class CatanPlayer:
 			
 			card_name = ""
 			
-			if c == CatanCards.CARD_WOOD:
+			if c == Cards.CARD_WOOD:
 				card_name = "Wood"
 			
-			elif c == CatanCards.CARD_SHEEP:
+			elif c == Cards.CARD_SHEEP:
 				card_name = "Sheep"
 				
-			elif c == CatanCards.CARD_BRICK:
+			elif c == Cards.CARD_BRICK:
 				card_name = "Brick"
 				
-			elif c == CatanCards.CARD_WHEAT:
+			elif c == Cards.CARD_WHEAT:
 				card_name = "Wheat"
 				
-			elif c == CatanCards.CARD_ORE:
+			elif c == Cards.CARD_ORE:
 				card_name = "Ore"
 			
 			else:

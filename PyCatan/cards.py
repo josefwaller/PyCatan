@@ -1,4 +1,4 @@
-class CatanCards:
+class Cards:
 
 	# the resource cards
 	CARD_WOOD = 0
