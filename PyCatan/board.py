@@ -1,4 +1,4 @@
-from harbor import Harbor
+from harbor import Harbor, HarborType
 from player import Player
 from statuses import Statuses
 from building import Building
@@ -218,15 +218,15 @@ class Board:
         pattern = [2, 3, 2]
         # the different types of harbors
         harbor_types = [
-            Harbor.TYPE_WOOD,
-            Harbor.TYPE_BRICK,
-            Harbor.TYPE_ORE,
-            Harbor.TYPE_WHEAT,
-            Harbor.TYPE_SHEEP,
-            Harbor.TYPE_ANY,
-            Harbor.TYPE_ANY,
-            Harbor.TYPE_ANY,
-            Harbor.TYPE_ANY
+            HarborType.WOOD,
+            HarborType.BRICK,
+            HarborType.ORE,
+            HarborType.WHEAT,
+            HarborType.SHEEP,
+            HarborType.ANY,
+            HarborType.ANY,
+            HarborType.ANY,
+            HarborType.ANY
         ]
 
         # shuffles the harbors

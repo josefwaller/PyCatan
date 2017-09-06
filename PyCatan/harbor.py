@@ -1,15 +1,19 @@
-# represents a catan harbor
-class Harbor:
+from enum import Enum
 
+# The different types of harbors found throughout the game
+class HarborType(Enum):
     # the different 2:1 types
-    TYPE_WOOD = 0
-    TYPE_SHEEP = 1
-    TYPE_BRICK = 2
-    TYPE_WHEAT = 3
-    TYPE_ORE = 4
+    WOOD = 0
+    SHEEP = 1
+    BRICK = 2
+    WHEAT = 3
+    ORE = 4
 
     # the 3:1 type
-    TYPE_ANY = 5
+    ANY = 5
+
+# represents a catan harbor
+class Harbor:
 
     def __init__(self, point_one, point_two, type):
         # sets the type
@@ -29,20 +33,20 @@ class Harbor:
     # Ex: 3:1, 2:1S, 2:1Wh
     def get_type(self):
 
-        if self.type == Harbor.TYPE_WOOD:
+        if self.type == HarborType.WOOD:
             return "2:1W"
 
-        elif self.type == Harbor.TYPE_SHEEP:
+        elif self.type == HarborType.SHEEP:
             return "2:1S"
 
-        elif self.type == Harbor.TYPE_BRICK:
+        elif self.type == HarborType.BRICK:
             return "2:1B"
 
-        elif self.type == Harbor.TYPE_WHEAT:
+        elif self.type == HarborType.WHEAT:
             return "2:1Wh"
 
-        elif self.type == Harbor.TYPE_ORE:
+        elif self.type == HarborType.ORE:
             return "2:1O"
 
-        elif self.type == Harbor.TYPE_ANY:
+        elif self.type == HarborType.ANY:
             return "3:1"
