@@ -1,14 +1,14 @@
-from game import Game
-from hex import Hex
+from pycatan.game import Game
+from pycatan.hex import Hex
 
 # imports all the different types of cards (Resource and development)
-from card import ResCard, DevCard
+from pycatan.card import ResCard, DevCard
 
 # imports the board for static methods
-from board import Board
+from pycatan.board import Board
 
 # imports the different Statuses
-from statuses import Statuses
+from pycatan.statuses import Statuses
 
 # is used
 import math

@@ -11,5 +11,5 @@ setup(name='pycatan',
       install_requires=[
             "quotequail"
       ],
-      packages=['PyCatan'],
+      packages=['pycatan'],
       zip_safe=False)

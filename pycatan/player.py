@@ -1,6 +1,6 @@
-from building import Building
-from statuses import Statuses
-from card import ResCard, DevCard
+from pycatan.building import Building
+from pycatan.statuses import Statuses
+from pycatan.card import ResCard, DevCard
 
 import math
 

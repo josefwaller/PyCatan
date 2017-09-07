@@ -1,6 +1,6 @@
 # imports neccessary modules
-from game import Game
-from statuses import Statuses
+from pycatan.game import Game
+from pycatan.statuses import Statuses
 
 # creates a new game of
 game = Game()

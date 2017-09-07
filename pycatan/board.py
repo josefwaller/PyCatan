@@ -1,9 +1,9 @@
-from harbor import Harbor, HarborType
-from player import Player
-from statuses import Statuses
-from building import Building
-from hex import Hex
-from card import ResCard, DevCard
+from pycatan.harbor import Harbor, HarborType
+from pycatan.player import Player
+from pycatan.statuses import Statuses
+from pycatan.building import Building
+from pycatan.hex import Hex
+from pycatan.card import ResCard, DevCard
 
 # used to shuffle the deck of hexes
 import random

@@ -1,8 +1,8 @@
-from board import Board
-from player import Player
-from statuses import Statuses
-from card import ResCard, DevCard
-from building import Building
+from pycatan.board import Board
+from pycatan.player import Player
+from pycatan.statuses import Statuses
+from pycatan.card import ResCard, DevCard
+from pycatan.building import Building
 
 import random
 import math
