@@ -119,7 +119,7 @@ class Board:
 
         else:
             # reads the starting_board.json file and copies the board from it
-            file = open("starting_board.json")
+            file = open("pycatan/starting_board.json")
             board_json = file.read()
             board_data = json.loads(board_json)
 

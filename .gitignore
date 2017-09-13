@@ -63,3 +63,6 @@ dist/
 
 # other PIP files
 pycatan.egg-info/
+
+# the virtualenv cache
+.cache
