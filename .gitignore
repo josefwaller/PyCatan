@@ -49,8 +49,7 @@ Temporary Items
 # Manually added stuff below this ------------------------------------------
 
 # the pychache folders
-pycatan/__pycache__/
-pycatan/examples/__pycache__/
+__pycache__/
 
 # vscode settings
 PyCatan/.vscode/
