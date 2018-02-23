@@ -1,6 +1,8 @@
 from pycatan.board import Board
 from pycatan.game import Game
 from pycatan.statuses import Statuses
+from pycatan.card import ResCard
+from pycatan.hex_type import HexType
 
 class TestBoard:
 
@@ -20,3 +22,7 @@ class TestBoard:
         assert [0, 0] in points
         assert [1, 0] in points
         assert [1, 2] in points
+
+    def test_card_to_hex_conversion(self):
+        # Check that the board switches between hex types and the corresponding card properly
+        assert Board.get_card_from_hex(HexType.FOREST), ResCard.WOOD
