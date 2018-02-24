@@ -51,17 +51,14 @@ Temporary Items
 # the pychache folders
 __pycache__/
 
-# vscode settings
-PyCatan/.vscode/
-
-# the todo list
-PyCatan/todo.txt
-
-# PIP distribution files
-dist/
-
 # other PIP files
 pycatan.egg-info/
 
 # the virtualenv cache
 .cache
+
+# the virtualenvwrapper folders created when testing
+lib/
+bin/
+include/
+pip-selfcheck.json
