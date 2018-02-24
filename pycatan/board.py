@@ -71,7 +71,7 @@ class Board:
             self.points.append([])
             for x in range(round(12 - math.fabs(2 * i - 5))):
 
-                self.points[i].append(None)
+                self.points[i].append(Point([]))
 
         # adds harbors
         # each harbor is around the edge of the board
@@ -166,7 +166,9 @@ class Board:
 
         for r in range(len(self.points)):
             for i in range(len(self.points[r])):
-                if self.points[r][i] != None:
+                # Check there is a building on the point
+                if self.points[r][i].building != None:
+                    building = self.points[r][i].building
                     hex_indexes = self.get_hexes_for_point(r, i)
 
                     # checks if any hexes have the right number
@@ -179,19 +181,19 @@ class Board:
 
                         if self.hexes[num[0]][num[1]].token_num == roll:
                             # adds the card to the player's inventory
-                            owner = self.points[r][i].owner
+                            owner = building.owner
                             # gets the card type
                             hex_type = self.hexes[num[0]][num[1]].type
                             card_type = Board.get_card_from_hex(hex_type)
                             # adds two if it is a city
-                            if self.points[r][i].type == Building.BUILDING_CITY:
-                                (self.game).players[owner].add_cards([
+                            if building.type == Building.BUILDING_CITY:
+                                self.game.players[owner].add_cards([
                                     card_type,
                                     card_type
                                 ])
 
                             else:
-                                (self.game).players[owner].add_cards([
+                                self.game.players[owner].add_cards([
                                     card_type
                                 ])
 
@@ -271,8 +273,7 @@ class Board:
 
     # adds a Building object to the board
     def add_building(self, building, r, i):
-        print("ASDF")
-        self.points[r][i] = building
+        self.points[r][i].building = building
 
     # adds a Building object, which must be a road
     # since roads record their own position and are not in self.points
@@ -281,18 +282,20 @@ class Board:
 
     # upgrades an existing settlement to a city
     def upgrade_settlement(self, player, r, i):
+        # Get building at point
+        building = self.points[r][i].building
 
         # checks there is a settlement at r, i
-        if self.points[r][i] == None:
+        if building == None:
             return Statuses.ERR_NOT_EXIST
 
         # checks the settlement is controlled by the correct player
         # if no player is specified, uses the current controlling player
-        if self.points[r][i].owner != player:
+        if building.owner != player:
             return Statuses.ERR_BAD_OWNER
 
         # checks it is a settlement and not a city
-        if self.points[r][i].type != Building.BUILDING_SETTLEMENT:
+        if building.type != Building.BUILDING_SETTLEMENT:
             return Statuses.ERR_UPGRADE_CITY
 
         # checks the player has the cards
@@ -303,15 +306,15 @@ class Board:
             ResCard.ORE,
             ResCard.ORE
         ]
-        if not (self.game).players[player].has_cards(needed_cards):
+        if not self.game.players[player].has_cards(needed_cards):
             return Statuses.ERR_CARDS
 
         # removes the cards
-        (self.game).players[player].remove_cards(needed_cards)
+        self.game.players[player].remove_cards(needed_cards)
         # changes the settlement to a city
-        self.points[r][i].type = Building.BUILDING_CITY
+        building.type = Building.BUILDING_CITY
         # adds another victory point
-        (self.game).players[player].victory_points += 1
+        self.game.players[player].victory_points += 1
 
         return Statuses.ALL_GOOD
 
@@ -321,7 +324,7 @@ class Board:
         buildings = []
         for r in range(len(self.points)):
             for i in range(len(self.points[r])):
-                if self.points[r][i] != None:
+                if self.points[r][i].building != None:
                     buildings.append([r, i])
 
         return buildings
@@ -332,7 +335,7 @@ class Board:
 
     # checks if a point on the board is empty
     def point_is_empty(self, r, i):
-        if self.points[r][i] == None:
+        if self.points[r][i].building == None:
             return True
 
         return False
