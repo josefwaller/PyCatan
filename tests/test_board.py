@@ -3,6 +3,7 @@ from pycatan.game import Game
 from pycatan.statuses import Statuses
 from pycatan.card import ResCard
 from pycatan.hex_type import HexType
+from pycatan.hex import Hex
 
 class TestBoard:
 
@@ -26,3 +27,15 @@ class TestBoard:
     def test_card_to_hex_conversion(self):
         # Check that the board switches between hex types and the corresponding card properly
         assert Board.get_card_from_hex(HexType.FOREST), ResCard.WOOD
+
+    def test_give_proper_yield(self):
+        game = Game()
+        board = game.board
+        # set hex to test
+        board.hexes[0][0] = Hex(HexType.FOREST, 8, [])
+        # add settlement
+        game.add_settlement(0, 0, 0, True)
+        # give the roll
+        board.add_yield(8)
+        # check the board gave the cards correctly
+        assert game.players[0].has_cards([ResCard.WOOD])

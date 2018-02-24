@@ -4,6 +4,8 @@ from pycatan.statuses import Statuses
 from pycatan.building import Building
 from pycatan.hex_type import HexType
 from pycatan.card import ResCard, DevCard
+from pycatan.hex import Hex
+from pycatan.point import Point
 
 # used to shuffle the deck of hexes
 import random
@@ -24,8 +26,6 @@ class Board:
         self.game = game
         # the hexes on the board
         self.hexes = []
-        # the circular number tokens
-        self.hex_nums = []
         # the points on the board
         # where the players can place settlements/cities
         self.points = []
@@ -84,39 +84,21 @@ class Board:
             self.hex_nums = []
             last_index = 0
 
-            for i in range(5):
+            for r in range(5):
                 # the length of this row of hexes
-                length = round(-math.fabs(i - 2) + 5)
-
-                self.hexes.append(self.all_hexes[last_index:last_index + length])
-                self.hex_nums.append(self.all_hex_nums[last_index:last_index + length])
-
-                # checks if the desert was placed in this row
-                if self.hexes[i].count(HexType.DESERT) > 0:
-
-                    # takes the chip off the desert and puts it at the back of the deck
-                    # so that it will be used at the end
-                    index = self.hexes[i].index(HexType.DESERT)
-                    # checks if the desert is the last hex in this row
-                    # if so, we must append a hex because the row is too short
-                    if index == len(self.hexes[i]) - 1 and i == len(self.hexes) - 1:
-                        self.hex_nums[i].append(None)
+                length = round(-math.fabs(r - 2) + 5)
+                self.hexes.append([])
+                # Add hexes to this row
+                for i in range(length):
+                    # Get the hex to be added to the board
+                    this_hex = Hex(self.all_hexes.pop(), None, [])
+                    # Add a number token unless it is a desert
+                    if this_hex.type == HexType.DESERT:
+                        self.robber = [r, i]
                     else:
-                        # saves the value
-                        cnt_num = self.hex_nums[i][index]
-                        # replaces the hex with None
-                        self.hex_nums[i][index] = None
-
-                        # if this is the last row, we should just add the circular
-                        # number token to this row, since putting it back on all_hexes
-                        # will result ijn it never being used
-                        if i == 4:
-                            self.hex_nums[i].append(cnt_num)
-                        else:
-                            self.all_hex_nums.append(cnt_num)
-
-                last_index += length
-
+                        this_hex.token_num = self.all_hex_nums.pop()
+                    # Add it to the board
+                    self.hexes[r].append(this_hex)
         else:
             # reads the starting_board.json file and copies the board from it
             file = open("pycatan/starting_board.json")
@@ -266,11 +248,11 @@ class Board:
                             # skips this hex
                             continue
 
-                        if self.hex_nums[num[0]][num[1]] == roll:
+                        if self.hexes[num[0]][num[1]].token_num == roll:
                             # adds the card to the player's inventory
                             owner = self.points[r][i].owner
                             # gets the card type
-                            hex_type = self.hexes[num[0]][num[1]]
+                            hex_type = self.hexes[num[0]][num[1]].type
                             card_type = Board.get_card_from_hex(hex_type)
                             # adds two if it is a city
                             if self.points[r][i].type == Building.BUILDING_CITY:
@@ -360,6 +342,7 @@ class Board:
 
     # adds a Building object to the board
     def add_building(self, building, r, i):
+        print("ASDF")
         self.points[r][i] = building
 
     # adds a Building object, which must be a road
