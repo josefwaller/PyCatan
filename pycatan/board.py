@@ -62,41 +62,8 @@ class Board:
                     # Add it to the board
                     self.hexes[r].append(this_hex)
         else:
-            # reads the starting_board.json file and copies the board from it
-            file = open("pycatan/starting_board.json")
-            board_json = file.read()
-            board_data = json.loads(board_json)
-
-            # copies the hexes
-            for i in range(len(board_data['hexes'])):
-
-                self.hexes.append([])
-                self.hex_nums.append([])
-                for x in range(len(board_data['hexes'][i])):
-
-                    hex = board_data['hexes'][i][x]
-                    to_append = None
-
-                    if hex == "fo":
-                        to_append = HexType.FOREST
-
-                    elif hex == "fi":
-                        to_append = HexType.FIELDS
-
-                    elif hex == "m":
-                        to_append = HexType.MOUNTAINS
-
-                    elif hex == "h":
-                        to_append = HexType.HILLS
-
-                    elif hex == "p":
-                        to_append = HexType.PASTURE
-
-                    else:
-                        to_append = HexType.DESERT
-
-                    self.hexes[i].append(to_append)
-                    self.hex_nums[i].append(board_data['hex_nums'][i][x])
+            # Currently unimplemented, TBA
+            raise Exception("Starting board currently not implemented")
 
         # adds None to points for each point on the hexes
         for i in range(6):
