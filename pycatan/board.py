@@ -31,8 +31,6 @@ class Board:
         self.points = []
         # the roads
         self.roads = []
-        # all of the circular number tokens in the game
-        self.all_hex_nums = []
         # the locations of the harbors
         self.harbors = []
         # the location of the robber
@@ -43,27 +41,9 @@ class Board:
 
         # Get a deck of the hexes to be placed on the board
         all_hexes = Board.get_shuffled_hex_deck()
+        all_hex_nums = Board.get_shuffled_hex_nums()
 
         if not starting_board:
-            # sets up all_hex_nums
-            for i in range(2):
-                for x in range(2, 13):
-                    # does not add a number token with 7
-                    if x != 7:
-
-                        # only adds one 2 and one 12
-                        if x == 2 or x == 12:
-                            if i == 0:
-                                self.all_hex_nums.append(x)
-
-                        # adds two of everything else
-                        else:
-                            self.all_hex_nums.append(x)
-
-            # shuffles the hex numbers
-            random.shuffle(self.all_hex_nums)
-            self.hexes = []
-            self.hex_nums = []
             last_index = 0
 
             for r in range(5):
@@ -78,7 +58,7 @@ class Board:
                     if this_hex.type == HexType.DESERT:
                         self.robber = [r, i]
                     else:
-                        this_hex.token_num = self.all_hex_nums.pop()
+                        this_hex.token_num = all_hex_nums.pop()
                     # Add it to the board
                     self.hexes[r].append(this_hex)
         else:
@@ -490,3 +470,23 @@ class Board:
         # shuffles the deck
         random.shuffle(deck)
         return deck
+
+    @staticmethod
+    def get_shuffled_hex_nums():
+        nums = []
+        # Get 2 of each number, most of the time
+        for i in range(2):
+            # Go through each type
+            for x in range(2, 13):
+                # Does not add a number token with 7
+                if x != 7:
+                    # Only adds one 2 and one 12
+                    if x == 2 or x == 12:
+                        if i == 0:
+                            nums.append(x)
+                    # Adds two of everything else
+                    else:
+                        nums.append(x)
+        random.shuffle(nums)
+        return nums
+
