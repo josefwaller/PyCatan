@@ -62,3 +62,4 @@ lib/
 bin/
 include/
 pip-selfcheck.json
+.pytest_cache/
