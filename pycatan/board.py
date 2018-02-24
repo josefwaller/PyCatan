@@ -197,29 +197,6 @@ class Board:
                                     card_type
                                 ])
 
-    # returns the card associated with the hex
-    # for example, Brick for Hills, Wood for forests, etc
-    @staticmethod
-    def get_card_from_hex(hex):
-
-        # returns the appropriete card
-        if hex == HexType.FOREST:
-            return ResCard.WOOD
-
-        elif hex == HexType.HILLS:
-            return ResCard.BRICK
-
-        elif hex == HexType.PASTURE:
-            return ResCard.SHEEP
-
-        elif hex == HexType.FIELDS:
-            return ResCard.WHEAT
-
-        elif hex == HexType.MOUNTAINS:
-            return ResCard.ORE
-
-        else:
-            return None
 
     # returns all the hexes connected to a certain point
     def get_hexes_for_point(self, r, i):
@@ -460,3 +437,26 @@ class Board:
         random.shuffle(nums)
         return nums
 
+    # returns the card associated with the hex
+    # for example, Brick for Hills, Wood for forests, etc
+    @staticmethod
+    def get_card_from_hex(hex):
+
+        # returns the appropriete card
+        if hex == HexType.FOREST:
+            return ResCard.WOOD
+
+        elif hex == HexType.HILLS:
+            return ResCard.BRICK
+
+        elif hex == HexType.PASTURE:
+            return ResCard.SHEEP
+
+        elif hex == HexType.FIELDS:
+            return ResCard.WHEAT
+
+        elif hex == HexType.MOUNTAINS:
+            return ResCard.ORE
+
+        else:
+            return None
