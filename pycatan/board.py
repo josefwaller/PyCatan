@@ -31,8 +31,6 @@ class Board:
         self.points = []
         # the roads
         self.roads = []
-        # the deck of hexes before they are placed on the board
-        self.all_hexes = []
         # all of the circular number tokens in the game
         self.all_hex_nums = []
         # the locations of the harbors
@@ -43,26 +41,10 @@ class Board:
         # creates a new PrettyPrinter for debugging
         p = pprint.PrettyPrinter()
 
+        # Get a deck of the hexes to be placed on the board
+        all_hexes = Board.get_shuffled_hex_deck()
+
         if not starting_board:
-            # sets up all_hexes
-            for i in range(4):
-
-                # adds four fields, forests and pastures
-                self.all_hexes.append(HexType.FIELDS)
-                self.all_hexes.append(HexType.FOREST)
-                self.all_hexes.append(HexType.PASTURE)
-                # adds three mountains and hills
-                if i < 3:
-                    self.all_hexes.append(HexType.MOUNTAINS)
-                    self.all_hexes.append(HexType.HILLS)
-
-                # adds one desert
-                if i == 0:
-                    self.all_hexes.append(HexType.DESERT)
-
-            # shuffles the deck
-            random.shuffle(self.all_hexes)
-
             # sets up all_hex_nums
             for i in range(2):
                 for x in range(2, 13):
@@ -91,7 +73,7 @@ class Board:
                 # Add hexes to this row
                 for i in range(length):
                     # Get the hex to be added to the board
-                    this_hex = Hex(self.all_hexes.pop(), None, [])
+                    this_hex = Hex(all_hexes.pop(), None, [])
                     # Add a number token unless it is a desert
                     if this_hex.type == HexType.DESERT:
                         self.robber = [r, i]
@@ -232,7 +214,7 @@ class Board:
                 # places the robber
                 self.robber = [r, self.hexes[r].index(HexType.DESERT)]
 
-    # gives the players cards for a certain roll
+   # gives the players cards for a certain roll
     def add_yield(self, roll):
 
         for r in range(len(self.points)):
@@ -484,3 +466,27 @@ class Board:
 
     def __repr__(self):
         return ("Board Object")
+
+    # Get a shuffled deck of the correct number of each type of hex in a board
+    @staticmethod
+    def get_shuffled_hex_deck():
+        deck = []
+        # sets up all_hexes
+        for i in range(4):
+
+            # adds four fields, forests and pastures
+            deck.append(HexType.FIELDS)
+            deck.append(HexType.FOREST)
+            deck.append(HexType.PASTURE)
+            # adds three mountains and hills
+            if i < 3:
+                deck.append(HexType.MOUNTAINS)
+                deck.append(HexType.HILLS)
+
+            # adds one desert
+            if i == 0:
+                deck.append(HexType.DESERT)
+
+        # shuffles the deck
+        random.shuffle(deck)
+        return deck
