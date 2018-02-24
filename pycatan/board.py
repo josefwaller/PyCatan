@@ -2,7 +2,7 @@ from pycatan.harbor import Harbor, HarborType
 from pycatan.player import Player
 from pycatan.statuses import Statuses
 from pycatan.building import Building
-from pycatan.hex import Hex
+from pycatan.hex_type import HexType
 from pycatan.card import ResCard, DevCard
 
 # used to shuffle the deck of hexes
@@ -48,17 +48,17 @@ class Board:
             for i in range(4):
 
                 # adds four fields, forests and pastures
-                self.all_hexes.append(Hex.FIELDS)
-                self.all_hexes.append(Hex.FOREST)
-                self.all_hexes.append(Hex.PASTURE)
+                self.all_hexes.append(HexType.FIELDS)
+                self.all_hexes.append(HexType.FOREST)
+                self.all_hexes.append(HexType.PASTURE)
                 # adds three mountains and hills
                 if i < 3:
-                    self.all_hexes.append(Hex.MOUNTAINS)
-                    self.all_hexes.append(Hex.HILLS)
+                    self.all_hexes.append(HexType.MOUNTAINS)
+                    self.all_hexes.append(HexType.HILLS)
 
                 # adds one desert
                 if i == 0:
-                    self.all_hexes.append(Hex.DESERT)
+                    self.all_hexes.append(HexType.DESERT)
 
             # shuffles the deck
             random.shuffle(self.all_hexes)
@@ -92,11 +92,11 @@ class Board:
                 self.hex_nums.append(self.all_hex_nums[last_index:last_index + length])
 
                 # checks if the desert was placed in this row
-                if self.hexes[i].count(Hex.DESERT) > 0:
+                if self.hexes[i].count(HexType.DESERT) > 0:
 
                     # takes the chip off the desert and puts it at the back of the deck
                     # so that it will be used at the end
-                    index = self.hexes[i].index(Hex.DESERT)
+                    index = self.hexes[i].index(HexType.DESERT)
                     # checks if the desert is the last hex in this row
                     # if so, we must append a hex because the row is too short
                     if index == len(self.hexes[i]) - 1 and i == len(self.hexes) - 1:
@@ -134,22 +134,22 @@ class Board:
                     to_append = None
 
                     if hex == "fo":
-                        to_append = Hex.FOREST
+                        to_append = HexType.FOREST
 
                     elif hex == "fi":
-                        to_append = Hex.FIELDS
+                        to_append = HexType.FIELDS
 
                     elif hex == "m":
-                        to_append = Hex.MOUNTAINS
+                        to_append = HexType.MOUNTAINS
 
                     elif hex == "h":
-                        to_append = Hex.HILLS
+                        to_append = HexType.HILLS
 
                     elif hex == "p":
-                        to_append = Hex.PASTURE
+                        to_append = HexType.PASTURE
 
                     else:
-                        to_append = Hex.DESERT
+                        to_append = HexType.DESERT
 
                     self.hexes[i].append(to_append)
                     self.hex_nums[i].append(board_data['hex_nums'][i][x])
@@ -246,9 +246,9 @@ class Board:
         # puts the robber on the desert hex to start
         for r in range(len(self.hexes)):
             # checks if this row has the desert
-            if self.hexes[r].count(Hex.DESERT) > 0:
+            if self.hexes[r].count(HexType.DESERT) > 0:
                 # places the robber
-                self.robber = [r, self.hexes[r].index(Hex.DESERT)]
+                self.robber = [r, self.hexes[r].index(HexType.DESERT)]
 
     # gives the players cards for a certain roll
     def add_yield(self, roll):
@@ -290,19 +290,19 @@ class Board:
     def get_card_from_hex(hex):
 
         # returns the appropriete card
-        if hex == Hex.FOREST:
+        if hex == HexType.FOREST:
             return ResCard.WOOD
 
-        elif hex == Hex.HILLS:
+        elif hex == HexType.HILLS:
             return ResCard.BRICK
 
-        elif hex == Hex.PASTURE:
+        elif hex == HexType.PASTURE:
             return ResCard.SHEEP
 
-        elif hex == Hex.FIELDS:
+        elif hex == HexType.FIELDS:
             return ResCard.WHEAT
 
-        elif hex == Hex.MOUNTAINS:
+        elif hex == HexType.MOUNTAINS:
             return ResCard.ORE
 
         else:

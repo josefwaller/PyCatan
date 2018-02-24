@@ -2,7 +2,7 @@ from enum import Enum
 
 # The different types of hexes available on a
 # Catan board
-class Hex(Enum):
+class HexType(Enum):
     DESERT = 0
     FIELDS = 1
     PASTURE = 2
