@@ -216,25 +216,27 @@ class Board:
 
             # gets the hexes above the point ------------------
 
-            # gets the hex to the right
-            if i > 0 and i < len(self.points[r]) - 2:
-                hex_indexes.append([r - 1, math.floor((i - 1) / 2)])
+            if r > 0:
+                # gets the hex to the right
+                if i > 0 and i < len(self.points[r]) - 2:
+                    hex_indexes.append([r - 1, math.floor((i - 1) / 2)])
 
-            # gets the hex to the left
-            if i % 2 == 1 and i < len(self.points[r]) - 1 and i > 1:
-                hex_indexes.append([r - 1, math.floor((i - 1) / 2) - 1])
+                # gets the hex to the left
+                if i % 2 == 1 and i < len(self.points[r]) - 1 and i > 1:
+                    hex_indexes.append([r - 1, math.floor((i - 1) / 2) - 1])
 
         else:
 
             # adds the below -------------
 
-            # gets the hex to the right or directly below
-            if i < len(self.points[r]) - 2 and i > 0:
-                hex_indexes.append([r, math.floor((i - 1) / 2)])
+            if r < len(self.points) - 1:
+                # gets the hex to the right or directly below
+                if i < len(self.points[r]) - 2 and i > 0:
+                    hex_indexes.append([r, math.floor((i - 1) / 2)])
 
-            # gets the hex to the left
-            if i % 2 == 1 and i > 1 and i < len(self.points[r]):
-                hex_indexes.append([r, math.floor((i - 1) / 2 - 1)])
+                # gets the hex to the left
+                if i % 2 == 1 and i > 1 and i < len(self.points[r]):
+                    hex_indexes.append([r, math.floor((i - 1) / 2 - 1)])
 
             # gets the hexes above ------------
 

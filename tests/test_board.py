@@ -9,11 +9,22 @@ class TestBoard:
 
     def test_get_connected_hexes(self):
         board = Board(Game())
+        test_cases = {
+            (0, 0): [[0, 0]],
+            (0, 1): [[0, 0]],
+            (0, 2): [[0, 0], [0, 1]],
+            (3, 4): [[2, 1], [2, 2], [3, 1]],
+            (5, 0): [[4, 0]],
+            (5, 1): [[4, 0]],
+            (5, 2): [[4, 0], [4, 1]]
+        }
         # Test that it returns the points connected properly
-        points = board.get_hexes_for_point(1, 2)
-        assert [0, 0] in points
-        assert [1, 0] in points
-        assert [1, 1] in points
+        for case, answers in test_cases.items():
+            points = board.get_hexes_for_point(case[0], case[1])
+            print(answers)
+            for ans in answers:
+                # Check it returned the correct point
+                assert ans in points
 
 
     def test_get_connected_points(self):
