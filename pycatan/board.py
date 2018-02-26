@@ -73,7 +73,7 @@ class Board:
             self.points.append([])
             for i in range(round(12 - math.fabs(2 * r - 5))):
                 # Start with connected_hexes empty, will be set after gathering the surronding hexes
-                self.points[r].append(Point([]))
+                self.points[r].append(Point([], [r, i]))
                 p = self.points[r][i]
                 connected_hexes = []
                 # Gather hexes
