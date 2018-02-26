@@ -5,6 +5,8 @@ from pycatan.card import ResCard
 from pycatan.hex_type import HexType
 from pycatan.hex import Hex
 
+import random
+
 class TestBoard:
 
     def test_get_connected_hexes(self):
@@ -21,7 +23,6 @@ class TestBoard:
         # Test that it returns the points connected properly
         for case, answers in test_cases.items():
             points = board.get_hexes_for_point(case[0], case[1])
-            print(answers)
             for ans in answers:
                 # Check it returned the correct point
                 assert ans in points
@@ -40,13 +41,16 @@ class TestBoard:
         assert Board.get_card_from_hex(HexType.FOREST), ResCard.WOOD
 
     def test_give_proper_yield(self):
+        # Set seeed to ensure the board is the same as the testcase
+        random.seed(1)
+        # Create new game and get the board
         game = Game()
         board = game.board
-        # set hex to test
-        board.hexes[0][0] = Hex(HexType.FOREST, 8, [])
+        # Make sure robber is not on the top-left hex
+        board.robber = [1, 1]
         # add settlement
         game.add_settlement(0, 0, 0, True)
         # give the roll
         board.add_yield(8)
         # check the board gave the cards correctly
-        assert game.players[0].has_cards([ResCard.WOOD])
+        assert game.players[0].has_cards([ResCard.BRICK])

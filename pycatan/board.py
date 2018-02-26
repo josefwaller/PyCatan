@@ -53,7 +53,7 @@ class Board:
                 # Add hexes to this row
                 for i in range(length):
                     # Get the hex to be added to the board
-                    this_hex = Hex(all_hexes.pop(), None, [])
+                    this_hex = Hex(type=all_hexes.pop(), token_num=None, position=[r, i], points=[])
                     # Add a number token unless it is a desert
                     if this_hex.type == HexType.DESERT:
                         self.robber = [r, i]
@@ -61,17 +61,22 @@ class Board:
                         this_hex.token_num = all_hex_nums.pop()
                     # Add it to the board
                     self.hexes[r].append(this_hex)
+
+
         else:
             # Currently unimplemented, TBA
             raise Exception("Starting board currently not implemented")
 
         # adds None to points for each point on the hexes
-        for i in range(6):
+        for r in range(6):
 
             self.points.append([])
-            for x in range(round(12 - math.fabs(2 * i - 5))):
+            for i in range(round(12 - math.fabs(2 * r - 5))):
+                connected_hexes = []
+                for pos in self.get_hexes_for_point(r, i):
+                    connected_hexes.append(self.hexes[pos[0]][pos[1]])
 
-                self.points[i].append(Point([]))
+                self.points[r].append(Point(connected_hexes))
 
         # adds harbors
         # each harbor is around the edge of the board
@@ -169,22 +174,22 @@ class Board:
                 # Check there is a building on the point
                 if self.points[r][i].building != None:
                     building = self.points[r][i].building
-                    hex_indexes = self.get_hexes_for_point(r, i)
+                    hexes = self.points[r][i].hexes
+                    print(hexes)
 
                     # checks if any hexes have the right number
-                    for num in hex_indexes:
+                    for current_hex in hexes:
 
                         # makes sure the robber isn't there
-                        if self.robber[0] == num[0] and self.robber[1] == num[1]:
+                        if self.robber[0] == current_hex.position[0] and self.robber[1] == current_hex.position[1]:
                             # skips this hex
                             continue
 
-                        if self.hexes[num[0]][num[1]].token_num == roll:
+                        if current_hex.token_num == roll:
                             # adds the card to the player's inventory
                             owner = building.owner
                             # gets the card type
-                            hex_type = self.hexes[num[0]][num[1]].type
-                            card_type = Board.get_card_from_hex(hex_type)
+                            card_type = Board.get_card_from_hex(current_hex.type)
                             # adds two if it is a city
                             if building.type == Building.BUILDING_CITY:
                                 self.game.players[owner].add_cards([
@@ -202,12 +207,21 @@ class Board:
     def get_hexes_for_point(self, r, i):
         # the indexes of the hexes
         hex_indexes = []
+        # Points on a hexagonal board
+        points = [
+            [None] * 7,
+            [None] * 9,
+            [None] * 11,
+            [None] * 11,
+            [None] * 9,
+            [None] * 7
+        ]
         # gets the adjacent hexes differently depending on whether the point is in the top or the bottom
-        if r < len(self.points) / 2:
+        if r < len(points) / 2:
             # gets the hexes below the point ------------------
 
             # adds the hexes to the right
-            if i < len(self.points[r]) - 1:
+            if i < len(points[r]) - 1:
                 hex_indexes.append([r, math.floor(i / 2)])
 
             # if the index is even, the number is between two hexes
@@ -218,30 +232,30 @@ class Board:
 
             if r > 0:
                 # gets the hex to the right
-                if i > 0 and i < len(self.points[r]) - 2:
+                if i > 0 and i < len(points[r]) - 2:
                     hex_indexes.append([r - 1, math.floor((i - 1) / 2)])
 
                 # gets the hex to the left
-                if i % 2 == 1 and i < len(self.points[r]) - 1 and i > 1:
+                if i % 2 == 1 and i < len(points[r]) - 1 and i > 1:
                     hex_indexes.append([r - 1, math.floor((i - 1) / 2) - 1])
 
         else:
 
             # adds the below -------------
 
-            if r < len(self.points) - 1:
+            if r < len(points) - 1:
                 # gets the hex to the right or directly below
-                if i < len(self.points[r]) - 2 and i > 0:
+                if i < len(points[r]) - 2 and i > 0:
                     hex_indexes.append([r, math.floor((i - 1) / 2)])
 
                 # gets the hex to the left
-                if i % 2 == 1 and i > 1 and i < len(self.points[r]):
+                if i % 2 == 1 and i > 1 and i < len(points[r]):
                     hex_indexes.append([r, math.floor((i - 1) / 2 - 1)])
 
             # gets the hexes above ------------
 
             # gets the hex above and to the right or directly above
-            if i < len(self.points[r]) - 1:
+            if i < len(points[r]) - 1:
                 hex_indexes.append([r - 1, math.floor(i / 2)])
 
             # gets the hex to the left
