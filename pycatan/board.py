@@ -72,11 +72,20 @@ class Board:
 
             self.points.append([])
             for i in range(round(12 - math.fabs(2 * r - 5))):
+                # Start with connected_hexes empty, will be set after gathering the surronding hexes
+                self.points[r].append(Point([]))
+                p = self.points[r][i]
                 connected_hexes = []
+                # Gather hexes
                 for pos in self.get_hexes_for_point(r, i):
+                    # Get the hex
                     connected_hexes.append(self.hexes[pos[0]][pos[1]])
+                    # Make the hex remember that it is connected to this point
+                    self.hexes[pos[0]][pos[1]].points.append(p)
 
-                self.points[r].append(Point(connected_hexes))
+                # Set connected hexes
+                p.hexes = connected_hexes
+
 
         # adds harbors
         # each harbor is around the edge of the board
@@ -175,7 +184,6 @@ class Board:
                 if self.points[r][i].building != None:
                     building = self.points[r][i].building
                     hexes = self.points[r][i].hexes
-                    print(hexes)
 
                     # checks if any hexes have the right number
                     for current_hex in hexes:
