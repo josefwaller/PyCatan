@@ -77,7 +77,7 @@ class Board:
                 p = self.points[r][i]
                 connected_hexes = []
                 # Gather hexes
-                for pos in self.get_hexes_for_point(r, i):
+                for pos in Board.get_hexes_for_point(r, i):
                     # Get the hex
                     connected_hexes.append(self.hexes[pos[0]][pos[1]])
                     # Make the hex remember that it is connected to this point
@@ -212,7 +212,8 @@ class Board:
 
 
     # returns all the hexes connected to a certain point
-    def get_hexes_for_point(self, r, i):
+    @staticmethod
+    def get_hexes_for_point(r, i):
         # the indexes of the hexes
         hex_indexes = []
         # Points on a hexagonal board
