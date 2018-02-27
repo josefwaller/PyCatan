@@ -22,34 +22,39 @@ import pprint
 class Board:
 
     def __init__(self, game, starting_board=False):
-        # the game the board is in
+        # The game the board is in
         self.game = game
-        # the hexes on the board
-        self.hexes = []
-        # the points on the board
-        # where the players can place settlements/cities
-        self.points = []
-        # the roads
+        # The hexes on the board
+        # Set to correct value at the end of __init__
+        self.hexes = ()
+        # The points on the board
+        # Where the players can place settlements/cities
+        # Will be set at the end of __init__
+        self.points = ()
+        # The roads
         self.roads = []
-        # the locations of the harbors
+        # The locations of the harbors
         self.harbors = []
-        # the location of the robber
+        # The location of the robber
         # going r, i
         self.robber = []
-        # creates a new PrettyPrinter for debugging
+        # Creates a new PrettyPrinter for debugging
         p = pprint.PrettyPrinter()
 
         # Get a deck of the hexes to be placed on the board
         all_hexes = Board.get_shuffled_hex_deck()
         all_hex_nums = Board.get_shuffled_hex_nums()
 
+        # Temporary list of hexes
+        temp_hexes = []
+        # Add hexes to board
         if not starting_board:
             last_index = 0
 
             for r in range(5):
                 # the length of this row of hexes
                 length = round(-math.fabs(r - 2) + 5)
-                self.hexes.append([])
+                temp_hexes.append([])
                 # Add hexes to this row
                 for i in range(length):
                     # Get the hex to be added to the board
@@ -60,28 +65,29 @@ class Board:
                     else:
                         this_hex.token_num = all_hex_nums.pop()
                     # Add it to the board
-                    self.hexes[r].append(this_hex)
+                    temp_hexes[r].append(this_hex)
 
 
         else:
             # Currently unimplemented, TBA
             raise Exception("Starting board currently not implemented")
 
-        # adds None to points for each point on the hexes
+        # Build a temporary array of points which will be converted to a list
+        temp_points = []
         for r in range(6):
 
-            self.points.append([])
+            temp_points.append([])
             for i in range(round(12 - math.fabs(2 * r - 5))):
                 # Start with connected_hexes empty, will be set after gathering the surronding hexes
-                self.points[r].append(Point([], [r, i]))
-                p = self.points[r][i]
+                temp_points[r].append(Point([], [r, i]))
+                p = temp_points[r][-1]
                 connected_hexes = []
                 # Gather hexes
                 for pos in Board.get_hexes_for_point(r, i):
                     # Get the hex
-                    connected_hexes.append(self.hexes[pos[0]][pos[1]])
+                    connected_hexes.append(temp_hexes[pos[0]][pos[1]])
                     # Make the hex remember that it is connected to this point
-                    self.hexes[pos[0]][pos[1]].points.append(p)
+                    temp_hexes[pos[0]][pos[1]].points.append(p)
 
                 # Set connected hexes
                 p.hexes = connected_hexes
@@ -92,40 +98,38 @@ class Board:
         # and are separated by n points, when n is a pattern of 2 3 2 repeating
         # so this gets all the points in segments of top, right, left, bottom
         # and then adds them together
-
-        # adds the top and bottom layer
         top = []
         bottom = []
 
         # the index of the last row
-        last = len(self.points) - 1
+        last = len(temp_points) - 1
 
         # adds the points
-        for i in range(len(self.points[0])):
+        for i in range(len(temp_points[0])):
             top.append([0, i])
-            bottom.append([last, len(self.points[0]) - 1 - i])
+            bottom.append([last, len(temp_points[0]) - 1 - i])
 
         # adds all the points on the right and left
         right = []
         left = []
 
-        for r in range(1, len(self.points) - 1):
-            length = len(self.points[r]) - 1
+        for r in range(1, len(temp_points) - 1):
+            length = len(temp_points[r]) - 1
 
             # orders the points depending if they are on the top half or bottom half
-            if r < (len(self.points) - 1) / 2:
+            if r < (len(temp_points) - 1) / 2:
                 right.append([r, length - 1])
                 right.append([r, length])
 
-                left.append([len(self.points) - 1 - r, 1])
-                left.append([len(self.points) - 1 - r, 0])
+                left.append([len(temp_points) - 1 - r, 1])
+                left.append([len(temp_points) - 1 - r, 0])
 
             else:
                 right.append([r, length])
                 right.append([r, length - 1])
 
-                left.append([len(self.points) - 1 - r, 0])
-                left.append([len(self.points) - 1 - r, 1])
+                left.append([len(temp_points) - 1 - r, 0])
+                left.append([len(temp_points) - 1 - r, 1])
 
         outside_points = []
         outside_points.extend(top)
@@ -169,11 +173,16 @@ class Board:
             count += 1
 
         # puts the robber on the desert hex to start
-        for r in range(len(self.hexes)):
+        for r in range(len(temp_hexes)):
             # checks if this row has the desert
-            if self.hexes[r].count(HexType.DESERT) > 0:
+            if temp_hexes[r].count(HexType.DESERT) > 0:
                 # places the robber
-                self.robber = [r, self.hexes[r].index(HexType.DESERT)]
+                self.robber = [r, temp_hexes[r].index(HexType.DESERT)]
+
+        # Convert hexes and points to a 2d tuple rather than
+        # a 2d list
+        self.points = tuple(map(tuple, temp_points))
+        self.hexes = tuple(map(tuple, temp_hexes))
 
    # gives the players cards for a certain roll
     def add_yield(self, roll):
