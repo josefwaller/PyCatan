@@ -1,4 +1,4 @@
-from pycatan.board import Board
+from pycatan.default_board import DefaultBoard
 from pycatan.player import Player
 from pycatan.statuses import Statuses
 from pycatan.card import ResCard, DevCard
@@ -12,7 +12,7 @@ class Game:
     # initializes the  game
     def __init__(self, num_of_players=3, on_win=None, starting_board=False):
         # creates a board
-        self.board = Board(game=self, starting_board=starting_board);
+        self.board = DefaultBoard(game=self);
         # creates players
         self.players = []
         for i in range(num_of_players):
