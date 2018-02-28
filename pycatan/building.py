@@ -18,10 +18,13 @@ class Building:
             self.point_one = point_one
             self.point_two = point_two
 
+        else:
+            self.point = point_one
+
     def __repr__(self):
 
         if self.type == Building.BUILDING_ROAD:
-            return "Road, owned by player %s, from %s to %s" % (self.owner, self.point_one, self.point_two)
+            return "Road, owned by player %s, from %s to %s" % (self.owner, self.point_one.position, self.point_two.position)
 
         elif self.type == Building.BUILDING_SETTLEMENT:
             return "Settlement, owned by player %s" % self.owner

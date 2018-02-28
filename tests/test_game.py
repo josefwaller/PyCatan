@@ -24,6 +24,7 @@ class TestGame:
         assert res == Statuses.ALL_GOOD
         assert g.board.points[0][0].building != None
         assert g.board.points[0][0].building.type == Building.BUILDING_SETTLEMENT
+        assert g.board.points[0][0].building.point is g.board.points[0][0]
         assert len(g.players[0].cards) == 4
         # Test adding a settlement too close to another settlement
         res = g.add_settlement(1, 0, 1, True)
