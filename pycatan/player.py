@@ -30,6 +30,10 @@ class Player:
     # builds a settlement belonging to this player
     def build_settlement (self, settle_r, settle_i, is_starting=False):
 
+        # checks the point exists
+        if not self.game.board.point_exists(settle_r, settle_i):
+            return Statuses.ERR_BAD_POINT
+
         if not is_starting:
             # makes sure the player has the cards to build a settlements
             cards_needed = [
@@ -58,17 +62,13 @@ class Player:
             if not connected_by_road:
                 return Statuses.ERR_ISOLATED
 
-        # checks the point exists
-        if not (self.game).board.point_exists(settle_r, settle_i):
-            return Statuses.ERR_BAD_POINT
-
         # checks that a building does not already exist there
-        if not (self.game).board.point_is_empty(settle_r, settle_i):
+        if not self.game.board.point_is_empty(settle_r, settle_i):
             return Statuses.ERR_BLOCKED
 
         # checks all other settlements are at least 2 away
         # gets the connecting point's coords
-        point_coords = (self.game).board.get_connected_points(settle_r, settle_i)
+        point_coords = self.game.board.get_connected_points(settle_r, settle_i)
         for coord in point_coords:
 
             # checks if the point is occupied
@@ -80,8 +80,11 @@ class Player:
             # removes the cards
             self.remove_cards(cards_needed)
 
-        # adds the house
-        ((self.game).board).add_building(Building(owner=self.num, type=Building.BUILDING_SETTLEMENT), r=settle_r, i=settle_i)
+        # adds the settlement
+        self.game.board.add_building(Building(
+            owner = self.num,
+            type = Building.BUILDING_SETTLEMENT,
+            point_one = self.game.board.points[settle_r][settle_i]), settle_r, settle_i)
         # adds a victory point
         self.victory_points += 1
 
