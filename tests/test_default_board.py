@@ -119,11 +119,11 @@ class TestDefaultBoard:
         # Flatten all harbor positions
         harbor_positions = list(sum(map(lambda x: [x.point_one, x.point_two], board.harbors), []))
         for case in cases:
-            assert list(case) in harbor_positions
+            assert board.points[case[0]][case[1]] in harbor_positions
 
     def test_harbors_always_have_connected_points(self):
         # Create board
         board = Game().board
-        # For every hrbor, check that the two points are connected
+        # For every harbor, check that the two points are connected
         for harbor in board.harbors:
-            assert harbor.point_two in board.get_connected_points(harbor.point_one[0], harbor.point_one[1])
+            assert harbor.point_two.position in board.get_connected_points(harbor.point_one.position[0], harbor.point_one.position[1])
