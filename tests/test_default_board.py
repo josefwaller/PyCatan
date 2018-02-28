@@ -105,3 +105,25 @@ class TestDefaultBoard:
         for case in order_cases:
             ans = order_cases[case]
             assert outside_points.index(list(case)) + 1 == outside_points.index(list(ans))
+
+    def test_harbors_are_placed_correctly(self):
+        # Create board
+        board = Game().board
+        # Test that the harbors are on these spots
+        cases = [
+            (0, 2),
+            (2, 9),
+            (3, 0),
+            (5, 2)
+        ]
+        # Flatten all harbor positions
+        harbor_positions = list(sum(map(lambda x: [x.point_one, x.point_two], board.harbors), []))
+        for case in cases:
+            assert list(case) in harbor_positions
+
+    def test_harbors_always_have_connected_points(self):
+        # Create board
+        board = Game().board
+        # For every hrbor, check that the two points are connected
+        for harbor in board.harbors:
+            assert harbor.point_two in board.get_connected_points(harbor.point_one[0], harbor.point_one[1])

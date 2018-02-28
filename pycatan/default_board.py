@@ -44,16 +44,12 @@ class DefaultBoard(Board):
                     self.hexes[pos[0]][pos[1]].points.append(point)
 
         self.points = tuple(map(lambda x: tuple(x), temp_points))
-
         # adds a harbor for each points in the pattern 2 3 2 2 3 2 etc
         outside_points = DefaultBoard.get_outside_points()
-
-        # the index of the outside point to build a harbor on
-        index = 0
-        # the count of harbors build
-        count = 0
         # the pattern of spaces between harbors
-        pattern = [2, 3, 2]
+        pattern = [1, 2, 1]
+        # the current index of pattern
+        index = 0
         # the different types of harbors
         harbor_types = [
             HarborType.WOOD,
@@ -66,20 +62,19 @@ class DefaultBoard(Board):
             HarborType.ANY,
             HarborType.ANY
         ]
-
-        # shuffles the harbors
+        # Shuffles the harbors
         random.shuffle(harbor_types)
-        # goes around the board once and adds harbors
-        while index < len(outside_points):
-
-            # creates a new harbor
-            harbor = Harbor(point_one=outside_points[index], point_two=outside_points[index + 1], type=harbor_types[count])
-            # adds it to harbors
+        # Run loop until harbor_types is empty
+        while harbor_types:
+            # Create a new harbor
+            harbor = Harbor(point_one=outside_points.pop(), point_two=outside_points.pop(), type=harbor_types.pop())
+            # Add it to harbors
             self.harbors.append(harbor)
-            # increments index by the next pattern, adds one to fit with the width of each harbor being 2
-            index += pattern[count % 3] + 1
-            # adds one to count
-            count += 1
+            # Remove the unused points from outside_points
+            for _ in range(pattern[index % len(pattern)]):
+                outside_points.pop()
+            # Use next pattern value for number of points inbetween next time
+            index += 1
 
         # puts the robber on the desert hex to start
         for r in range(len(temp_hexes)):
