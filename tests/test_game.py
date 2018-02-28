@@ -11,31 +11,29 @@ class TestGame:
 
     def test_adding_starting_settlements(self):
         # Create game
-        game = Game();
-        # Test adding a starting settlement, i.e. no cards needed
-        res = game.add_settlement(0, 0, 0, True)
-        assert res == Statuses.ALL_GOOD
-        # Test adding a settlement too close to another settlement
-        res = game.add_settlement(1, 0, 1, True)
-        assert res == Statuses.ERR_BLOCKED
-        # Test adding a settlement the correct distance away
-        res = game.add_settlement(2, 0, 2, True)
-        assert res == Statuses.ALL_GOOD
-        # Try creating a settlement on a point that does not exist
-        res = g.add_settlement(0, 100, 0, True)
-        assert res == Statuses.ERR_BAD_POINT
-        # Make sure creating a settlement does not use any cards
+        g = Game();
+        # Make sure creating a starting settlement does not use any cards
         g.players[0].add_cards([
             ResCard.WOOD,
             ResCard.BRICK,
             ResCard.SHEEP,
             ResCard.WHEAT
         ])
+        # Test adding a starting settlement, i.e. no cards needed
         res = g.add_settlement(0, 0, 0, True)
         assert res == Statuses.ALL_GOOD
         assert g.board.points[0][0].building != None
         assert g.board.points[0][0].building.type == Building.BUILDING_SETTLEMENT
         assert len(g.players[0].cards) == 4
+        # Test adding a settlement too close to another settlement
+        res = g.add_settlement(1, 0, 1, True)
+        assert res == Statuses.ERR_BLOCKED
+        # Test adding a settlement the correct distance away
+        res = g.add_settlement(2, 0, 2, True)
+        assert res == Statuses.ALL_GOOD
+        # Try creating a settlement on a point that does not exist
+        res = g.add_settlement(0, 100, 0, True)
+        assert res == Statuses.ERR_BAD_POINT
 
     def test_adding_starting_roads(self):
         # Create game
