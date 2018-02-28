@@ -78,3 +78,30 @@ class TestDefaultBoard:
                 point = b.points[ans[0]][ans[1]]
                 assert point in hex.points
 
+    def test_get_outside_points(self):
+        # Get outside points
+        outside_points = DefaultBoard.get_outside_points()
+        # Check the points exist
+        cases = {
+            (0, 0): True,
+            (1, 2): False,
+            (4, 0): True,
+            (5, 3): True,
+            (3, 2): False
+        }
+        for case in cases:
+            ans = cases[case]
+            assert (list(case) in outside_points) == ans
+        # Check the points are in the right order
+        # Each value in this dict is the point that should be directly after the key
+        order_cases = {
+            (0, 0): (0, 1),
+            (0, 6): (1, 7),
+            (2, 10): (3, 10),
+            (5, 3): (5, 2),
+            (2, 1): (1, 0),
+            (1, 0): (1, 1)
+        }
+        for case in order_cases:
+            ans = order_cases[case]
+            assert outside_points.index(list(case)) + 1 == outside_points.index(list(ans))

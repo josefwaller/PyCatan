@@ -45,51 +45,8 @@ class DefaultBoard(Board):
 
         self.points = tuple(map(lambda x: tuple(x), temp_points))
 
-        # adds harbors
-        # each harbor is around the edge of the board
-        # and are separated by n points, when n is a pattern of 2 3 2 repeating
-        # so this gets all the points in segments of top, right, left, bottom
-        # and then adds them together
-        top = []
-        bottom = []
-
-        # the index of the last row
-        last = len(self.points) - 1
-
-        # adds the points
-        for i in range(len(self.points[0])):
-            top.append([0, i])
-            bottom.append([last, len(self.points[0]) - 1 - i])
-
-        # adds all the points on the right and left
-        right = []
-        left = []
-
-        for r in range(1, len(self.points) - 1):
-            length = len(self.points[r]) - 1
-
-            # orders the points depending if they are on the top half or bottom half
-            if r < (len(self.points) - 1) / 2:
-                right.append([r, length - 1])
-                right.append([r, length])
-
-                left.append([len(self.points) - 1 - r, 1])
-                left.append([len(self.points) - 1 - r, 0])
-
-            else:
-                right.append([r, length])
-                right.append([r, length - 1])
-
-                left.append([len(self.points) - 1 - r, 0])
-                left.append([len(self.points) - 1 - r, 1])
-
-        outside_points = []
-        outside_points.extend(top)
-        outside_points.extend(right)
-        outside_points.extend(bottom)
-        outside_points.extend(left)
-
         # adds a harbor for each points in the pattern 2 3 2 2 3 2 etc
+        outside_points = DefaultBoard.get_outside_points()
 
         # the index of the outside point to build a harbor on
         index = 0
@@ -259,3 +216,45 @@ class DefaultBoard(Board):
             connected_points.append([r, i + 1])
 
         return connected_points
+
+    # Get the points along the outside of the board, in clockwise order
+    @staticmethod
+    def get_outside_points():
+        # The lengths of each row of points on the board
+        row_lengths = [
+            7,
+            9,
+            11,
+            11,
+            9,
+            7
+        ]
+        # The points on the bottom
+        bottom = list(map(lambda x: [len(row_lengths) - 1, x], range(row_lengths[-1])))
+        # The points on the top
+        top = list(map(lambda x: [0, x], range(row_lengths[0])))
+        # adds all the points on the right and left
+        right = []
+        left = []
+        for r in range(1, len(row_lengths) - 1):
+            # Get the last two and first two points on this row
+            last_two = list(map(lambda x: [r, x], range(row_lengths[r])[-2:]))
+            first_two = list(map(lambda x: [r, x], reversed(range(2))))
+            # If the points are one the bottom half of the board, reverse them
+            if r > (len(row_lengths) - 1) / 2:
+                last_two = list(reversed(last_two))
+                first_two = list(reversed(first_two))
+            # Add points to right and left
+            right.extend(last_two)
+            left.extend(first_two)
+
+        # Put different sides of points in order
+        # bottom and left are reversed since we want to count those points in reverse order
+        # to make sure we go in clockwise order
+        outside_points = []
+        outside_points.extend(top)
+        outside_points.extend(right)
+        outside_points.extend(reversed(bottom))
+        outside_points.extend(reversed(left))
+        # Return them
+        return outside_points
