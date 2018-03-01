@@ -41,12 +41,12 @@ class Board(object):
     # gives the players cards for a certain roll
     def add_yield(self, roll):
 
-        for r in range(len(self.points)):
-            for i in range(len(self.points[r])):
+        for r in self.points:
+            for p in r:
                 # Check there is a building on the point
-                if self.points[r][i].building != None:
-                    building = self.points[r][i].building
-                    hexes = self.points[r][i].hexes
+                if p.building != None:
+                    building = p.building
+                    hexes = p.hexes
 
                     # checks if any hexes have the right number
                     for current_hex in hexes:
