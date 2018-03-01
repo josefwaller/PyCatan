@@ -125,10 +125,10 @@ class Board(object):
     def get_buildings(self):
 
         buildings = []
-        for r in range(len(self.points)):
-            for i in range(len(self.points[r])):
-                if self.points[r][i].building != None:
-                    buildings.append([r, i])
+        for r in self.points:
+            for p in r:
+                if p.building != None:
+                    buildings.append(p.building)
 
         return buildings
 

@@ -67,7 +67,12 @@ class DefaultBoard(Board):
         # Run loop until harbor_types is empty
         while harbor_types:
             # Create a new harbor
-            harbor = Harbor(point_one=outside_points.pop(), point_two=outside_points.pop(), type=harbor_types.pop())
+            p_one = outside_points.pop()
+            p_two = outside_points.pop()
+            harbor = Harbor(
+                point_one = self.points[p_one[0]][p_one[1]],
+                point_two = self.points[p_two[0]][p_two[1]],
+                type = harbor_types.pop())
             # Add it to harbors
             self.harbors.append(harbor)
             # Remove the unused points from outside_points

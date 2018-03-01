@@ -2,6 +2,7 @@ from pycatan.game import Game
 from pycatan.building import Building
 from pycatan.card import ResCard
 from pycatan.statuses import Statuses
+from pycatan.harbor import HarborType
 
 class TestGame:
 
@@ -82,3 +83,56 @@ class TestGame:
         assert g.board.points[0][0].building != None
         assert g.board.points[0][0].building.type == Building.BUILDING_SETTLEMENT
 
+    # Test trading in cards either directly through the bank
+    def test_trade_in_cards_through_bank(self):
+        g = Game()
+        # Add 4 wood cards to player 0
+        g.players[0].add_cards([ResCard.WOOD] * 4)
+        # Try to trade in for 1 wheat
+        res = g.trade_to_bank(player=0, cards=[ResCard.WOOD] * 4, request=ResCard.WHEAT)
+        assert res == Statuses.ALL_GOOD
+        assert not g.players[0].has_cards([ResCard.WOOD])
+        assert g.players[0].has_cards([ResCard.WHEAT])
+        # Try to trade in cards the player doesn't have
+        res = g.trade_to_bank(player=0, cards=[ResCard.BRICK] * 4, request=ResCard.ORE)
+        assert res == Statuses.ERR_CARDS
+        assert not g.players[0].has_cards([ResCard.ORE])
+        # Try to trade in with less than 4 cards, but more than 0
+        g.players[0].add_cards([ResCard.BRICK] * 3)
+        res = g.trade_to_bank(player=0, cards=[ResCard.BRICK] * 4, request=ResCard.SHEEP)
+        assert res == Statuses.ERR_CARDS
+        assert g.players[0].has_cards([ResCard.BRICK] * 3)
+        assert not g.players[0].has_cards([ResCard.SHEEP])
+
+    def test_trade_in_cards_through_harbor(self):
+        g = Game();
+        # Add Settlement next to the harbor on the top
+        res = g.add_settlement(player=0, r=0, i=2, is_starting=True)
+        assert res == Statuses.ALL_GOOD
+        # Make the harbor trade in ore for testing
+        for h in g.board.harbors:
+            if g.board.points[0][2] in h.get_points():
+                h.type = HarborType.ORE
+        g.players[0].add_cards([ResCard.ORE] * 2)
+        # Try to use harbor
+        res = g.trade_to_bank(player=0, cards=[ResCard.ORE] * 2, request=ResCard.WHEAT)
+        assert res == Statuses.ALL_GOOD
+        assert g.players[0].has_cards([ResCard.WHEAT])
+        assert not g.players[0].has_cards([ResCard.ORE])
+        # Try to trade in to a harbor that the player does not have access to
+        g.players[0].add_cards([ResCard.BRICK] * 2)
+        res = g.trade_to_bank(player=0, cards=[ResCard.BRICK] * 2, request=ResCard.SHEEP)
+        assert res == Statuses.ERR_HARBOR
+        assert g.players[0].has_cards([ResCard.BRICK] * 2)
+        assert not g.players[0].has_cards([ResCard.SHEEP])
+        # Try to trade without the proper cards
+        assert not g.players[0].has_cards([ResCard.ORE])
+        res = g.trade_to_bank(player=0, cards=[ResCard.ORE] * 2, request=ResCard.SHEEP)
+        assert res == Statuses.ERR_CARDS
+        assert not g.players[0].has_cards([ResCard.SHEEP])
+        # Try to trade with more cards than the player has
+        g.players[0].add_cards([ResCard.ORE])
+        res = g.trade_to_bank(player=0, cards=[ResCard.ORE] * 2, request=ResCard.SHEEP)
+        assert res == Statuses.ERR_CARDS
+        assert not g.players[0].has_cards([ResCard.SHEEP])
+        assert g.players[0].has_cards([ResCard.ORE])

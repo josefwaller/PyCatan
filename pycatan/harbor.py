@@ -1,4 +1,5 @@
 from enum import Enum
+from pycatan.card import ResCard
 
 # The different types of harbors found throughout the game
 class HarborType(Enum):
@@ -50,3 +51,20 @@ class Harbor:
 
         elif self.type == HarborType.ANY:
             return "3:1"
+
+    @staticmethod
+    def get_card_from_harbor_type(h_type):
+        if h_type == HarborType.WOOD:
+            return ResCard.WOOD
+        elif h_type == HarborType.BRICK:
+            return ResCard.BRICK
+        elif h_type == HarborType.WHEAT:
+            return ResCard.WHEAT
+        elif h_type == HarborType.ORE:
+            return ResCard.ORE
+        elif h_type == HarborType.SHEEP:
+            return ResCard.SHEEP
+        elif h_type == HarborType.ANY:
+            return None
+        else:
+            raise Exception("Harbor has invalid type %s" % h_type)

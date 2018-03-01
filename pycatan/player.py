@@ -235,21 +235,19 @@ class Player:
         return Statuses.ALL_GOOD
 
     # returns an array of all the harbors the player has access to
-    def get_harbors(self):
+    def get_connected_harbor_types(self):
 
         # gets the settlements/cities belonging to this player
         harbors = []
-        all_harbors = ((self.game).board).harbors
-        building_coords = ((self.game).board).get_buildings()
+        all_harbors = self.game.board.harbors
+        buildings = self.game.board.get_buildings()
 
-        for coords in building_coords:
-
-            building = (self.game).board.points[coords[0]][coords[1]]
+        for b in buildings:
             # checks the building belongs to this player
-            if building.owner == self.num:
+            if b.owner == self.num:
                 # checks if the building is connected to any harbors
                 for h in all_harbors:
-                    if h.point_one == coords or h.point_two == coords:
+                    if h.point_one == b.point or h.point_two == b.point:
                         # adds the type
                         if harbors.count(h.type) == 0:
                             harbors.append(h.type)

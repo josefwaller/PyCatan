@@ -3,6 +3,7 @@ from pycatan.player import Player
 from pycatan.statuses import Statuses
 from pycatan.card import ResCard, DevCard
 from pycatan.building import Building
+from pycatan.harbor import Harbor
 
 import random
 import math
@@ -44,7 +45,7 @@ class Game:
     def add_settlement(self, player, r, i, is_starting=False):
         # builds the settlement
         status = self.players[player].build_settlement(settle_r=r, settle_i=i, is_starting=is_starting)
-        # IF successful, check if the player has now won
+        # If successful, check if the player has now won
         if status == Statuses.ALL_GOOD:
             if self.players[player].get_VP() >= 10:
                 # End the game
@@ -149,7 +150,7 @@ class Game:
     # either by 4 for 1 or using a harbor
     def trade_to_bank(self, player, cards, request):
         # makes sure the player has the cards
-        if not (self.players[player]).has_cards(cards):
+        if not self.players[player].has_cards(cards):
             return Statuses.ERR_CARDS
         # checks all the cards are the same type
         card_type = cards[0]
@@ -160,9 +161,12 @@ class Game:
         if len(cards) != 4:
             # checks if the player has a settlement on the right type of harbor
             has_harbor = False
-            harbors = self.players[player].get_harbors()
-            for h in harbors:
-                if h == card_type:
+            harbor_types = self.players[player].get_connected_harbor_types()
+            for h_type in harbor_types:
+                if Harbor.get_card_from_harbor_type(h_type) == card_type and len(cards) == 2:
+                    has_harbor = True
+                    break
+                elif Harbor.get_card_from_harbor_type(h_type) == None and len(cards) == 3:
                     has_harbor = True
                     break
 
@@ -170,9 +174,9 @@ class Game:
                 return Statuses.ERR_HARBOR
 
         # removes cards
-        (self.players[player]).remove_cards(cards)
+        self.players[player].remove_cards(cards)
         # adds the new card
-        (self.players[player]).add_cards([request])
+        self.players[player].add_cards([request])
 
         return Statuses.ALL_GOOD
 
