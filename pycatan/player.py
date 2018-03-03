@@ -178,7 +178,7 @@ class Player:
 
         # does the same for the other point
         elif point_two.building != None:
-            if point_two.buidling.owner == self.num:
+            if point_two.building.owner == self.num:
                 is_connected = True
 
         # then checks if there is a road connecting them

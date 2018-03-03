@@ -45,14 +45,17 @@ class TestGame:
         # Try adding a road
         res = game.add_road(0, [0, 0], [0, 1], True)
         assert res == Statuses.ALL_GOOD
+        res = game.add_road(0, [1, 1], [0, 0], True)
+        assert res == Statuses.ALL_GOOD
         # Try adding a disconnected road
-        res = game.add_road(0, [1, 1], [1, 0], True)
+        res = game.add_road(0, [2, 0], [2, 1], True)
         assert res == Statuses.ERR_ISOLATED
         # Try adding a road whose point's are not connected
         res = game.add_road(0, [0, 0], [5, 5], True)
         assert res == Statuses.ERR_NOT_CON
         # Try adding a road connected to another player's settlement
-        res = game.add_road(1, [0, 0], [1, 1], True)
+        game.add_settlement(1, 2, 2, True)
+        res = game.add_road(0, [2, 2], [2, 3], True)
         assert res == Statuses.ERR_ISOLATED
  
     # Test that player.add_settlement returns the proper value
