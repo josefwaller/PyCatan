@@ -78,6 +78,20 @@ class TestDefaultBoard:
                 point = b.points[ans[0]][ans[1]]
                 assert point in hex.points
 
+    def test_points_have_references_to_connected_points(self):
+        board = Game().board
+        cases = {
+            (0, 0): (0, 1),
+            (0, 0): (1, 1),
+            (1, 8): (2, 9),
+            (2, 3): (2, 2),
+            (4, 1): (5, 0),
+            (4, 2): (3, 3)
+        }
+        for case in cases:
+            ans = cases[case]
+            assert board.points[ans[0]][ans[1]] in board.points[case[0]][case[1]].connected_points
+
     def test_get_outside_points(self):
         # Get outside points
         outside_points = DefaultBoard.get_outside_points()
@@ -126,4 +140,5 @@ class TestDefaultBoard:
         board = Game().board
         # For every harbor, check that the two points are connected
         for harbor in board.harbors:
-            assert harbor.point_two.position in board.get_connected_points(harbor.point_one.position[0], harbor.point_one.position[1])
+            print(harbor.point_one)
+            assert harbor.point_two in harbor.point_one.connected_points

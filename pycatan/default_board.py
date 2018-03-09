@@ -43,7 +43,13 @@ class DefaultBoard(Board):
                     point.hexes.append(self.hexes[pos[0]][pos[1]])
                     self.hexes[pos[0]][pos[1]].points.append(point)
 
+
         self.points = tuple(map(lambda x: tuple(x), temp_points))
+        # Set the connected points for each point
+        # Must be done after initializing each point so that the point object exists
+        for r in self.points:
+            for p in r:
+                p.connected_points = self.get_connected_points(p.position[0], p.position[1])
         # adds a harbor for each points in the pattern 2 3 2 2 3 2 etc
         outside_points = DefaultBoard.get_outside_points()
         # the pattern of spaces between harbors
@@ -153,69 +159,33 @@ class DefaultBoard(Board):
 
     # gets the points that are connected to the point given
     def get_connected_points(self, r, i):
-
-        # the connected points
-        connected_points = []
-        # whether the point has another point directly above or directly below
-        has_point_above = False
-
-        # half of the last index
-        # if the board has 6 rows, this will be 2.5
-        # so that ceiling/flooring will give the two middle rows
-        half_height = (len(self.points) - 1) / 2
-
-        # if it is in the top half
-        if r < half_height:
-
-            # even points have a point below, odd points have one above
-            if i % 2 == 0:
-
-                # adds a point below
-
-                if r == math.floor(half_height):
-                    # this connection has the same index because it is crossing over the middle
-                    connected_points.append([r + 1, i])
-
-                else:
-                    connected_points.append([r + 1, i + 1])
-
-            else:
-                # adds a point above
-                if r > 0 and i > 0:
-                    connected_points.append([r - 1, i - 1])
-
-        # if it is in the bottom half
-        else:
-            if i % 2 == 0:
-
-                # adds a point above
-                if r == math.ceil(half_height):
-                    # same index because it is crossing the middle
-                    connected_points.append([r - 1, i])
-
-                else:
-                    connected_points.append([r - 1, i + 1])
-
-            else:
-
-                # adds a point below
-                if r < len(self.points) - 1 and i > 0:
-                    connected_points.append([r + 1, i - 1])
-
-        # # The different in index
-        # #
-        # #          ABOVE   | BELOW
-        # # TOP    |   -1    |   +1
-        # # BOTTOM |   +1    |   -1
-
-        # gets the adjacent points
+        to_return = []
+        # Get the point to the left and the right
         if i > 0:
-            connected_points.append([r, i - 1])
+            to_return.append(self.points[r][i - 1])
 
         if i < len(self.points[r]) - 1:
-            connected_points.append([r, i + 1])
+            to_return.append(self.points[r][i + 1])
 
-        return connected_points
+        # Get the point above and below
+        # First, if the point is in the center two rows, the connected point
+        # is either directly above/below this point
+        if r == 2 and i % 2 == 0:
+            to_return.append(self.points[r + 1][i])
+        elif r == 3 and i % 2 == 0:
+            to_return.append(self.points[r - 1][i])
+        # If the point is not in the 2 center rows, the point will have an offset
+        elif r < len(self.points) / 2:
+            if i % 2 == 0:
+                to_return.append(self.points[r + 1][i + 1])
+            elif r > 0 and i > 0:
+                to_return.append(self.points[r - 1][i - 1])
+        else:
+            if i % 2 == 0:
+                to_return.append(self.points[r - 1][i + 1])
+            elif r < len(self.points) - 1 and i > 0:
+                to_return.append(self.points[r + 1][i - 1])
+        return to_return
 
     # Get the points along the outside of the board, in clockwise order
     @staticmethod

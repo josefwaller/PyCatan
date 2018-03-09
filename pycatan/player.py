@@ -63,17 +63,18 @@ class Player:
                 return Statuses.ERR_ISOLATED
 
         # checks that a building does not already exist there
-        if not self.game.board.point_is_empty(settle_r, settle_i):
+        if self.game.board.points[settle_r][settle_i].building != None:
             return Statuses.ERR_BLOCKED
 
         # checks all other settlements are at least 2 away
         # gets the connecting point's coords
-        point_coords = self.game.board.get_connected_points(settle_r, settle_i)
-        for coord in point_coords:
+        points = self.game.board.points[settle_r][settle_i].connected_points
+        for p in points:
 
             # checks if the point is occupied
-            p = self.game.board.points[coord[0]][coord[1]]
             if p.building != None:
+                print(p.building)
+                print(p)
                 return Statuses.ERR_BLOCKED
 
         if not is_starting:
@@ -147,10 +148,10 @@ class Player:
         # checks the two points are connected
         connected = False
         # gets the points connected to start
-        points = (self.game).board.get_connected_points(r=start[0], i=start[1])
+        points = self.game.board.get_connected_points(r=start[0], i=start[1])
 
         for p in points:
-            if end == p:
+            if end == p.position:
                 connected = True
                 break
 
@@ -158,7 +159,7 @@ class Player:
             return Statuses.ERR_NOT_CON
 
         connected_by_road = False
-        for road in (self.game).board.roads:
+        for road in self.game.board.roads:
             # checks the road does not already exists with these points
             if road.point_one == start or road.point_two == start:
                 if road.point_one == end or road.point_two == end:
@@ -168,8 +169,8 @@ class Player:
         is_connected = False
 
         # first checks if there is a settlements on either point
-        point_one = (self.game).board.points[start[0]][start[1]]
-        point_two = (self.game).board.points[end[0]][end[1]]
+        point_one = self.game.board.points[start[0]][start[1]]
+        point_two = self.game.board.points[end[0]][end[1]]
 
         if point_one.building != None:
             # checks if this player owns the settlement/city
@@ -182,7 +183,7 @@ class Player:
                 is_connected = True
 
         # then checks if there is a road connecting them
-        roads = (self.game).board.roads
+        roads = self.game.board.roads
         points = [start, end]
 
         for r in roads:

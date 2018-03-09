@@ -78,9 +78,9 @@ class TestGame:
         res = g.add_settlement(0, 500, 0)
         assert res == Statuses.ERR_BAD_POINT
         # Add starting settlement and two roads to ensure there is an available position
-        g.add_settlement(0, 0, 2, True)
-        g.add_road(0, [0, 2], [0, 1], True)
-        g.add_road(0, [0, 0], [0, 1], True)
+        assert g.add_settlement(0, 0, 2, True) == Statuses.ALL_GOOD
+        assert g.add_road(0, [0, 2], [0, 1], True) == Statuses.ALL_GOOD
+        assert g.add_road(0, [0, 0], [0, 1], True) == Statuses.ALL_GOOD
         res = g.add_settlement(0, 0, 0)
         assert res == Statuses.ALL_GOOD
         assert g.board.points[0][0].building != None
