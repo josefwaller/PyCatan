@@ -21,48 +21,45 @@ class TestGame:
             ResCard.WHEAT
         ])
         # Test adding a starting settlement, i.e. no cards needed
-        res = g.add_settlement(0, 0, 0, True)
+        res = g.add_settlement(0, g.board.points[0][0], True)
         assert res == Statuses.ALL_GOOD
         assert g.board.points[0][0].building != None
         assert g.board.points[0][0].building.type == Building.BUILDING_SETTLEMENT
         assert g.board.points[0][0].building.point is g.board.points[0][0]
         assert len(g.players[0].cards) == 4
         # Test adding a settlement too close to another settlement
-        res = g.add_settlement(1, 0, 1, True)
+        res = g.add_settlement(1, g.board.points[0][1], True)
         assert res == Statuses.ERR_BLOCKED
         # Test adding a settlement the correct distance away
-        res = g.add_settlement(2, 0, 2, True)
+        res = g.add_settlement(2, g.board.points[0][2], True)
         assert res == Statuses.ALL_GOOD
-        # Try creating a settlement on a point that does not exist
-        res = g.add_settlement(0, 100, 0, True)
-        assert res == Statuses.ERR_BAD_POINT
 
     def test_adding_starting_roads(self):
         # Create game
-        game = Game()
+        g = Game()
         # Add starting settlement
-        game.add_settlement(0, 0, 0, True)
+        g.add_settlement(0, g.board.points[0][0], True)
         # Try adding a road
-        res = game.add_road(0, [0, 0], [0, 1], True)
+        res = g.add_road(0, g.board.points[0][0], g.board.points[0][1], True)
         assert res == Statuses.ALL_GOOD
-        res = game.add_road(0, [1, 1], [0, 0], True)
+        res = g.add_road(0, g.board.points[1][1], g.board.points[0][0], True)
         assert res == Statuses.ALL_GOOD
         # Try adding a disconnected road
-        res = game.add_road(0, [2, 0], [2, 1], True)
+        res = g.add_road(0, g.board.points[2][0], g.board.points[2][1], True)
         assert res == Statuses.ERR_ISOLATED
         # Try adding a road whose point's are not connected
-        res = game.add_road(0, [0, 0], [5, 5], True)
+        res = g.add_road(0, g.board.points[0][0], g.board.points[5][5], True)
         assert res == Statuses.ERR_NOT_CON
         # Try adding a road connected to another player's settlement
-        game.add_settlement(1, 2, 2, True)
-        res = game.add_road(0, [2, 2], [2, 3], True)
+        g.add_settlement(1, g.board.points[2][2], True)
+        res = g.add_road(0, g.board.points[2][2], g.board.points[2][3], True)
         assert res == Statuses.ERR_ISOLATED
  
     # Test that player.add_settlement returns the proper value
     def test_add_settlement(self):
         g = Game()
         # Try to add a settlement without the cards
-        g.add_settlement(0, 0, 0)
+        g.add_settlement(0, g.board.points[0][0])
         # Add cards to build a settlement
         g.players[0].add_cards([
             ResCard.WOOD,
@@ -71,17 +68,14 @@ class TestGame:
             ResCard.WHEAT
         ])
         # Try adding an isolated settlement
-        res = g.add_settlement(0, 0, 0)
+        res = g.add_settlement(0, g.board.points[0][0])
         assert res == Statuses.ERR_ISOLATED
         assert g.board.points[0][0].building == None
-        # Try adding a settlement at a point that is not on the board
-        res = g.add_settlement(0, 500, 0)
-        assert res == Statuses.ERR_BAD_POINT
         # Add starting settlement and two roads to ensure there is an available position
-        assert g.add_settlement(0, 0, 2, True) == Statuses.ALL_GOOD
-        assert g.add_road(0, [0, 2], [0, 1], True) == Statuses.ALL_GOOD
-        assert g.add_road(0, [0, 0], [0, 1], True) == Statuses.ALL_GOOD
-        res = g.add_settlement(0, 0, 0)
+        assert g.add_settlement(0, g.board.points[0][2], True) == Statuses.ALL_GOOD
+        assert g.add_road(0, g.board.points[0][2], g.board.points[0][1], True) == Statuses.ALL_GOOD
+        assert g.add_road(0, g.board.points[0][0], g.board.points[0][1], True) == Statuses.ALL_GOOD
+        res = g.add_settlement(0, g.board.points[0][0])
         assert res == Statuses.ALL_GOOD
         assert g.board.points[0][0].building != None
         assert g.board.points[0][0].building.type == Building.BUILDING_SETTLEMENT
@@ -110,12 +104,13 @@ class TestGame:
     def test_trade_in_cards_through_harbor(self):
         g = Game();
         # Add Settlement next to the harbor on the top
-        res = g.add_settlement(player=0, r=0, i=2, is_starting=True)
+        res = g.add_settlement(0, g.board.points[0][2], is_starting=True)
         assert res == Statuses.ALL_GOOD
         # Make the harbor trade in ore for testing
         for h in g.board.harbors:
             if g.board.points[0][2] in h.get_points():
                 h.type = HarborType.ORE
+                print("found harbor lmao")
         g.players[0].add_cards([ResCard.ORE] * 2)
         # Try to use harbor
         res = g.trade_to_bank(player=0, cards=[ResCard.ORE] * 2, request=ResCard.WHEAT)

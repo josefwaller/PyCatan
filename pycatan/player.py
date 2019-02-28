@@ -28,11 +28,7 @@ class Player:
         self.longest_road_length = 0
 
     # builds a settlement belonging to this player
-    def build_settlement (self, settle_r, settle_i, is_starting=False):
-
-        # checks the point exists
-        if not self.game.board.point_exists(settle_r, settle_i):
-            return Statuses.ERR_BAD_POINT
+    def build_settlement(self, point, is_starting=False):
 
         if not is_starting:
             # makes sure the player has the cards to build a settlements
@@ -50,11 +46,11 @@ class Player:
             # checks it is connected to a road owned by the player
             connected_by_road = False
             # gets the roads
-            roads = (self.game).board.roads
+            roads = self.game.board.roads
 
             for r in roads:
                 # checks if the road is connected
-                if r.point_one == [settle_r, settle_i] or r.point_two == [settle_r, settle_i]:
+                if r.point_one is point or r.point_two is point:
                     # checks this player owns the road
                     if r.owner == self.num:
                         connected_by_road = True
@@ -63,18 +59,16 @@ class Player:
                 return Statuses.ERR_ISOLATED
 
         # checks that a building does not already exist there
-        if self.game.board.points[settle_r][settle_i].building != None:
+        if point.building != None:
             return Statuses.ERR_BLOCKED
 
         # checks all other settlements are at least 2 away
         # gets the connecting point's coords
-        points = self.game.board.points[settle_r][settle_i].connected_points
+        points = point.connected_points
         for p in points:
 
             # checks if the point is occupied
             if p.building != None:
-                print(p.building)
-                print(p)
                 return Statuses.ERR_BLOCKED
 
         if not is_starting:
@@ -85,7 +79,8 @@ class Player:
         self.game.board.add_building(Building(
             owner = self.num,
             type = Building.BUILDING_SETTLEMENT,
-            point_one = self.game.board.points[settle_r][settle_i]), settle_r, settle_i)
+            point_one = point),
+            point = point)
         # adds a victory point
         self.victory_points += 1
 
@@ -148,10 +143,10 @@ class Player:
         # checks the two points are connected
         connected = False
         # gets the points connected to start
-        points = self.game.board.get_connected_points(r=start[0], i=start[1])
+        points = start.connected_points
 
         for p in points:
-            if end == p.position:
+            if end == p:
                 connected = True
                 break
 
@@ -168,18 +163,14 @@ class Player:
         # check this player has a settlement on one of these points or a connecting road
         is_connected = False
 
-        # first checks if there is a settlements on either point
-        point_one = self.game.board.points[start[0]][start[1]]
-        point_two = self.game.board.points[end[0]][end[1]]
-
-        if point_one.building != None:
+        if start.building != None:
             # checks if this player owns the settlement/city
-            if point_one.building.owner == self.num:
+            if start.building.owner == self.num:
                 is_connected = True
 
         # does the same for the other point
-        elif point_two.building != None:
-            if point_two.building.owner == self.num:
+        elif end.building != None:
+            if end.building.owner == self.num:
                 is_connected = True
 
         # then checks if there is a road connecting them
@@ -191,11 +182,11 @@ class Player:
                 if r.point_one == p or r.point_two == p:
 
                     # checks that there is not another player's settlement here, so that it's not going through it
-                    if self.game.board.points[p[0]][p[1]].building == None:
+                    if p.building == None:
                         is_connected = True
 
                     # if theere is a settlement/city there, the road can be built if this player owns it
-                    elif self.game.board.points[p[0]][p[1]].building.owner == self.num:
+                    elif p.building.owner == self.num:
                         is_connected = True
 
         if not is_connected:
@@ -248,7 +239,10 @@ class Player:
             if b.owner == self.num:
                 # checks if the building is connected to any harbors
                 for h in all_harbors:
-                    if h.point_one == b.point or h.point_two == b.point:
+                    print(h)
+                    print(b.point)
+                    if h.point_one is b.point or h.point_two is b.point:
+                        print("A")
                         # adds the type
                         if harbors.count(h.type) == 0:
                             harbors.append(h.type)

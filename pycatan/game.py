@@ -42,9 +42,9 @@ class Game:
         self.has_ended = False
 
     # creates a new settlement belong to the player at the coodinates
-    def add_settlement(self, player, r, i, is_starting=False):
+    def add_settlement(self, player, point, is_starting=False):
         # builds the settlement
-        status = self.players[player].build_settlement(settle_r=r, settle_i=i, is_starting=is_starting)
+        status = self.players[player].build_settlement(point=point, is_starting=is_starting)
         # If successful, check if the player has now won
         if status == Statuses.ALL_GOOD:
             if self.players[player].get_VP() >= 10:
@@ -109,14 +109,7 @@ class Game:
     # moves the robber
     # Note that player is the player moving the robber
     # and victim is the player whose card is being taken
-    def move_robber(self, r, i, player, victim):
-        # makes sure the input is valid
-        # checks the row exists
-        if r < 0 or r >= len((self.board).points):
-            return Statuses.ERR_INPUJT
-        # checks the index exists
-        elif i < 0 or i >= len((self.board).points[r]):
-            return Statuses.ERR_INPUT
+    def move_robber(self, point, player, victim):
         # checks the player wants to take a card from somebody
         if victim != None:
             # checks the victim has a settlement on the hex
@@ -162,6 +155,7 @@ class Game:
             # checks if the player has a settlement on the right type of harbor
             has_harbor = False
             harbor_types = self.players[player].get_connected_harbor_types()
+            print(harbor_types)
             for h_type in harbor_types:
                 if Harbor.get_card_from_harbor_type(h_type) == card_type and len(cards) == 2:
                     has_harbor = True
@@ -201,7 +195,7 @@ class Game:
                 self.winner = owner
 
     # changes a settlement on the board for a city
-    def add_city(self, r, i, player):
+    def add_city(self, point, player):
         status = self.board.upgrade_settlement(player, r, i)
 
         if status == Statuses.ALL_GOOD:

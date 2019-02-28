@@ -21,7 +21,7 @@ class TestBoard:
         # Make sure robber is not on the top-left hex
         board.robber = [1, 1]
         # add settlement
-        game.add_settlement(0, 0, 0, True)
+        game.add_settlement(0, game.board.points[0][0], True)
         # give the roll
         board.add_yield(8)
         # check the board gave the cards correctly

@@ -75,8 +75,8 @@ class Board(object):
 
 
     # adds a Building object to the board
-    def add_building(self, building, r, i):
-        self.points[r][i].building = building
+    def add_building(self, building, point):
+        point.building = building
 
     # adds a Building object, which must be a road
     # since roads record their own position and are not in self.points
@@ -84,9 +84,9 @@ class Board(object):
         self.roads.append(road)
 
     # upgrades an existing settlement to a city
-    def upgrade_settlement(self, player, r, i):
+    def upgrade_settlement(self, player, point):
         # Get building at point
-        building = self.points[r][i].building
+        building = point.building
 
         # checks there is a settlement at r, i
         if building == None:
@@ -133,23 +133,8 @@ class Board(object):
         return buildings
 
     # moves the robber to a givne coord
-    def move_robber(self, r, i):
-        self.robber = [r, i]
-
-    # checks if a point on the board is empty
-    def point_is_empty(self, r, i):
-        if self.points[r][i].building == None:
-            return True
-
-        return False
-
-    # checks if a point exists on the board
-    def point_exists(self, r, i):
-        if r >= 0 and r < len(self.points):
-            if i >= 0 and i < len(self.points[r]):
-                return True
-
-        return False
+    def move_robber(self, point):
+        self.robber = point
 
     def __repr__(self):
         return ("Board Object")
