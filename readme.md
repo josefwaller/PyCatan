@@ -8,6 +8,12 @@ A Library for simulating a game of *The Settlers of Catan*
 pip3 install pycatan
 
 ### Run tests from source
+
+#### Easy way
+Run the bash file test.sh
+`.test.sh'
+
+#### Hard Way
 * Install [virtualenv](https://virtualenv.pypa.io/en/stable/) and [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/)
 * Create a new virtual environment (`mkvirtualenv test`)
 * Install [pytest](https://docs.pytest.org/en/latest/)
