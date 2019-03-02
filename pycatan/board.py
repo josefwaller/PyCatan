@@ -104,11 +104,11 @@ class Board(object):
 
         # checks the player has the cards
         needed_cards = [
-            ResCard.WHEAT,
-            ResCard.WHEAT,
-            ResCard.ORE,
-            ResCard.ORE,
-            ResCard.ORE
+            ResCard.Wheat,
+            ResCard.Wheat,
+            ResCard.Ore,
+            ResCard.Ore,
+            ResCard.Ore
         ]
         if not self.game.players[player].has_cards(needed_cards):
             return Statuses.ERR_CARDS
@@ -148,17 +148,17 @@ class Board(object):
         for i in range(4):
 
             # adds four fields, forests and pastures
-            deck.append(TileType.FIELDS)
-            deck.append(TileType.FOREST)
-            deck.append(TileType.PASTURE)
+            deck.append(TileType.Fields)
+            deck.append(TileType.Forest)
+            deck.append(TileType.Pasture)
             # adds three mountains and hills
             if i < 3:
-                deck.append(TileType.MOUNTAINS)
-                deck.append(TileType.HILLS)
+                deck.append(TileType.Mountains)
+                deck.append(TileType.Hills)
 
             # adds one desert
             if i == 0:
-                deck.append(TileType.DESERT)
+                deck.append(TileType.Desert)
 
         # shuffles the deck
         random.shuffle(deck)
@@ -189,20 +189,20 @@ class Board(object):
     def get_card_from_tile(tile):
 
         # returns the appropriete card
-        if tile == TileType.FOREST:
-            return ResCard.WOOD
+        if tile == TileType.Forest:
+            return ResCard.Wood
 
-        elif tile == TileType.HILLS:
-            return ResCard.BRICK
+        elif tile == TileType.Hills:
+            return ResCard.Brick
 
-        elif tile == TileType.PASTURE:
-            return ResCard.SHEEP
+        elif tile == TileType.Pasture:
+            return ResCard.Sheep
 
-        elif tile == TileType.FIELDS:
-            return ResCard.WHEAT
+        elif tile == TileType.Fields:
+            return ResCard.Wheat
 
-        elif tile == TileType.MOUNTAINS:
-            return ResCard.ORE
+        elif tile == TileType.Mountains:
+            return ResCard.Ore
 
         else:
             return None

@@ -10,7 +10,7 @@ import random
 class TestBoard:
     def test_card_to_tile_conversion(self):
         # Check that the board switches between tile types and the corresponding card properly
-        assert Board.get_card_from_tile(TileType.FOREST), ResCard.WOOD
+        assert Board.get_card_from_tile(TileType.Forest), ResCard.Wood
     def test_give_proper_yield(self):
         # Set seeed to ensure the board is the same as the testcase
         random.seed(1)
@@ -24,7 +24,7 @@ class TestBoard:
         # give the roll
         board.add_yield(8)
         # check the board gave the cards correctly
-        assert game.players[0].has_cards([ResCard.BRICK])
+        assert game.players[0].has_cards([ResCard.Brick])
     def test_robber_prevents_yield(self):
         random.seed(1)
         game = Game()
@@ -36,5 +36,5 @@ class TestBoard:
         # Roll an 8
         board.add_yield(8)
         # Ensure the robber prevented the player from getting the card
-        assert not game.players[0].has_cards([ResCard.BRICK])
+        assert not game.players[0].has_cards([ResCard.Brick])
 

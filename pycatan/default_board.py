@@ -24,7 +24,7 @@ class DefaultBoard(Board):
                 new_tile = Tile(type=tile_deck.pop(), token_num=None, position=[r, i], points=[])
                 temp_tiles[-1].append(new_tile)
                 # Remove the token if it is the desert
-                if new_tile.type == TileType.DESERT:
+                if new_tile.type == TileType.Desert:
                     self.robber = [r, i]
                 else:
                     new_tile.token_num = token_deck.pop()
@@ -58,15 +58,15 @@ class DefaultBoard(Board):
         index = 0
         # the different types of harbors
         harbor_types = [
-            HarborType.WOOD,
-            HarborType.BRICK,
-            HarborType.ORE,
-            HarborType.WHEAT,
-            HarborType.SHEEP,
-            HarborType.ANY,
-            HarborType.ANY,
-            HarborType.ANY,
-            HarborType.ANY
+            HarborType.Wood,
+            HarborType.Brick,
+            HarborType.Ore,
+            HarborType.Wheat,
+            HarborType.Sheep,
+            HarborType.Any,
+            HarborType.Any,
+            HarborType.Any,
+            HarborType.Any
         ]
         # Shuffles the harbors
         random.shuffle(harbor_types)
@@ -90,9 +90,9 @@ class DefaultBoard(Board):
         # puts the robber on the desert tile to start
         for r in range(len(temp_tiles)):
             # checks if this row has the desert
-            if temp_tiles[r].count(TileType.DESERT) > 0:
+            if temp_tiles[r].count(TileType.Desert) > 0:
                 # places the robber
-                self.robber = [r, temp_tiles[r].index(TileType.DESERT)]
+                self.robber = [r, temp_tiles[r].index(TileType.Desert)]
 
     # Returns the indexes of the tiles connected to a certain points
     # on the default, tileagonal Catan board

@@ -18,10 +18,10 @@ class TestGame:
         g = Game();
         # Make sure creating a starting settlement does not use any cards
         g.players[0].add_cards([
-            ResCard.WOOD,
-            ResCard.BRICK,
-            ResCard.SHEEP,
-            ResCard.WHEAT
+            ResCard.Wood,
+            ResCard.Brick,
+            ResCard.Sheep,
+            ResCard.Wheat
         ])
         # Test adding a starting settlement, i.e. no cards needed
         res = g.add_settlement(0, g.board.points[0][0], True)
@@ -63,10 +63,10 @@ class TestGame:
         g.add_settlement(0, g.board.points[0][0])
         # Add cards to build a settlement
         g.players[0].add_cards([
-            ResCard.WOOD,
-            ResCard.BRICK,
-            ResCard.SHEEP,
-            ResCard.WHEAT
+            ResCard.Wood,
+            ResCard.Brick,
+            ResCard.Sheep,
+            ResCard.Wheat
         ])
         # Try adding an isolated settlement
         res = g.add_settlement(0, g.board.points[0][0])
@@ -84,22 +84,22 @@ class TestGame:
     def test_trade_in_cards_through_bank(self):
         g = Game()
         # Add 4 wood cards to player 0
-        g.players[0].add_cards([ResCard.WOOD] * 4)
+        g.players[0].add_cards([ResCard.Wood] * 4)
         # Try to trade in for 1 wheat
-        res = g.trade_to_bank(player=0, cards=[ResCard.WOOD] * 4, request=ResCard.WHEAT)
+        res = g.trade_to_bank(player=0, cards=[ResCard.Wood] * 4, request=ResCard.Wheat)
         assert res == Statuses.ALL_GOOD
-        assert not g.players[0].has_cards([ResCard.WOOD])
-        assert g.players[0].has_cards([ResCard.WHEAT])
+        assert not g.players[0].has_cards([ResCard.Wood])
+        assert g.players[0].has_cards([ResCard.Wheat])
         # Try to trade in cards the player doesn't have
-        res = g.trade_to_bank(player=0, cards=[ResCard.BRICK] * 4, request=ResCard.ORE)
+        res = g.trade_to_bank(player=0, cards=[ResCard.Brick] * 4, request=ResCard.Ore)
         assert res == Statuses.ERR_CARDS
-        assert not g.players[0].has_cards([ResCard.ORE])
+        assert not g.players[0].has_cards([ResCard.Ore])
         # Try to trade in with less than 4 cards, but more than 0
-        g.players[0].add_cards([ResCard.BRICK] * 3)
-        res = g.trade_to_bank(player=0, cards=[ResCard.BRICK] * 4, request=ResCard.SHEEP)
+        g.players[0].add_cards([ResCard.Brick] * 3)
+        res = g.trade_to_bank(player=0, cards=[ResCard.Brick] * 4, request=ResCard.Sheep)
         assert res == Statuses.ERR_CARDS
-        assert g.players[0].has_cards([ResCard.BRICK] * 3)
-        assert not g.players[0].has_cards([ResCard.SHEEP])
+        assert g.players[0].has_cards([ResCard.Brick] * 3)
+        assert not g.players[0].has_cards([ResCard.Sheep])
     def test_trade_in_cards_through_harbor(self):
         g = Game();
         # Add Settlement next to the harbor on the top
@@ -108,31 +108,31 @@ class TestGame:
         # Make the harbor trade in ore for testing
         for h in g.board.harbors:
             if g.board.points[0][2] in h.get_points():
-                h.type = HarborType.ORE
+                h.type = HarborType.Ore
                 print("found harbor lmao")
-        g.players[0].add_cards([ResCard.ORE] * 2)
+        g.players[0].add_cards([ResCard.Ore] * 2)
         # Try to use harbor
-        res = g.trade_to_bank(player=0, cards=[ResCard.ORE] * 2, request=ResCard.WHEAT)
+        res = g.trade_to_bank(player=0, cards=[ResCard.Ore] * 2, request=ResCard.Wheat)
         assert res == Statuses.ALL_GOOD
-        assert g.players[0].has_cards([ResCard.WHEAT])
-        assert not g.players[0].has_cards([ResCard.ORE])
+        assert g.players[0].has_cards([ResCard.Wheat])
+        assert not g.players[0].has_cards([ResCard.Ore])
         # Try to trade in to a harbor that the player does not have access to
-        g.players[0].add_cards([ResCard.BRICK] * 2)
-        res = g.trade_to_bank(player=0, cards=[ResCard.BRICK] * 2, request=ResCard.SHEEP)
+        g.players[0].add_cards([ResCard.Brick] * 2)
+        res = g.trade_to_bank(player=0, cards=[ResCard.Brick] * 2, request=ResCard.Sheep)
         assert res == Statuses.ERR_HARBOR
-        assert g.players[0].has_cards([ResCard.BRICK] * 2)
-        assert not g.players[0].has_cards([ResCard.SHEEP])
+        assert g.players[0].has_cards([ResCard.Brick] * 2)
+        assert not g.players[0].has_cards([ResCard.Sheep])
         # Try to trade without the proper cards
-        assert not g.players[0].has_cards([ResCard.ORE])
-        res = g.trade_to_bank(player=0, cards=[ResCard.ORE] * 2, request=ResCard.SHEEP)
+        assert not g.players[0].has_cards([ResCard.Ore])
+        res = g.trade_to_bank(player=0, cards=[ResCard.Ore] * 2, request=ResCard.Sheep)
         assert res == Statuses.ERR_CARDS
-        assert not g.players[0].has_cards([ResCard.SHEEP])
+        assert not g.players[0].has_cards([ResCard.Sheep])
         # Try to trade with more cards than the player has
-        g.players[0].add_cards([ResCard.ORE])
-        res = g.trade_to_bank(player=0, cards=[ResCard.ORE] * 2, request=ResCard.SHEEP)
+        g.players[0].add_cards([ResCard.Ore])
+        res = g.trade_to_bank(player=0, cards=[ResCard.Ore] * 2, request=ResCard.Sheep)
         assert res == Statuses.ERR_CARDS
-        assert not g.players[0].has_cards([ResCard.SHEEP])
-        assert g.players[0].has_cards([ResCard.ORE])
+        assert not g.players[0].has_cards([ResCard.Sheep])
+        assert g.players[0].has_cards([ResCard.Ore])
     def test_moving_robber(self):
         random.seed(1)
         g = Game()
@@ -146,8 +146,8 @@ class TestGame:
         # Ensure the player got nothing since the robber was there
         assert len(g.players[0].cards) == 0
         # Give the player a brick to steal
-        g.players[0].add_cards([ResCard.BRICK])
+        g.players[0].add_cards([ResCard.Brick])
         # Move the robber to 1, 0 and steal the brick
         g.move_robber(g.board.tiles[1][0], 1, 0)
         # Make sure they stole the brick
-        assert g.players[1].has_cards([ResCard.BRICK])
+        assert g.players[1].has_cards([ResCard.Brick])

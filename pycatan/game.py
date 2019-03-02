@@ -25,14 +25,14 @@ class Game:
         for i in range(14):
             # Add 2 Road, Monopoly and Year of Plenty cards
             if i < 2:
-                self.dev_deck.append(DevCard.ROAD)
-                self.dev_deck.append(DevCard.MONOPOLY)
-                self.dev_deck.append(DevCard.YOP)
+                self.dev_deck.append(DevCard.Road)
+                self.dev_deck.append(DevCard.Monopoly)
+                self.dev_deck.append(DevCard.YearOfPlenty)
             # Add 5 Victory Point cards
             if i < 5:
-                self.dev_deck.append(DevCard.VP)
+                self.dev_deck.append(DevCard.VictoryPoint)
             # Add 14 knight cards
-            self.dev_deck.append(DevCard.KNIGHT)
+            self.dev_deck.append(DevCard.Knight)
         # Shuffle the developement deck
         random.shuffle(self.dev_deck)
         # the longest road owner and largest army owner
@@ -70,9 +70,9 @@ class Game:
             return Statuses.ERR_DECK
         # makes sure the player has the right cards
         needed_cards = [
-            Cards.CARD_WHEAT,
-            Cards.CARD_ORE,
-            Cards.CARD_SHEEP
+            ResCard.Wheat,
+            ResCard.Ore,
+            ResCard.Sheep
         ]
         if not self.players[player].has_cards(needed_cards):
             return Statuses.ERR_CARDS
@@ -212,7 +212,7 @@ class Game:
             return Statuses.ERR_CARDS
 
         # applies the action
-        if card == DevCard.ROAD:
+        if card == DevCard.Road:
             # checks the correct arguments are given
             road_names = [
                 "road_one",
@@ -270,7 +270,7 @@ class Game:
 
             return Statuses.ALL_GOOD
 
-        elif card == DevCard.KNIGHT:
+        elif card == DevCard.Knight:
             # checks there are the right arguments
             if not ("robber_pos" in args and "victim" in args):
                 return Statuses.ERR_INPUT
@@ -302,7 +302,7 @@ class Game:
                 if self.players[player].knight_cards > current_longest:
                     self.largest_army = player
 
-        elif card == DevCard.MONOPOLY:
+        elif card == DevCard.Monopoly:
             # gets the type of card
             card_type = args['card_type']
             # for each player, checks if they have the card
@@ -316,11 +316,11 @@ class Game:
                     # adds them to the user's cards
                     self.players[player].add_cards(cards_to_give)
 
-        elif card == DevCard.VP:
+        elif card == DevCard.VictoryPoint:
             # players do not play developement cards, so it returns an error
             return Statuses.ERR_INPUT
 
-        elif card == DevCard.YOP:
+        elif card == DevCard.YearOfPlenty:
             # checks the player gave two development cards
             if not 'card_one' in args and not 'card_two' in args:
                 return Statuses.ERR_INPUT

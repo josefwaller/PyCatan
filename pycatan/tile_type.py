@@ -3,9 +3,9 @@ from enum import Enum
 # The different types of hexes available on a
 # Catan board
 class TileType(Enum):
-    DESERT = 0
-    FIELDS = 1
-    PASTURE = 2
-    MOUNTAINS = 3
-    HILLS = 4
-    FOREST = 5
+    Desert = 0
+    Fields = 1
+    Pasture = 2
+    Mountains = 3
+    Hills = 4
+    Forest = 5

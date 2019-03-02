@@ -4,18 +4,18 @@ from enum import Enum
 class ResCard(Enum):
 
     # the resource cards
-    WOOD = 0
-    BRICK = 1
-    ORE = 2
-    SHEEP = 3
-    WHEAT = 4
+    Wood = 0
+    Brick = 1
+    Ore = 2
+    Sheep = 3
+    Wheat = 4
 
 # The different types of developement cards
 class DevCard(Enum):
 
     # the developement cards
-    ROAD = 0
-    VP = 1
-    KNIGHT = 2
-    MONOPOLY = 3
-    YOP = 4
+    Road = 0
+    VictoryPoint = 1
+    Knight = 2
+    Monopoly = 3
+    YearOfPlenty = 4

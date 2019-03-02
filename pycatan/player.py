@@ -33,10 +33,10 @@ class Player:
         if not is_starting:
             # makes sure the player has the cards to build a settlements
             cards_needed = [
-                ResCard.WOOD,
-                ResCard.BRICK,
-                ResCard.SHEEP,
-                ResCard.WHEAT
+                ResCard.Wood,
+                ResCard.Brick,
+                ResCard.Sheep,
+                ResCard.Wheat
             ]
 
             # checks the player has the cards
@@ -209,8 +209,8 @@ class Player:
 
             # checks that it has the proper cards
             cards_needed = [
-                ResCard.WOOD,
-                ResCard.BRICK
+                ResCard.Wood,
+                ResCard.Brick
             ]
             if not self.has_cards(cards_needed):
                 return Statuses.ERR_CARDS
@@ -358,19 +358,19 @@ class Player:
 
             card_name = ""
 
-            if c == ResCard.WOOD:
+            if c == ResCard.Wood:
                 card_name = "Wood"
 
-            elif c == ResCard.SHEEP:
+            elif c == ResCard.Sheep:
                 card_name = "Sheep"
 
-            elif c == ResCard.BRICK:
+            elif c == ResCard.Brick:
                 card_name = "Brick"
 
-            elif c == ResCard.WHEAT:
+            elif c == ResCard.Wheat:
                 card_name = "Wheat"
 
-            elif c == ResCard.ORE:
+            elif c == ResCard.Ore:
                 card_name = "Ore"
 
             else:

@@ -4,14 +4,14 @@ from pycatan.card import ResCard
 # The different types of harbors found throughout the game
 class HarborType(Enum):
     # the different 2:1 types
-    WOOD = 0
-    SHEEP = 1
-    BRICK = 2
-    WHEAT = 3
-    ORE = 4
+    Wood = 0
+    Sheep = 1
+    Brick = 2
+    Wheat = 3
+    Ore = 4
 
     # the 3:1 type
-    ANY = 5
+    Any = 5
 
 # represents a catan harbor
 class Harbor:
@@ -34,37 +34,37 @@ class Harbor:
     # Ex: 3:1, 2:1S, 2:1Wh
     def get_type(self):
 
-        if self.type == HarborType.WOOD:
+        if self.type == HarborType.Wood:
             return "2:1W"
 
-        elif self.type == HarborType.SHEEP:
+        elif self.type == HarborType.Sheep:
             return "2:1S"
 
-        elif self.type == HarborType.BRICK:
+        elif self.type == HarborType.Brick:
             return "2:1B"
 
-        elif self.type == HarborType.WHEAT:
+        elif self.type == HarborType.Wheat:
             return "2:1Wh"
 
-        elif self.type == HarborType.ORE:
+        elif self.type == HarborType.Ore:
             return "2:1O"
 
-        elif self.type == HarborType.ANY:
+        elif self.type == HarborType.Any:
             return "3:1"
 
     @staticmethod
     def get_card_from_harbor_type(h_type):
-        if h_type == HarborType.WOOD:
-            return ResCard.WOOD
-        elif h_type == HarborType.BRICK:
-            return ResCard.BRICK
-        elif h_type == HarborType.WHEAT:
-            return ResCard.WHEAT
-        elif h_type == HarborType.ORE:
-            return ResCard.ORE
-        elif h_type == HarborType.SHEEP:
-            return ResCard.SHEEP
-        elif h_type == HarborType.ANY:
+        if h_type == HarborType.Wood:
+            return ResCard.Wood
+        elif h_type == HarborType.Brick:
+            return ResCard.Brick
+        elif h_type == HarborType.Wheat:
+            return ResCard.Wheat
+        elif h_type == HarborType.Ore:
+            return ResCard.Ore
+        elif h_type == HarborType.Sheep:
+            return ResCard.Sheep
+        elif h_type == HarborType.Any:
             return None
         else:
             raise Exception("Harbor has invalid type %s" % h_type)
