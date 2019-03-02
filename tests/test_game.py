@@ -3,6 +3,7 @@ from pycatan.building import Building
 from pycatan.card import ResCard
 from pycatan.statuses import Statuses
 from pycatan.harbor import HarborType
+import random
 
 class TestGame:
 
@@ -132,3 +133,21 @@ class TestGame:
         assert res == Statuses.ERR_CARDS
         assert not g.players[0].has_cards([ResCard.SHEEP])
         assert g.players[0].has_cards([ResCard.ORE])
+    def test_moving_robber(self):
+        random.seed(1)
+        g = Game()
+        # Move the robber
+        g.move_robber(g.board.hexes[0][0], None, None)
+        assert g.board.robber is g.board.hexes[0][0]
+        # Build a settlement at 1, 1
+        g.add_settlement(player=0, point=g.board.points[1][1], is_starting=True)
+        # Roll an 8
+        g.add_yield_for_roll(8)
+        # Ensure the player got nothing since the robber was there
+        assert len(g.players[0].cards) == 0
+        # Give the player a brick to steal
+        g.players[0].add_cards([ResCard.BRICK])
+        # Move the robber to 1, 0 and steal the brick
+        g.move_robber(g.board.hexes[1][0], 1, 0)
+        # Make sure they stole the brick
+        assert g.players[1].has_cards([ResCard.BRICK])

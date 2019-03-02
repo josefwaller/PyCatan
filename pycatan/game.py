@@ -109,25 +109,24 @@ class Game:
     # moves the robber
     # Note that player is the player moving the robber
     # and victim is the player whose card is being taken
-    def move_robber(self, point, player, victim):
+    def move_robber(self, tile, player, victim):
         # checks the player wants to take a card from somebody
         if victim != None:
             # checks the victim has a settlement on the hex
             has_settlement = False
             # Iterate over points and check if there is a settlement/city on any of them
-            points = (self.board).get_hexes_for_point(r, i)
-            for i in points:
-                point = self.board.points[i[0]][i[1]]
-                if point != None:
+            points = self.board.get_connected_points(tile.position[0], tile.position[1])
+            for p in points:
+                if p != None and p.building != None:
                     # Check the victim owns the settlement/city
-                    if point.owner == victim:
+                    if p.building.owner == victim:
                         has_settlement = True
 
             if not has_settlement:
                 return Statuses.ERR_INPUT
 
         # moves the robber
-        self.board.move_robber(r, i)
+        self.board.move_robber(tile)
         # takes a random card from the victim
         if victim != None:
             # removes a random card from the victim

@@ -30,7 +30,7 @@ class TestBoard:
         game = Game()
         board = game.board
         # Move robber to top-left corner
-        board.robber = [0, 0]
+        board.robber = board.hexes[0][0]
         # Add settlement
         game.add_settlement(0, game.board.points[0][0], True)
         # Roll an 8

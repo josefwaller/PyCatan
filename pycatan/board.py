@@ -36,7 +36,7 @@ class Board(object):
         self.harbors = []
         # The location of the robber
         # going r, i
-        self.robber = []
+        self.robber = None
 
     # gives the players cards for a certain roll
     def add_yield(self, roll):
@@ -51,8 +51,9 @@ class Board(object):
                     # checks if any hexes have the right number
                     for current_hex in hexes:
 
+                        print(self.robber, current_hex)
                         # makes sure the robber isn't there
-                        if self.robber[0] == current_hex.position[0] and self.robber[1] == current_hex.position[1]:
+                        if self.robber is current_hex:
                             # skips this hex
                             continue
 
@@ -133,8 +134,8 @@ class Board(object):
         return buildings
 
     # moves the robber to a givne coord
-    def move_robber(self, point):
-        self.robber = point
+    def move_robber(self, hex_pos):
+        self.robber = hex_pos
 
     def __repr__(self):
         return ("Board Object")
