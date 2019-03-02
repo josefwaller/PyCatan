@@ -137,8 +137,8 @@ class TestGame:
         random.seed(1)
         g = Game()
         # Move the robber
-        g.move_robber(g.board.hexes[0][0], None, None)
-        assert g.board.robber is g.board.hexes[0][0]
+        g.move_robber(g.board.tiles[0][0], None, None)
+        assert g.board.robber is g.board.tiles[0][0]
         # Build a settlement at 1, 1
         g.add_settlement(player=0, point=g.board.points[1][1], is_starting=True)
         # Roll an 8
@@ -148,6 +148,6 @@ class TestGame:
         # Give the player a brick to steal
         g.players[0].add_cards([ResCard.BRICK])
         # Move the robber to 1, 0 and steal the brick
-        g.move_robber(g.board.hexes[1][0], 1, 0)
+        g.move_robber(g.board.tiles[1][0], 1, 0)
         # Make sure they stole the brick
         assert g.players[1].has_cards([ResCard.BRICK])

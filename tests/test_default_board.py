@@ -2,7 +2,7 @@ from pycatan.game import Game
 from pycatan.default_board import DefaultBoard
 
 class TestDefaultBoard:
-    def test_get_connected_hexes(self):
+    def test_get_connected_tiles(self):
         board = Game().board
         test_cases = {
             (0, 0): [[0, 0]],
@@ -15,17 +15,17 @@ class TestDefaultBoard:
         }
         # Test that it returns the points connected properly
         for case, answers in test_cases.items():
-            points = DefaultBoard.get_hex_indexes_for_point(case[0], case[1])
+            points = DefaultBoard.get_tile_indexes_for_point(case[0], case[1])
             for ans in answers:
                 # Check it returned the correct point
                 assert ans in points
 
-    def test_points_have_reference_to_hexes(self):
+    def test_points_have_reference_to_tiles(self):
         # Get board
         b = Game().board
         # Test cases
         # Keys are the coordinates of the points, whereas values
-        # are the coordinates of the hexes surronding that point
+        # are the coordinates of the tiles surronding that point
         # 
         cases = {
             (0, 0): [(0, 0)],
@@ -33,15 +33,15 @@ class TestDefaultBoard:
             (2, 0): [(2, 0)],
             (5, 2): [(4, 0), (4, 1)]
         }
-        # Check each point has references to the hexes around it
+        # Check each point has references to the tiles around it
         for key in cases:
             point = b.points[key[0]][key[1]]
             answers = cases[key]
             for ans in answers:
-                hex = b.hexes[ans[0]][ans[1]]
-                assert hex in point.hexes
+                tile = b.tiles[ans[0]][ans[1]]
+                assert tile in point.tiles
 
-    def test_hexes_have_references_to_points(self):
+    def test_tiles_have_references_to_points(self):
         # Get board
         b = Game().board
         # Test cases
@@ -72,11 +72,11 @@ class TestDefaultBoard:
             ]
         }
         for key in cases:
-            hex = b.hexes[key[0]][key[1]]
+            tile = b.tiles[key[0]][key[1]]
             answers = cases[key]
             for ans in answers:
                 point = b.points[ans[0]][ans[1]]
-                assert point in hex.points
+                assert point in tile.points
 
     def test_points_have_references_to_connected_points(self):
         board = Game().board

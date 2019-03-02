@@ -1,6 +1,6 @@
 class Point:
-    def __init__(self, hexes, position):
-        self.hexes = hexes
+    def __init__(self, tiles, position):
+        self.tiles = tiles
         self.building = None
         self.position = position
 

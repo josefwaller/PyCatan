@@ -2,12 +2,12 @@ from pycatan.harbor import Harbor, HarborType
 from pycatan.player import Player
 from pycatan.statuses import Statuses
 from pycatan.building import Building
-from pycatan.hex_type import HexType
+from pycatan.tile_type import TileType
 from pycatan.card import ResCard, DevCard
-from pycatan.hex import Hex
+from pycatan.tile import Tile
 from pycatan.point import Point
 
-# used to shuffle the deck of hexes
+# used to shuffle the deck of tiles
 import random
 
 import abc
@@ -23,9 +23,9 @@ class Board(object):
     def __init__(self, game):
         # The game the board is in
         self.game = game
-        # The hexes on the board
+        # The tiles on the board
         # Should be set in a subclass
-        self.hexes = ()
+        self.tiles = ()
         # The points on the board
         # Where the players can place settlements/cities
         # Will be set at the end of __init__
@@ -46,22 +46,22 @@ class Board(object):
                 # Check there is a building on the point
                 if p.building != None:
                     building = p.building
-                    hexes = p.hexes
+                    tiles = p.tiles
 
-                    # checks if any hexes have the right number
-                    for current_hex in hexes:
+                    # checks if any tiles have the right number
+                    for current_tile in tiles:
 
-                        print(self.robber, current_hex)
+                        print(self.robber, current_tile)
                         # makes sure the robber isn't there
-                        if self.robber is current_hex:
-                            # skips this hex
+                        if self.robber is current_tile:
+                            # skips this tile
                             continue
 
-                        if current_hex.token_num == roll:
+                        if current_tile.token_num == roll:
                             # adds the card to the player's inventory
                             owner = building.owner
                             # gets the card type
-                            card_type = Board.get_card_from_hex(current_hex.type)
+                            card_type = Board.get_card_from_tile(current_tile.type)
                             # adds two if it is a city
                             if building.type == Building.BUILDING_CITY:
                                 self.game.players[owner].add_cards([
@@ -134,38 +134,38 @@ class Board(object):
         return buildings
 
     # moves the robber to a givne coord
-    def move_robber(self, hex_pos):
-        self.robber = hex_pos
+    def move_robber(self, tile_pos):
+        self.robber = tile_pos
 
     def __repr__(self):
         return ("Board Object")
 
-    # Get a shuffled deck of the correct number of each type of hex in a board
+    # Get a shuffled deck of the correct number of each type of tile in a board
     @staticmethod
-    def get_shuffled_hex_deck():
+    def get_shuffled_tile_deck():
         deck = []
-        # sets up all_hexes
+        # sets up all_tiles
         for i in range(4):
 
             # adds four fields, forests and pastures
-            deck.append(HexType.FIELDS)
-            deck.append(HexType.FOREST)
-            deck.append(HexType.PASTURE)
+            deck.append(TileType.FIELDS)
+            deck.append(TileType.FOREST)
+            deck.append(TileType.PASTURE)
             # adds three mountains and hills
             if i < 3:
-                deck.append(HexType.MOUNTAINS)
-                deck.append(HexType.HILLS)
+                deck.append(TileType.MOUNTAINS)
+                deck.append(TileType.HILLS)
 
             # adds one desert
             if i == 0:
-                deck.append(HexType.DESERT)
+                deck.append(TileType.DESERT)
 
         # shuffles the deck
         random.shuffle(deck)
         return deck
 
     @staticmethod
-    def get_shuffled_hex_nums():
+    def get_shuffled_tile_nums():
         nums = []
         # Get 2 of each number, most of the time
         for i in range(2):
@@ -183,25 +183,25 @@ class Board(object):
         random.shuffle(nums)
         return nums
 
-    # returns the card associated with the hex
+    # returns the card associated with the tile
     # for example, Brick for Hills, Wood for forests, etc
     @staticmethod
-    def get_card_from_hex(hex):
+    def get_card_from_tile(tile):
 
         # returns the appropriete card
-        if hex == HexType.FOREST:
+        if tile == TileType.FOREST:
             return ResCard.WOOD
 
-        elif hex == HexType.HILLS:
+        elif tile == TileType.HILLS:
             return ResCard.BRICK
 
-        elif hex == HexType.PASTURE:
+        elif tile == TileType.PASTURE:
             return ResCard.SHEEP
 
-        elif hex == HexType.FIELDS:
+        elif tile == TileType.FIELDS:
             return ResCard.WHEAT
 
-        elif hex == HexType.MOUNTAINS:
+        elif tile == TileType.MOUNTAINS:
             return ResCard.ORE
 
         else:

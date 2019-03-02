@@ -112,7 +112,7 @@ class Game:
     def move_robber(self, tile, player, victim):
         # checks the player wants to take a card from somebody
         if victim != None:
-            # checks the victim has a settlement on the hex
+            # checks the victim has a settlement on the tile
             has_settlement = False
             # Iterate over points and check if there is a settlement/city on any of them
             points = self.board.get_connected_points(tile.position[0], tile.position[1])

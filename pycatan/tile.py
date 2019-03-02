@@ -1,7 +1,7 @@
-from pycatan.hex_type import HexType
+from pycatan.tile_type import TileType
 from pycatan.point import Point
 
-class Hex:
+class Tile:
     def __init__(self, type, token_num, position, points):
         self.type = type
         self.token_num = token_num

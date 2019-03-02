@@ -1,47 +1,47 @@
 from pycatan.board import Board
-from pycatan.hex import Hex
+from pycatan.tile import Tile
 from pycatan.point import Point
-from pycatan.hex_type import HexType
+from pycatan.tile_type import TileType
 from pycatan.harbor import Harbor, HarborType
 
 import math
 import random
 
-# The default, hexagonal board filled with random hexes and tokens
+# The default, tileagonal board filled with random tiles and tokens
 class DefaultBoard(Board):
 
     def __init__(self, game):
         super(DefaultBoard, self).__init__(game)
 
-        # Set hexes
-        hex_deck = Board.get_shuffled_hex_deck()
-        token_deck = Board.get_shuffled_hex_nums()
-        temp_hexes = []
+        # Set tiles
+        tile_deck = Board.get_shuffled_tile_deck()
+        token_deck = Board.get_shuffled_tile_nums()
+        temp_tiles = []
         for r in range(5):
-            temp_hexes.append([])
+            temp_tiles.append([])
             for i in range([3, 4, 5, 4, 3][r]):
-                # Add a hex
-                new_hex = Hex(type=hex_deck.pop(), token_num=None, position=[r, i], points=[])
-                temp_hexes[-1].append(new_hex)
+                # Add a tile
+                new_tile = Tile(type=tile_deck.pop(), token_num=None, position=[r, i], points=[])
+                temp_tiles[-1].append(new_tile)
                 # Remove the token if it is the desert
-                if new_hex.type == HexType.DESERT:
+                if new_tile.type == TileType.DESERT:
                     self.robber = [r, i]
                 else:
-                    new_hex.token_num = token_deck.pop()
+                    new_tile.token_num = token_deck.pop()
 
-        self.hexes = tuple(map(lambda x: tuple(x), temp_hexes))
+        self.tiles = tuple(map(lambda x: tuple(x), temp_tiles))
 
         # Add points
         temp_points = []
         for r in range(6):
             temp_points.append([])
             for i in range([7, 9, 11, 11, 9, 7][r]):
-                point = Point(hexes=[], position=[r, i])
+                point = Point(tiles=[], position=[r, i])
                 temp_points[-1].append(point)
-                # Set point/hex relations
-                for pos in DefaultBoard.get_hex_indexes_for_point(r, i):
-                    point.hexes.append(self.hexes[pos[0]][pos[1]])
-                    self.hexes[pos[0]][pos[1]].points.append(point)
+                # Set point/tile relations
+                for pos in DefaultBoard.get_tile_indexes_for_point(r, i):
+                    point.tiles.append(self.tiles[pos[0]][pos[1]])
+                    self.tiles[pos[0]][pos[1]].points.append(point)
 
 
         self.points = tuple(map(lambda x: tuple(x), temp_points))
@@ -87,20 +87,20 @@ class DefaultBoard(Board):
             # Use next pattern value for number of points inbetween next time
             index += 1
 
-        # puts the robber on the desert hex to start
-        for r in range(len(temp_hexes)):
+        # puts the robber on the desert tile to start
+        for r in range(len(temp_tiles)):
             # checks if this row has the desert
-            if temp_hexes[r].count(HexType.DESERT) > 0:
+            if temp_tiles[r].count(TileType.DESERT) > 0:
                 # places the robber
-                self.robber = [r, temp_hexes[r].index(HexType.DESERT)]
+                self.robber = [r, temp_tiles[r].index(TileType.DESERT)]
 
-    # Returns the indexes of the hexes connected to a certain points
-    # on the default, hexagonal Catan board
+    # Returns the indexes of the tiles connected to a certain points
+    # on the default, tileagonal Catan board
     @staticmethod
-    def get_hex_indexes_for_point(r, i):
-        # the indexes of the hexes
-        hex_indexes = []
-        # Points on a hexagonal board
+    def get_tile_indexes_for_point(r, i):
+        # the indexes of the tiles
+        tile_indexes = []
+        # Points on a tileagonal board
         points = [
             [None] * 7,
             [None] * 9,
@@ -109,53 +109,53 @@ class DefaultBoard(Board):
             [None] * 9,
             [None] * 7
         ]
-        # gets the adjacent hexes differently depending on whether the point is in the top or the bottom
+        # gets the adjacent tiles differently depending on whether the point is in the top or the bottom
         if r < len(points) / 2:
-            # gets the hexes below the point ------------------
+            # gets the tiles below the point ------------------
 
-            # adds the hexes to the right
+            # adds the tiles to the right
             if i < len(points[r]) - 1:
-                hex_indexes.append([r, math.floor(i / 2)])
+                tile_indexes.append([r, math.floor(i / 2)])
 
-            # if the index is even, the number is between two hexes
+            # if the index is even, the number is between two tiles
             if i % 2 == 0 and i > 0:
-                hex_indexes.append([r, math.floor(i / 2) - 1])
+                tile_indexes.append([r, math.floor(i / 2) - 1])
 
-            # gets the hexes above the point ------------------
+            # gets the tiles above the point ------------------
 
             if r > 0:
-                # gets the hex to the right
+                # gets the tile to the right
                 if i > 0 and i < len(points[r]) - 2:
-                    hex_indexes.append([r - 1, math.floor((i - 1) / 2)])
+                    tile_indexes.append([r - 1, math.floor((i - 1) / 2)])
 
-                # gets the hex to the left
+                # gets the tile to the left
                 if i % 2 == 1 and i < len(points[r]) - 1 and i > 1:
-                    hex_indexes.append([r - 1, math.floor((i - 1) / 2) - 1])
+                    tile_indexes.append([r - 1, math.floor((i - 1) / 2) - 1])
 
         else:
 
             # adds the below -------------
 
             if r < len(points) - 1:
-                # gets the hex to the right or directly below
+                # gets the tile to the right or directly below
                 if i < len(points[r]) - 2 and i > 0:
-                    hex_indexes.append([r, math.floor((i - 1) / 2)])
+                    tile_indexes.append([r, math.floor((i - 1) / 2)])
 
-                # gets the hex to the left
+                # gets the tile to the left
                 if i % 2 == 1 and i > 1 and i < len(points[r]):
-                    hex_indexes.append([r, math.floor((i - 1) / 2 - 1)])
+                    tile_indexes.append([r, math.floor((i - 1) / 2 - 1)])
 
-            # gets the hexes above ------------
+            # gets the tiles above ------------
 
-            # gets the hex above and to the right or directly above
+            # gets the tile above and to the right or directly above
             if i < len(points[r]) - 1:
-                hex_indexes.append([r - 1, math.floor(i / 2)])
+                tile_indexes.append([r - 1, math.floor(i / 2)])
 
-            # gets the hex to the left
+            # gets the tile to the left
             if i > 1 and i % 2 == 0:
-                hex_indexes.append([r - 1, math.floor((i - 1) / 2)])
+                tile_indexes.append([r - 1, math.floor((i - 1) / 2)])
 
-        return hex_indexes
+        return tile_indexes
 
     # gets the points that are connected to the point given
     def get_connected_points(self, r, i):
