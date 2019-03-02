@@ -9,7 +9,9 @@ class TestGame:
     def test_game_uses_three_players_by_default(self):
         game = Game()
         assert len(game.players) == 3
-
+    def test_game_starts_with_variable_players(self):
+        game = Game(num_of_players=5)
+        assert len(game.players) == 5
     def test_adding_starting_settlements(self):
         # Create game
         g = Game();
@@ -33,7 +35,6 @@ class TestGame:
         # Test adding a settlement the correct distance away
         res = g.add_settlement(2, g.board.points[0][2], True)
         assert res == Statuses.ALL_GOOD
-
     def test_adding_starting_roads(self):
         # Create game
         g = Game()
@@ -54,7 +55,6 @@ class TestGame:
         g.add_settlement(1, g.board.points[2][2], True)
         res = g.add_road(0, g.board.points[2][2], g.board.points[2][3], True)
         assert res == Statuses.ERR_ISOLATED
- 
     # Test that player.add_settlement returns the proper value
     def test_add_settlement(self):
         g = Game()
@@ -79,7 +79,6 @@ class TestGame:
         assert res == Statuses.ALL_GOOD
         assert g.board.points[0][0].building != None
         assert g.board.points[0][0].building.type == Building.BUILDING_SETTLEMENT
-
     # Test trading in cards either directly through the bank
     def test_trade_in_cards_through_bank(self):
         g = Game()
@@ -100,7 +99,6 @@ class TestGame:
         assert res == Statuses.ERR_CARDS
         assert g.players[0].has_cards([ResCard.BRICK] * 3)
         assert not g.players[0].has_cards([ResCard.SHEEP])
-
     def test_trade_in_cards_through_harbor(self):
         g = Game();
         # Add Settlement next to the harbor on the top
