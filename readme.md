@@ -1,3 +1,4 @@
+# DEPRECATED: PyCatan has moved to this respository: https://github.com/josefwaller/PyCatan2
 # PyCatan
 
 A Library for simulating a game of *The Settlers of Catan*
